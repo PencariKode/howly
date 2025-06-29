@@ -12,11 +12,11 @@ export default function WelcomeSection() {
     useEffect(() => {
         const typed = new Typed(typeRef.current, {
             strings: [
-                'Friends',
-                'Family',
-                'Colleagues',
-                'Classmates',
-                'Everyone!!'
+                'Teman',
+                'Keluarga',
+                'Kolega',
+                'Teman Sekelas',
+                'Semua Orang!'
             ],
             typeSpeed: 100,
             startDelay: 500,
@@ -39,16 +39,16 @@ export default function WelcomeSection() {
 
     return (
         <>
-            <section className="minMaxWidth flex flex-col items-start gap-y-2 justify-center h-[70vh] px-4">
-                <h1 className="text-4xl font-normal text-teal-600">
-                    Welcome to <b className="font-extrabold flicker text-hl-text"
+            <section className="minMaxWidth flex flex-col items-start gap-y-2 justify-center h-[75vh] px-4">
+                <h1 className="text-4xl font-normal text-rose-800 italic">
+                    Welcome to <b className="font-extrabold flicker text-hl-text not-italic"
                       style={{animationDelay: `${delay}s`}}>
                     Howly <i className="fa-solid fa-paw-claws"></i>
                 </b>
                 </h1>
                 <span className="mt-4 text-lg text-hl-text-secondary  !inline  whitespace-pre-line text-wrap">
-                            Play the <b className="text-teal-500">'werewolf'</b> roleplay game online with <p
-                    className="!inline text-emerald-600" ref={typeRef}></p>
+                            Mainkan game roleplay <b className="text-red-800 drop-shadow-[0_0_0.3rem] drop-shadow-red-600 italic">'werewolf'</b> secara online bersama <p
+                    className="!inline text-rose-600 drop-shadow-[0_0_.3rem] drop-shadow-rose-500" ref={typeRef}></p>
                         </span>
             </section>
         </>

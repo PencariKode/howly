@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {useUIStore} from "@/stores/uiStore";
 
 type WolfTrack = {
     id: number;
@@ -12,6 +13,8 @@ type WolfTrack = {
 };
 
 export default function WolfTrackLayer() {
+    const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
+
     const [tracks, setTracks] = useState<WolfTrack[]>([]);
 
     useEffect(() => {
@@ -42,7 +45,7 @@ export default function WolfTrackLayer() {
     }, []);
 
     return (
-        <div className="fixed inset-0 -z-10 pointer-events-none minMaxWidth overflow-hidden h-screen">
+        <div className={`${isScreenScrolled ? 'hidden' : 'fixed'} inset-0 -z-10 pointer-events-none minMaxWidth overflow-hidden h-screen `}>
             {tracks.map(track => (
                 <i
                     key={track.id}

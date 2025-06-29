@@ -12,7 +12,7 @@ export default function Home() {
             <MainContainer>
                 <WelcomeSection/>
                 <section className="min-h-screen minMaxWidth">
-    a
+
                 </section>
             </MainContainer>
         </>

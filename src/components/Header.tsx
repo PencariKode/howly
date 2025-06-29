@@ -5,9 +5,10 @@ export default function Header() {
 
     // const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
     const isHeaderOpen = useUIStore(state => state.isHeaderOpen);
+    const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
 
     return (
-        <header className={`flex items-center justify-center px-4 min-h-16 max-h-16 minMaxWidth text-hl-text bg-hl-primary fixed top-0 !z-50 transition-all duration-200 ${isHeaderOpen ? 'opacity-100 translate-0' : 'opacity-0 -translate-y-16'}`}>
+        <header className={`flex items-center justify-center px-4 min-h-16 max-h-18 minMaxWidth text-hl-text ${isScreenScrolled ? 'bg-hl-primary h-16' : 'h-18 bg-transparent'} sticky top-0 !z-50 transition-all duration-500 ${isHeaderOpen ? 'opacity-100 translate-0' : 'opacity-0 -translate-y-16'}`}>
             <Link href="/" className="flex items-center justify-center gap-2 text-[1.6rem]">
                 <i className={`fa-solid fa-paw-claws text-xl flex items-center justify-center pb-[1px]`}></i>
                 <h1 className="font-extrabold">Howly</h1>

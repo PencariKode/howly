@@ -1,9 +1,6 @@
 import type {Metadata} from "next";
 import "./globals.css";
 import {ReactNode} from "react";
-// import {jetbrains} from "@/fonts";
-// import BottomBar from "@c/BottomBar";
-// import Header from "@c/Header";
 import Body from "@c/Body";
 
 

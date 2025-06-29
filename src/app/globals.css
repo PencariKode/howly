@@ -8,7 +8,8 @@
 @theme inline {
     --color-hl-bg: #09090c;
     --color-hl-text: #ededed;
-    --color-hl-primary: #191923;
+    /*--color-hl-primary: #191923;*/
+    --color-hl-primary: #14141c;
     --font-sans: var(--font-rubik-sans);
 }
 
