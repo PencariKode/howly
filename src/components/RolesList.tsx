@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import {Swiper, SwiperSlide} from "swiper/react";
+import Swiper from 'swiper';
+import {Swiper as SwiperComponent, SwiperSlide} from "swiper/react";
 import {EffectCoverflow, Navigation} from 'swiper/modules'
 import {useEffect, useRef, useState} from 'react'
 
@@ -33,14 +34,20 @@ export default function RolesList() {
     }, []);
 
     useEffect(() => {
-        const swiperInstance = document.querySelector('.swiper').swiper;
-        if (swiperInstance) {
-            swiperInstance.params.coverflowEffect.modifier = isMobileRef.current ? 1.5 : 3.5;
-            swiperInstance.update();
+        const swiperEl = document.querySelector('.swiper');
+
+        if (swiperEl && 'swiper' in swiperEl) {
+            const typedSwiperEl = swiperEl as HTMLElement & { swiper: Swiper };
+            const swiperInstance = typedSwiperEl.swiper;
+
+            if ( swiperInstance.params.effect === 'coverflow' && swiperInstance.params.coverflowEffect ) {
+                swiperInstance.params.coverflowEffect.modifier = isMobileRef.current ? 1.5 : 3.5;
+                swiperInstance.update();
+            }
         }
     }, []);
 
-    function handleSwiper(swiper) {
+    function handleSwiper(swiper: Swiper) {
         swiper.on('slideChange', () => {
             const idx = swiper.realIndex;
             setActiveIndex(idx);
@@ -58,7 +65,7 @@ export default function RolesList() {
                 <p className="mb-8">Temukan role (peran) yang tersedia di <b>Howly</b>.</p>
             </div>
             <div className="slider-container">
-                <Swiper
+                <SwiperComponent
                     effect={'coverflow'}
                     grabCursor={true}
                     centeredSlides={true}
@@ -97,7 +104,7 @@ export default function RolesList() {
                         );
                     })}
 
-                </Swiper>
+                </SwiperComponent>
             </div>
             <div className="minMaxWidth flex flex-col gap-7 items-center relative">
                 <div
