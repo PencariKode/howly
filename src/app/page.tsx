@@ -1,6 +1,9 @@
 import MainContainer from "@c/MainContainer";
 import WelcomeSection from "@c/WelcomeSection";
 import WolfTrackLayer from "@c/WolfTrackLayer";
+import HowToPlay from "@c/HowToPlay";
+import AturanGame from "@c/InfoGame";
+import RolesList from "@c/RolesList";
 
 
 export default function Home() {
@@ -11,9 +14,9 @@ export default function Home() {
             <WolfTrackLayer/>
             <MainContainer>
                 <WelcomeSection/>
-                <section className="min-h-screen minMaxWidth">
-
-                </section>
+                <HowToPlay />
+                <AturanGame />
+                <RolesList />
             </MainContainer>
         </>
     );

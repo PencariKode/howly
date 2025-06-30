@@ -4,6 +4,7 @@ import Header from "@c/Header";
 import BottomBar from "@c/BottomBar";
 import {ReactNode, useEffect} from "react";
 import {useUIStore} from "@/stores/uiStore";
+import Footer from "@c/Footer";
 
 
 export default function Body({children}: { children: ReactNode }) {
@@ -31,6 +32,7 @@ export default function Body({children}: { children: ReactNode }) {
             <Header/>
             {children}
             <BottomBar/>
+        <Footer />
         </body>
     );
 };

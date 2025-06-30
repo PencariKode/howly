@@ -45,7 +45,7 @@ export default function WolfTrackLayer() {
     }, []);
 
     return (
-        <div className={`${isScreenScrolled ? 'hidden' : 'fixed'} inset-0 -z-10 pointer-events-none minMaxWidth overflow-hidden h-screen `}>
+        <div className={`${isScreenScrolled ? 'fixed' : 'fixed'} inset-0 -z-10 pointer-events-none minMaxWidth overflow-hidden h-screen `}>
             {tracks.map(track => (
                 <i
                     key={track.id}
