@@ -18,7 +18,7 @@ export default function WolfTrackLayer() {
     const [tracks, setTracks] = useState<WolfTrack[]>([]);
 
     useEffect(() => {
-        const maxTracks = Math.random() * 10 + 8; // Random number of tracks between 10 and 30
+        const maxTracks = Math.random() * 12 + 10;
         const intervalTime = Math.random() * 500 + 200;
         let current = 0;
 
@@ -34,7 +34,7 @@ export default function WolfTrackLayer() {
                 left: `${Math.random() * 90}%`,
                 size: Math.random() * 36 + 24,
                 rotate: `${Math.random() * 360}deg`,
-                opacity: Math.random() * 0.20 + 0.05,
+                opacity: Math.random() * 0.25 + 0.05,
             };
 
             setTracks(prev => [...prev, newTrack]);

@@ -15,7 +15,10 @@ export default function Body({children}: { children: ReactNode }) {
     const toggleHeader = useUIStore(state => state.toggleHeader);
 
     useEffect(() => {
+        const SCROLL_DIFF_THRESHOLD = Math.max(window.innerHeight * 0.01, 15);
+
         const handleScroll = () => {
+            if (Math.abs(scrollY - lastScrollTop) < SCROLL_DIFF_THRESHOLD) return;
             toggleScreenScrolled(window.scrollY > 15);
             let curScr = window.scrollY;
             toggleHeader(!(curScr > lastScrollTop && curScr > 50));

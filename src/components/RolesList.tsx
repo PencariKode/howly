@@ -92,7 +92,7 @@ export default function RolesList() {
 
                         return (
                             <SwiperSlide key={index}
-                                         className={`max-w-32 sm:max-w-64 min-w-fit min-h-4 pb-2 mt-5 ${index === activeIndex ? '' : 'opacity-40'}`}>
+                                         className={`max-w-32 sm:max-w-64 min-w-fit min-h-4 pb-2 sm:pb-10 mt-5 ${index === activeIndex ? '' : 'opacity-40'}`}>
                                 <div
                                     className={`min-w-32 max-w-full min-h-2 flex flex-col items-center justify-center ${configRoleColor[role.side]} ${index === activeIndex ? 'after:rounded-full' : 'after:rounded-[3rem] sm:after:rounded-[4.5rem]'} after:[content:''] after:min-w-32 after:max-w-32 after:min-h-32 after:max-h-32 sm:after:min-w-56 sm:after:max-w-56 sm:after:min-h-56 sm:after:max-h-56 after:absolute after:-z-10 after:top-5 sm:after:top-12`}>
                                     <Image src={role.image} priority={false} alt={role.name}
@@ -106,9 +106,9 @@ export default function RolesList() {
 
                 </SwiperComponent>
             </div>
-            <div className="minMaxWidth flex flex-col gap-7 items-center relative">
+            <div className="min-w-full flex flex-col gap-7 items-center relative !max-w-2xl">
                 <div
-                    className=" slider-controler absolute top-0 z-50 min-w-full max-w-full min-h-2 flex justify-between font-bold text-2xl sm:text-4xl">
+                    className=" slider-controler absolute top-0 z-50 w-full  max-w-xl md:max-w-lg min-h-2 flex justify-between font-bold text-2xl sm:text-3xl md:text-xl">
                     <button
                         className="swiper-button-prev bg-red-700/60 px-3 py-1 rounded-md cursor-pointer hover:scale-95 ">
                         <i className="fa-solid fa-arrow-left-long"></i></button>
@@ -117,7 +117,7 @@ export default function RolesList() {
                         <i className="fa-solid fa-arrow-right-long"></i></button>
                 </div>
                 <h1 className={`${roles[activeIndex].side === 'manusia' ? 'bg-cyan-600/80' : 'bg-red-700/60'} px-2 py-1 rounded-md w-fit text-center text-xl font-bold ${configRoleColor[roles[activeIndex].side]}`}>{roles[activeIndex].name}</h1>
-                <div className="px-3 py-2 text-justify leading-snug text-sm rounded-md bg-white/10">{roles[activeIndex].desc}</div>
+                <div className="px-3 py-2 text-justify leading-snug text-sm rounded-md max-w-lg bg-white/10">{roles[activeIndex].desc}</div>
             </div>
         </section>
     );

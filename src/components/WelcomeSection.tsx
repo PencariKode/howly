@@ -39,7 +39,7 @@ export default function WelcomeSection() {
 
     return (
         <>
-            <section className="minMaxWidth flex flex-col items-start gap-y-2 justify-center h-[75vh] px-4">
+            <section className="minMaxWidth flex flex-col items-start gap-y-2 justify-center h-[75vh] px-4 md:px-12 sm:h-[85vh]">
                 <h1 className="text-4xl font-normal text-rose-800 italic">
                     Welcome to <b className="font-extrabold flicker text-hl-text not-italic"
                       style={{animationDelay: `${delay}s`}}>
