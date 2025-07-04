@@ -13,6 +13,7 @@
     --color-hl-secondary: #191923;
     --color-hl-tertiary: #292938;
     --font-sans: var(--font-rubik-sans);
+    --breakpoint-xs: 32rem;
 }
 
 body {
@@ -78,8 +79,26 @@ body {
     }
 }
 
+@keyframes flicker-red {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 0.3rem oklch(50.5% 0.213 27.518));
+    }
+    20%, 24%, 55% {
+        opacity: 0.4;
+        filter: none;
+    }
+}
+
 /* Gunakan dengan class ini */
 .flicker {
     animation: flicker 2s infinite ease-in-out;
+}
+
+.flicker-custom {
+    /*animation: flicker 2s infinite ease-in-out;*/
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
 }
 

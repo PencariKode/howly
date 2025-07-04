@@ -5,6 +5,7 @@ import BottomBar from "@c/BottomBar";
 import {ReactNode, useEffect} from "react";
 import {useUIStore} from "@/stores/uiStore";
 import Footer from "@c/Footer";
+import {SessionProvider} from "next-auth/react";
 
 
 export default function Body({children}: { children: ReactNode }) {
@@ -32,10 +33,12 @@ export default function Body({children}: { children: ReactNode }) {
         <body
             className={`${jetbrains.variable} antialiased bg-hl-bg relative overflow-x-hidden hl-scrollbar minMaxWidth min-h-screen `}
         >
+        <SessionProvider>
             <Header/>
             {children}
             <BottomBar/>
-        <Footer />
+            <Footer/>
+        </SessionProvider>
         </body>
     );
 };

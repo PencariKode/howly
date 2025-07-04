@@ -2,8 +2,11 @@ import Link from "next/link";
 import {useUIStore} from "@/stores/uiStore";
 import Image from "next/image";
 import {useEffect, useRef} from "react";
+import {signOut, useSession} from "next-auth/react";
 
 export default function Header() {
+
+    const {status} = useSession();
 
     // const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
     const isHeaderOpen = useUIStore(state => state.isHeaderOpen);
@@ -36,10 +39,10 @@ export default function Header() {
                 <div className={`absolute transition-all duration-700 left-10 hidden sm:flex`}>
                     <Image onClick={handleDropMenu} className={`${isScreenScrolled ? 'block' : 'hidden group-hover:block'} !aspect-square max-h-10 w-10 rounded-full cursor-pointer`} src={`/img/blankprofile.png`} alt={'PFP'} width={70} height={70} />
                     <nav ref={menuBarRef} className={`${isDropMenuOpen ? 'flex' : 'hidden'}  min-h-10 min-w-max pb-0.5 *:hover:bg-hl-primary/80 pt-1 px-2 *:px-3 *:py-1.5  font-extralight text-left bg-hl-tertiary/85  absolute left-5 top-[110%] rounded-b-sm rounded-tr-sm shadow-lg flex-col items-center justify-center divide-y-[.5px] divide-hl-text/20`}>
-                        <Link href="/profile" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-user"></i> Profile</Link>
+                        <Link href={status === "authenticated" ? "/profile" : "/auth/login"} className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-user"></i> Profile</Link>
                         <Link href="/create" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-dna"></i> Create</Link>
                         <Link href="/join" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-chart-network"></i> Join</Link>
-                        <Link href="/logout" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-person-to-door"></i> Logout</Link>
+                        <button onClick={() => signOut({callbackUrl: "/auth/login"})} className="cursor-pointer w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-person-to-door"></i> Logout</button>
                     </nav>
                 </div>
                 <Link href="/" className="flex items-center justify-center gap-2 text-[1.6rem]">

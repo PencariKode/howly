@@ -1,8 +1,10 @@
 import BottomBarBtn from "./BottomBarBtn";
 import {useUIStore} from "@/stores/uiStore";
+import {useSession} from "next-auth/react";
 
 
 export default function BottomBar() {
+    const {status} = useSession()
 
     // const isHeaderOpen = useUIStore(state => state.isHeaderOpen);
     const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
@@ -14,7 +16,7 @@ export default function BottomBar() {
             <BottomBarBtn href="/" path={'/'} title={"Home"} icon={'fa-paw-claws'}/>
             <BottomBarBtn href="/create" path={'/create'} title={"Create"} icon={'fa-dna'}/>
             <BottomBarBtn href="/join" path={'/join'} title={"Join"} icon={'fa-chart-network'}/>
-            <BottomBarBtn href="/profile" path={'/profile'} title={"Profile"} icon={'fa-user'}/>
+            <BottomBarBtn href={status === "authenticated" ? "/profile" : "/auth/login"} path={status === "authenticated" ? "/profile" : "/auth/login"} title={"Profile"} icon={'fa-user'}/>
         </nav>
     );
 };
