@@ -75,7 +75,7 @@ export default function RolesList() {
                         rotate: 0,
                         stretch: -50,
                         depth: 125,
-                        modifier: isMobileRef.current ? 1.5 : 3.5,
+                        modifier: isMobileRef.current ? 1.5 : 5.5,
                         slideShadows: false
                     }}
                     navigation={{
@@ -94,11 +94,11 @@ export default function RolesList() {
                             <SwiperSlide key={index}
                                          className={`max-w-32 sm:max-w-64 min-w-fit min-h-4 pb-2 sm:pb-10 mt-5 ${index === activeIndex ? '' : 'opacity-40'}`}>
                                 <div
-                                    className={`min-w-32 max-w-full min-h-2 flex flex-col items-center justify-center ${configRoleColor[role.side]} ${index === activeIndex ? 'after:rounded-full' : 'after:rounded-[3rem] sm:after:rounded-[4.5rem]'} after:[content:''] after:min-w-32 after:max-w-32 after:min-h-32 after:max-h-32 sm:after:min-w-56 sm:after:max-w-56 sm:after:min-h-56 sm:after:max-h-56 after:absolute after:-z-10 after:top-5 sm:after:top-12`}>
+                                    className={`min-w-32 max-w-full min-h-2 flex object-contain flex-col items-center justify-center ${configRoleColor[role.side]} ${index === activeIndex ? 'after:rounded-full' : 'after:rounded-[3rem] sm:after:rounded-[4.5rem]'} after:[content:''] after:min-w-32 after:max-w-32 after:min-h-32 after:max-h-32 sm:after:min-w-56 sm:after:max-w-56 sm:after:min-h-56 sm:after:max-h-56 after:absolute after:-z-10 after:top-5 sm:after:top-12`}>
                                     <Image src={role.image} priority={false} alt={role.name}
                                            width={isMobileRef.current ? 128 : 400}
                                            height={isMobileRef.current ? 128 : 400}
-                                           className={` max-w-40 sm:max-w-64 min-w-fit max-h-40 min-h-fit !aspect-square ${index === activeIndex ? 'w-40 h-40 sm:w-64 -top-5' : ' '} relative`}/>
+                                           className={` max-w-40 sm:max-w-64 object-contain min-w-fit max-h-40 min-h-fit !aspect-square ${index === activeIndex ? 'w-40 h-40 sm:w-64 -top-5' : ' '} relative`}/>
                                 </div>
                             </SwiperSlide>
                         );

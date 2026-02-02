@@ -1,12 +1,20 @@
 import Link from "next/link";
 import {useUIStore} from "@/stores/uiStore";
 import Image from "next/image";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {signOut, useSession} from "next-auth/react";
 
 export default function Header() {
 
-    const {status} = useSession();
+    const {data: session, status} = useSession();
+
+    const ppRef = useRef<HTMLImageElement>(null);
+    const [ppSrc, setPpSrc] = useState<string>('/img/blankprofile.png');
+    useEffect(() => {
+        if (ppRef.current) {
+            setPpSrc(session?.user?.image || '/img/blankprofile.png');
+        }
+    }, [session]);
 
     // const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
     const isHeaderOpen = useUIStore(state => state.isHeaderOpen);
@@ -37,7 +45,7 @@ export default function Header() {
         <header className={`flex items-center justify-center px-4 min-h-14 max-h-18 group sm:max-h-24 minMaxWidth text-hl-text ${isScreenScrolled ? 'bg-hl-primary h-14 sm:h-18' : 'h-18 sm:h-24 bg-transparent'} sticky top-0 !z-50 transition-all duration-500 ${isHeaderOpen ? 'opacity-100 translate-0' : 'opacity-0 -translate-y-16'}`}>
             <div className={`flex items-center justify-center minMaxWidth relative`}>
                 <div className={`absolute transition-all duration-700 left-10 hidden sm:flex`}>
-                    <Image onClick={handleDropMenu} className={`${isScreenScrolled ? 'block' : 'hidden group-hover:block'} !aspect-square max-h-10 w-10 rounded-full cursor-pointer`} src={`/img/blankprofile.png`} alt={'PFP'} width={70} height={70} />
+                    <Image ref={ppRef} onClick={handleDropMenu} className={`${isScreenScrolled ? 'block' : 'hidden group-hover:block'} !aspect-square max-h-10 w-10 rounded-full cursor-pointer`} src={ppSrc} alt={'PFP'} width={70} height={70} />
                     <nav ref={menuBarRef} className={`${isDropMenuOpen ? 'flex' : 'hidden'}  min-h-10 min-w-max pb-0.5 *:hover:bg-hl-primary/80 pt-1 px-2 *:px-3 *:py-1.5  font-extralight text-left bg-hl-tertiary/85  absolute left-5 top-[110%] rounded-b-sm rounded-tr-sm shadow-lg flex-col items-center justify-center divide-y-[.5px] divide-hl-text/20`}>
                         <Link href={status === "authenticated" ? "/profile" : "/auth/login"} className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-user"></i> Profile</Link>
                         <Link href="/create" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-dna"></i> Create</Link>

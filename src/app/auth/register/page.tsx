@@ -1,7 +1,7 @@
 'use client';
 
 import {FormEvent, useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {signIn, useSession} from "next-auth/react";
 import MainContainer from "@c/MainContainer";
 import Image from "next/image";
@@ -9,10 +9,14 @@ import SimpleFormInput from "@c/Form/SimpleFormInput";
 import SimpleFormButton from "@c/Form/SimpleFormButton";
 import Link from "next/link";
 import {isEmail, isStrongPassword} from "validator";
+import SimpleFormHeader from "@c/Form/SimpleFormHeader";
 
 export default function RegisterPage() {
     const {status} = useSession();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/"; // tujuan setelah login
+
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -68,41 +72,35 @@ export default function RegisterPage() {
             minLength: 6,
             minSymbols: 1,
             minNumbers: 1,
+            minLowercase: 0,
+            minUppercase: 0,
         });
+        console.log(isStrongPw, password);
         if (!isStrongPw) return setErrForm({
             type: "password",
             message: "Password harus terdiri dari minimal 6 karakter, 1 simbol, dan 1 angka"
         });
 
 
-        const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({name, email, password})
+        const res = await signIn("credentials", {
+            redirect: false,
+            email,
+            password,
+            name,
+            callbackUrl,
+            isRegister: "true"
         });
 
-        const data = await res.json();
-        if (!res.ok) {
-            setErrForm({type: "password", message: data.message || "Gagal membuat akun"});
-            return;
+        if (res?.error) {
+            setErrForm({message: res.error, type: "passwordConfirm"});
+            setPassword("");
+            setPasswordConfirm("");
+        } else {
+            router.push(callbackUrl);
         }
-
-        router.push("/auth/login");
     };
 
 
-    const [delay, setDelay] = useState(0);
-    useEffect(() => {
-
-        const interval = setInterval(() => {
-            setDelay(Math.random() * 2);
-        }, 5000);
-
-        return () => {
-            clearInterval(interval);
-        }
-
-    }, [])
 
 
     return (
@@ -112,13 +110,7 @@ export default function RegisterPage() {
                     className={`minMaxWidth min-h-[95vh] lg:h-[110vh] flex items-center justify-center xs:px-10 sm:px-20 md:px-25 lg:px-40 xl:px-60 2xl:px-80`}>
                     <div
                         className={`minMaxWidth min-h-10 py-8 px-4 ring-hl-text/30 ring-[0.5px] bg-hl-secondary text-hl-text rounded-md flex flex-col gap-2 items-center justify-center`}>
-                        <div className={`flex gap-2 minMaxWidth items-center flicker justify-center mb-4 *:select-none`}
-                             style={{
-                                 animationDelay: `${delay}s`,
-                             }}>
-                            <Image src={'/media/logo/logo_wolfman1.png'} alt={"Logo"} width={35} height={35}/>
-                            <h1 className={`font-extrabold text-3xl `}>Howly</h1>
-                        </div>
+                        <SimpleFormHeader />
                         <p className={`text-center text-sm text-hl-text/85 mt-2 font-extralight select-none`}>Daftar
                             dengan
                             akun:</p>
@@ -131,8 +123,7 @@ export default function RegisterPage() {
                             </button>
                             <button onClick={() => signIn("github")}
                                     className={`w-full max-w-30 h-12 md:h-10 bg-hl-tertiary hover:bg-hl-tertiary/60 hover:text-hl-text/85 rounded-sm cursor-pointer group`}
-                                    title={`Masuk dengan akun GitHub`}>
-                                <i className={`fa-brands fa-github`}></i>
+                                    title={`Masuk dengan akun GitHub`}> <i className={`fa-brands fa-github`}></i>
                                 <span className={`ml-2 font-bold`}>Github</span>
                             </button>
                         </div>

@@ -9,6 +9,8 @@ import SimpleFormInput from "@c/Form/SimpleFormInput";
 import SimpleFormButton from "@c/Form/SimpleFormButton";
 import Link from "next/link";
 import {isEmail} from "validator";
+import SimpleFormHeader from "@c/Form/SimpleFormHeader";
+
 
 export default function LoginPage() {
     const {status} = useSession();
@@ -24,26 +26,12 @@ export default function LoginPage() {
         message: ""
     });
 
-    const [delay, setDelay] = useState(0);
-
     useEffect(() => {
         if (status === "authenticated") {
             router.replace("/");
         }
     }, [status, router]);
 
-    useEffect(() => {
-
-
-        const interval = setInterval(() => {
-            setDelay(Math.random() * 2);
-        }, 5000);
-
-        return () => {
-            clearInterval(interval);
-        }
-
-    }, [])
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
@@ -66,10 +54,12 @@ export default function LoginPage() {
             email,
             password,
             callbackUrl,
+            isRegister: "false"
         });
 
         if (res?.error) {
-            setErrForm({message: "Email atau password salah", type: "password"});
+            console.log(res);
+            setErrForm({message: res.error, type: "password"});
             setPassword("");
         } else {
             router.push(callbackUrl);
@@ -83,13 +73,7 @@ export default function LoginPage() {
                     className={`minMaxWidth min-h-[95vh] lg:h-[110vh] flex items-center justify-center xs:px-10 sm:px-20 md:px-25 lg:px-40 xl:px-60 2xl:px-80`}>
                     <div
                         className={`minMaxWidth min-h-10 py-8 px-4 ring-hl-text/30 ring-[0.5px] bg-hl-secondary text-hl-text rounded-md flex flex-col gap-2 items-center justify-center`}>
-                        <div className={`flex gap-2 minMaxWidth items-center flicker justify-center mb-4 *:select-none`}
-                             style={{
-                                 animationDelay: `${delay}s`,
-                             }}>
-                            <Image src={'/media/logo/logo_wolfman1.png'} alt={"Logo"} width={35} height={35}/>
-                            <h1 className={`font-extrabold text-3xl `}>Howly</h1>
-                        </div>
+                        <SimpleFormHeader />
                         <p className={`text-center text-sm text-hl-text/85 mt-2 font-extralight select-none`}>Masuk
                             dengan
                             akun:</p>
