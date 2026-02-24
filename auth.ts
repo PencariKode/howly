@@ -1,11 +1,10 @@
-import {AuthOptions} from "next-auth";
+import { AuthOptions } from "next-auth";
 import bcrypt from "bcryptjs";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@l/prisma";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -43,7 +42,7 @@ export const authOptions: AuthOptions = {
           include: { accounts: true },
         });
 
-        // --- Registration flow ---
+        // regis
         if (credentials.isRegister === "true") {
           if (existingUser) {
             if (existingUser.accounts.length > 0) {
@@ -74,7 +73,7 @@ export const authOptions: AuthOptions = {
           return newUser;
         }
 
-        // --- Login flow ---
+        // login
         if (!existingUser) {
           throw new Error("Akun tidak ditemukan");
         }
@@ -111,6 +110,21 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.role = user.role;
       }
+
+      // refetch setelah update profile
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { name: true, image: true, role: true, createdAt: true },
+        });
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.picture = dbUser.image;
+          token.role = dbUser.role;
+          token.createdAt = dbUser.createdAt.toISOString();
+        }
+      }
+
       return token;
     },
 
@@ -121,6 +135,7 @@ export const authOptions: AuthOptions = {
         }
         session.user.id = token.id;
         session.user.role = token.role;
+        session.user.createdAt = token.createdAt as string;
       }
       return session;
     },
