@@ -27,7 +27,7 @@ export default function RolesList() {
             isMobileRef.current = window.innerWidth <= 640;
         };
 
-        handleResize(); // Check on initial render
+        handleResize(); // cek pas render pertama
         window.addEventListener('resize', handleResize);
 
         return () => {

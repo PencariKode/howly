@@ -1,23 +1,17 @@
 import Link from "next/link";
 import { useUIStore } from "@/stores/uiStore";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faDna, faChartNetwork, faPersonToDoor } from "@fortawesome/pro-light-svg-icons";
+import { faUser, faDna, faChartNetwork, faPersonToDoor, faBars } from "@fortawesome/pro-light-svg-icons";
 import { faPawClaws } from "@fortawesome/pro-solid-svg-icons";
 
 export default function Header() {
 
     const { data: session, status } = useSession();
 
-    const ppRef = useRef<HTMLImageElement>(null);
-    const [ppSrc, setPpSrc] = useState<string>('/img/blankprofile.png');
-    useEffect(() => {
-        if (ppRef.current) {
-            setPpSrc(session?.user?.image || '/img/blankprofile.png');
-        }
-    }, [session]);
+
 
     // const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
     const isHeaderOpen = useUIStore(state => state.isHeaderOpen);
@@ -47,10 +41,12 @@ export default function Header() {
     return (
         <header className={ `flex items-center justify-center px-4 min-h-14 max-h-18 group sm:max-h-24 minMaxWidth text-hl-text ${isScreenScrolled ? 'bg-hl-primary h-14 sm:h-18' : 'h-18 sm:h-24 bg-transparent'} sticky top-0 !z-50 transition-all duration-500 ${isHeaderOpen ? 'opacity-100 translate-0' : 'opacity-0 -translate-y-16'}` }>
             <div className={ `flex items-center justify-center minMaxWidth relative` }>
-                <div className={ `absolute transition-all duration-700 left-10 hidden sm:flex` }>
-                    <Image ref={ ppRef } onClick={ handleDropMenu } className={ `${isScreenScrolled ? 'block' : 'hidden group-hover:block'} !aspect-square max-h-10 w-10 rounded-full cursor-pointer` } src={ ppSrc } alt={ 'PFP' } width={ 70 } height={ 70 } />
-                    <nav ref={ menuBarRef } className={ `${isDropMenuOpen ? 'flex' : 'hidden'}  min-h-10 min-w-max pb-0.5 *:hover:bg-hl-primary/80 pt-1 px-2 *:px-3 *:py-1.5  font-extralight text-left bg-hl-tertiary/85  absolute left-5 top-[110%] rounded-b-sm rounded-tr-sm shadow-lg flex-col items-center justify-center divide-y-[.5px] divide-hl-text/20` }>
-                        <Link href={ status === "authenticated" ? "/profile" : "/login" } className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faUser } className="w-5 flex items-center justify-center" /> Profile</Link>
+                <div className={ `absolute transition-all duration-700 right-4 sm:right-10 flex` }>
+                    <button onClick={ handleDropMenu } className="flex items-center justify-center w-10 h-10 rounded-md cursor-pointer text-hl-text hover:bg-hl-text/10 transition-all duration-200">
+                        <FontAwesomeIcon icon={ faBars } className="text-xl" />
+                    </button>
+                    <nav ref={ menuBarRef } className={ `${isDropMenuOpen ? 'flex' : 'hidden'} min-h-10 min-w-max pb-0.5 *:hover:bg-hl-primary/80 pt-1 px-2 *:px-3 *:py-1.5 font-extralight text-left bg-hl-tertiary/85 absolute right-0 top-[110%] rounded-b-sm rounded-tl-sm shadow-lg flex-col items-center justify-center divide-y-[.5px] divide-hl-text/20` }>
+                        <Link href={ status === "authenticated" ? "/profile" : "/login" } className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2">{ session?.user?.image ? <Image src={ session.user.image } alt="PFP" width={ 20 } height={ 20 } className="w-5 h-5 rounded-full object-cover" /> : <FontAwesomeIcon icon={ faUser } className="w-5 flex items-center justify-center" /> } Profile</Link>
                         <Link href="/create" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faDna } className="w-5 flex items-center justify-center" /> Create</Link>
                         <Link href="/join" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faChartNetwork } className="w-5 flex items-center justify-center" /> Join</Link>
                         <button onClick={ () => signOut({ callbackUrl: "/login" }) } className="cursor-pointer w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faPersonToDoor } className="w-5 flex items-center justify-center" /> Logout</button>

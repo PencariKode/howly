@@ -27,7 +27,6 @@ function CreateRoomForm() {
         isRoleCombiLocked, setRoleCombiLocked
     } = useGameConfigStore((state) => state);
 
-    // Gunakan useState untuk menyimpan nilai total
     const [totalAmount, setTotalAmount] = useState<number>(0);
 
     const { gameConf, rawConfig } = useMemo(() => {
@@ -40,7 +39,6 @@ function CreateRoomForm() {
         console.log("wikd", rawConfig)
     }, [rawConfig]);
 
-    // Update totalAmount setiap kali roleConfig berubah
     useEffect(() => {
         const newTotal = getTotalRoleAmount();
         setTotalAmount(newTotal);

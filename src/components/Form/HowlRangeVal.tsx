@@ -17,7 +17,7 @@ export default function HowlRangeVal({
 
     const [value, setValue] = useState<number>(defaultValue || min);
 
-    // Memoize event handler to prevent recreation on every render
+    // biar gk dibuat ulang pas rerender
     const handleChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
         const newValue = Number((e.target as HTMLInputElement).value);
         setValue(newValue);

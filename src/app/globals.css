@@ -48,22 +48,18 @@ body {
     @apply group-hover:font-thin;
   }
 
-  /* Optimize range input performance on mobile */
   input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
     outline: none;
     transform: translateZ(0);
-    /* Optimize touch handling */
     touch-action: pan-x;
-    /* Improve rendering performance */
     will-change: background;
   }
 
   input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
-    /* Reduce repaints */
     transform: translateZ(0);
   }
 
@@ -73,7 +69,6 @@ body {
 
   input[type="range"]::-moz-range-thumb {
     border: none;
-    /* Reduce repaints */
     transform: translateZ(0);
   }
 
@@ -81,11 +76,8 @@ body {
     cursor: not-allowed !important;
   }
 
-  /* Optimize container performance */
   .range-container {
-    /* Prevent layout shifts */
     contain: layout style;
-    /* Reduce repaints */
     transform: translateZ(0);
   }
 

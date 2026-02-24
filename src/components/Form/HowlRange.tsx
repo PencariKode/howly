@@ -19,19 +19,19 @@ export default function HowlRange({
     const rangeRef = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState<number>(defaultValue || min);
 
-    // Memoize background style calculation
+    // memoize bg style
     const getBackgroundStyle = useCallback((val: number): string => {
         const percent = ((val - min) / (max - min)) * 100;
         return `linear-gradient(to right, #e0e0e0 0%, #e0e0e0 ${percent}%, #14141c ${percent}%, #14141c 100%)`;
     }, [min, max]);
 
-    // Memoize current background style
+    // memoize bg style sekarang
     const currentBackgroundStyle = useMemo(() => 
         getBackgroundStyle(value), 
         [value, getBackgroundStyle]
     );
 
-    // Optimize input handler with debouncing for better performance
+    // debouncing
     const handleInput = useCallback((e: FormEvent<HTMLInputElement>) => {
         const newValue = Number((e.target as HTMLInputElement).value);
         setValue(newValue);
