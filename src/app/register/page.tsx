@@ -1,22 +1,26 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import MainContainer from "@c/MainContainer";
-import Image from "next/image";
-import SimpleFormInput from "@c/Form/SimpleFormInput";
-import SimpleFormButton from "@c/Form/SimpleFormButton";
+import { FormEvent, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { isEmail, isStrongPassword } from "validator";
-import SimpleFormHeader from "@c/Form/SimpleFormHeader";
 
 export default function RegisterPage() {
     const { status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get("callbackUrl") || "/"; // tujuan setelah login
+    const callbackUrl = searchParams.get("callbackUrl") || "/";
 
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [errForm, setErrForm] = useState<{ type: string; message: string }>({
+        type: "",
+        message: "",
+    });
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -24,50 +28,46 @@ export default function RegisterPage() {
         }
     }, [status, router]);
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [errForm, setErrForm] = useState<{ type: string, message: string }>({
-        type: "",
-        message: ""
-    });
-
-
     const handleRegister = async (e: FormEvent) => {
         e.preventDefault();
+        setErrForm({ type: "", message: "" });
 
         if (name.length < 3) {
-            setErrForm({ type: "name", message: "Nama harus terdiri dari minimal 3 karakter" });
-            setName("");
-            return;
-        }
-
-        if (password.length < 1) {
-            setErrForm({ type: "password", message: "Password tidak boleh kosong" });
-            setPassword("");
-            setPasswordConfirm("");
-            return;
-        }
-        if (passwordConfirm.length < 1) {
-            setErrForm({ type: "passwordConfirm", message: "Konfirmasi password tidak boleh kosong" });
-            setPassword("");
-            setPasswordConfirm("");
-            return;
-        }
-
-        if (password !== passwordConfirm) {
-            setErrForm({ type: "passwordConfirm", message: "Password tidak cocok" });
-            setPassword("");
-            setPasswordConfirm("");
+            setErrForm({
+                type: "name",
+                message: "Nama harus terdiri dari minimal 3 karakter",
+            });
             return;
         }
 
         if (!isEmail(email)) {
             setErrForm({ type: "email", message: "Email tidak valid" });
-            setPassword("");
             return;
         }
+
+        if (password.length < 1) {
+            setErrForm({ type: "password", message: "Password tidak boleh kosong" });
+            return;
+        }
+
+        if (passwordConfirm.length < 1) {
+            setErrForm({
+                type: "passwordConfirm",
+                message: "Konfirmasi password tidak boleh kosong",
+            });
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            setErrForm({
+                type: "passwordConfirm",
+                message: "Password tidak cocok",
+            });
+            setPassword("");
+            setPasswordConfirm("");
+            return;
+        }
+
         const isStrongPw = isStrongPassword(password, {
             minLength: 6,
             minSymbols: 1,
@@ -75,12 +75,16 @@ export default function RegisterPage() {
             minLowercase: 0,
             minUppercase: 0,
         });
-        console.log(isStrongPw, password);
-        if (!isStrongPw) return setErrForm({
-            type: "password",
-            message: "Password harus terdiri dari minimal 6 karakter, 1 simbol, dan 1 angka"
-        });
 
+        if (!isStrongPw) {
+            setErrForm({
+                type: "password",
+                message: "Password harus terdiri dari minimal 6 karakter, 1 simbol, dan 1 angka",
+            });
+            return;
+        }
+
+        setLoading(true);
 
         const res = await signIn("credentials", {
             redirect: false,
@@ -98,82 +102,183 @@ export default function RegisterPage() {
         } else {
             router.push(callbackUrl);
         }
+        setLoading(false);
     };
 
-
-
+    if (status === "loading") {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-hl-bg">
+                <div className="auth-spinner" />
+            </div>
+        );
+    }
 
     return (
-        <MainContainer>
-            { status !== "loading" ? (
-                <section
-                    className={ `minMaxWidth min-h-[95vh] lg:h-[110vh] flex items-center justify-center xs:px-10 sm:px-20 md:px-25 lg:px-40 xl:px-60 2xl:px-80` }>
-                    <div
-                        className={ `minMaxWidth min-h-10 py-8 px-4 ring-hl-text/30 ring-[0.5px] bg-hl-secondary text-hl-text rounded-md flex flex-col gap-2 items-center justify-center` }>
-                        <SimpleFormHeader />
-                        <p className={ `text-center text-sm text-hl-text/85 mt-2 font-extralight select-none` }>Daftar
-                            dengan
-                            akun:</p>
-                        <div className={ `minMaxWidth flex justify-around md:justify-center items-center gap-4` }>
-                            <button onClick={ () => signIn("google") }
-                                className={ `w-full max-w-30 h-12 md:h-10 bg-hl-tertiary hover:bg-hl-tertiary/60 hover:text-hl-text/85 rounded-sm cursor-pointer group` }
-                                title={ `Masuk dengan akun Google` }>
-                                <i className={ `fa-brands fa-google` }></i>
-                                <span className={ `ml-2 font-bold` }>Google</span>
-                            </button>
-                            <button onClick={ () => signIn("github") }
-                                className={ `w-full max-w-30 h-12 md:h-10 bg-hl-tertiary hover:bg-hl-tertiary/60 hover:text-hl-text/85 rounded-sm cursor-pointer group` }
-                                title={ `Masuk dengan akun GitHub` }> <i className={ `fa-brands fa-github` }></i>
-                                <span className={ `ml-2 font-bold` }>Github</span>
-                            </button>
-                        </div>
-                        <p className={ `text-center text-sm text-hl-text/85 mt-1 font-extralight select-none` }>atau
-                            gunakan
-                            email:</p>
-                        <form onSubmit={ handleRegister }
-                            className={ `minMaxWidth flex flex-col justify-center items-center gap-4` }>
-                            <SimpleFormInput label={ `Nama:` } htmlFor={ `name` } type={ `text` } value={ name }
-                                eventChange={ e => setName(e.target.value) } placeholder={ `Howly molly` }
-                                error={ errForm } />
-                            <SimpleFormInput label={ `Email:` } htmlFor={ `email` } type={ `email` } value={ email }
-                                eventChange={ e => setEmail(e.target.value) }
-                                placeholder={ `email@example.com` }
-                                error={ errForm } />
-                            <SimpleFormInput label={ `Password:` } htmlFor={ `password` } type={ `password` } value={ password }
-                                eventChange={ e => setPassword(e.target.value) }
-                                placeholder={ `Masukkan password` } error={ errForm } />
-                            <SimpleFormInput label={ `Konfirmasi Password:` } htmlFor={ `passwordConfirm` }
-                                type={ `password` } value={ passwordConfirm }
-                                eventChange={ e => setPasswordConfirm(e.target.value) }
-                                placeholder={ `Ulangi password` } error={ errForm } />
-                            <SimpleFormButton type={ `submit` } text={ 'Daftar' } />
-                        </form>
-                        <div className={ `minMaxWidth flex flex-col items-center justify-center mt-3 gap-5` }>
-                            <div className={ `minMaxWidth relative mb-2` }>
-                                <hr className={ `minmaxWidth border-hl-text/35 border-1` } />
-                                <span
-                                    className={ `minMaxWidth text-center flex justify-center items-center absolute top-[-600%] ` }>
-                                    <b className={ `bg-hl-secondary font-normal w-fit px-3 text-hl-text/70 select-none text-sm` }>atau</b>
-                                </span>
-                            </div>
-                            <span className={ `text-[.8rem] font-extralight group text-hl-text/85` }>
-                                Sudah punya akun? <Link
-                                    className={ `text-cyan-700 hover:text-cyan-600 group-hover:underline font-semibold` }
-                                    href={ `/login` }>Masuk sekarang</Link>
-                            </span>
-                            <span className={ `minMaxWidth text-center text-[.65rem] text-hl-text/85 font-extralight` }>
-                                Dengan mengklik <i className={ `font-semibold` }>daftar</i>, Anda menyetujui <Link
-                                    className={ `hover:underline` } href={ '/tos' }>Persyaratan Layanan</Link> dan <Link
-                                        className={ `hover:underline` } href={ '/privacy' }>Kebijakan Privasi</Link> kami.
-                            </span>
-                        </div>
+        <div className="flex min-h-screen items-center justify-center bg-hl-bg px-4 py-12">
+            <div className="pointer-events-none fixed inset-0 z-0">
+                <div className="absolute -top-32 -right-32 h-[28rem] w-[28rem] rounded-full bg-[#6b1525] opacity-40 blur-[150px]" />
+                <div className="absolute -bottom-32 -left-32 h-[26rem] w-[26rem] rounded-full bg-[#8b2030] opacity-30 blur-[140px]" />
+                <div className="absolute top-1/3 -left-16 h-[20rem] w-[20rem] rounded-full bg-[#a63445] opacity-25 blur-[120px]" />
+                <div className="absolute -top-16 right-1/4 h-[18rem] w-[18rem] rounded-full bg-[#6b1525] opacity-30 blur-[120px]" />
+            </div>
+
+            <div className="auth-card relative z-10 w-full max-w-md">
+                <div className="mb-6 text-center">
+                    <h1 className="text-2xl font-bold tracking-tight text-white">
+                        Buat Akun Baru
+                    </h1>
+                    <p className="mt-1 text-sm text-zinc-400">
+                        Daftar untuk memulai!
+                    </p>
+                </div>
+
+                <p className="mb-3 text-center text-xs font-light text-zinc-500 select-none">
+                    Daftar dengan akun:
+                </p>
+                <div className="flex gap-3">
+                    <button
+                        onClick={ () => signIn("google", { callbackUrl }) }
+                        className="auth-oauth-btn group flex-1"
+                        title="Daftar dengan akun Google"
+                    >
+                        <i className="fa-brands fa-google"></i>
+                        <span className="font-semibold">Google</span>
+                    </button>
+                    <button
+                        onClick={ () => signIn("github", { callbackUrl }) }
+                        className="auth-oauth-btn group flex-1"
+                        title="Daftar dengan akun GitHub"
+                    >
+                        <i className="fa-brands fa-github"></i>
+                        <span className="font-semibold">GitHub</span>
+                    </button>
+                </div>
+
+                <div className="my-6 flex items-center gap-3">
+                    <hr className="flex-1 border-zinc-700/60" />
+                    <span className="text-xs text-zinc-500 select-none">
+                        atau gunakan email
+                    </span>
+                    <hr className="flex-1 border-zinc-700/60" />
+                </div>
+
+                <form onSubmit={ handleRegister } className="flex flex-col gap-4">
+                    <div>
+                        <label
+                            htmlFor="name"
+                            className="mb-1.5 block text-sm font-medium text-zinc-300"
+                        >
+                            Nama Lengkap
+                        </label>
+                        <input
+                            id="name"
+                            type="text"
+                            value={ name }
+                            onChange={ (e) => setName(e.target.value) }
+                            placeholder="Howly Molly"
+                            className={ `auth-input ${errForm.type === "name" ? "ring-red-500/60" : ""}` }
+                        />
+                        { errForm.type === "name" && (
+                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                        ) }
                     </div>
-                </section>
-            ) : (
-                <section className={ `minMaxWidth justify-center items-center flex h-[75vh]` }>
-                    Loading...
-                </section>
-            ) }
-        </MainContainer>
+
+                    <div>
+                        <label
+                            htmlFor="email"
+                            className="mb-1.5 block text-sm font-medium text-zinc-300"
+                        >
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={ email }
+                            onChange={ (e) => setEmail(e.target.value) }
+                            placeholder="email@example.com"
+                            className={ `auth-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
+                        />
+                        { errForm.type === "email" && (
+                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                        ) }
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="password"
+                            className="mb-1.5 block text-sm font-medium text-zinc-300"
+                        >
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={ password }
+                            onChange={ (e) => setPassword(e.target.value) }
+                            placeholder="Masukkan password"
+                            className={ `auth-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
+                        />
+                        { errForm.type === "password" && (
+                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                        ) }
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="passwordConfirm"
+                            className="mb-1.5 block text-sm font-medium text-zinc-300"
+                        >
+                            Konfirmasi Password
+                        </label>
+                        <input
+                            id="passwordConfirm"
+                            type="password"
+                            value={ passwordConfirm }
+                            onChange={ (e) => setPasswordConfirm(e.target.value) }
+                            placeholder="Ulangi password"
+                            className={ `auth-input ${errForm.type === "passwordConfirm" ? "ring-red-500/60" : ""}` }
+                        />
+                        { errForm.type === "passwordConfirm" && (
+                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                        ) }
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={ loading }
+                        className="auth-submit-btn mt-1"
+                    >
+                        { loading ? <span className="auth-spinner-sm" /> : "Daftar" }
+                    </button>
+                </form>
+
+                <div className="mt-6 flex flex-col items-center gap-3">
+                    <span className="text-sm text-zinc-400">
+                        Sudah punya akun?{ " " }
+                        <Link
+                            className="font-semibold text-[#c9586a] transition-colors hover:text-[#d87a89]"
+                            href="/login"
+                        >
+                            Masuk sekarang
+                        </Link>
+                    </span>
+                    <span className="text-center text-[0.65rem] text-zinc-500">
+                        Dengan mengklik <em className="font-semibold">daftar</em>, Anda
+                        menyetujui{ " " }
+                        <Link className="underline-offset-2 hover:underline" href="/tos">
+                            Persyaratan Layanan
+                        </Link>{ " " }
+                        dan{ " " }
+                        <Link
+                            className="underline-offset-2 hover:underline"
+                            href="/privacy"
+                        >
+                            Kebijakan Privasi
+                        </Link>{ " " }
+                        kami.
+                    </span>
+                </div>
+            </div>
+        </div>
     );
 }
