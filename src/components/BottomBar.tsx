@@ -3,6 +3,7 @@ import { useUIStore } from "@/stores/uiStore";
 import { useSession } from "next-auth/react";
 import { faPawClaws as faPawClawsSolid, faDna as faDnaSolid, faChartNetwork as faChartNetworkSolid, faUser as faUserSolid } from "@fortawesome/pro-solid-svg-icons";
 import { faPawClaws as faPawClawsLight, faDna as faDnaLight, faChartNetwork as faChartNetworkLight, faUser as faUserLight } from "@fortawesome/pro-light-svg-icons";
+import BottomBarProfile from "./BottomBarProfile";
 
 
 export default function BottomBar() {
@@ -18,7 +19,8 @@ export default function BottomBar() {
             <BottomBarBtn href="/" path={ '/' } title={ "Home" } iconSolid={ faPawClawsSolid } iconLight={ faPawClawsLight } />
             <BottomBarBtn href="/create" path={ '/create' } title={ "Create" } iconSolid={ faDnaSolid } iconLight={ faDnaLight } />
             <BottomBarBtn href="/join" path={ '/join' } title={ "Join" } iconSolid={ faChartNetworkSolid } iconLight={ faChartNetworkLight } />
-            <BottomBarBtn href={ status === "authenticated" ? "/profile" : "/login" } path={ status === "authenticated" ? "/profile" : "/login" } title={ "Profile" } iconSolid={ faUserSolid } iconLight={ faUserLight } />
+            {/* <BottomBarBtn href={ status === "authenticated" ? "/profile" : "/login" } path={ status === "authenticated" ? "/profile" : "/login" } title={ "Profile" } iconSolid={ faUserSolid } iconLight={ faUserLight } /> */}
+            <BottomBarProfile href={status === "authenticated" ? "/profile" : "/login" } path={ status === "authenticated" ? "/profile" : "/login" } title={ "Profile" } />
         </nav>
     );
 };
