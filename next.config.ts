@@ -3,9 +3,15 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
 
-    images: {
-        domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com', 'cdn.discordapp.com', 'i.imgur.com', 'cdn.pixabay.com'],
-    }
+  images: {
+    remotePatterns: [
+      { hostname: "lh3.googleusercontent.com" },
+      { hostname: "avatars.githubusercontent.com" },
+      { hostname: "cdn.discordapp.com" },
+      { hostname: "i.imgur.com" },
+      { hostname: "cdn.pixabay.com" },
+    ],
+  },
 };
 
 export default nextConfig;
