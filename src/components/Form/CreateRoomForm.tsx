@@ -54,19 +54,19 @@ function CreateRoomForm() {
     return (
         <form className="flex flex-col items-center justify-center gap-4 py-2 w-full">
             <section
-                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg" style={ { background: 'rgba(41, 41, 56, 0.4)', border: '1px solid rgba(63, 63, 70, 0.3)' } }>
+                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <label htmlFor="roomname" className="text-sm font-medium text-zinc-300">Nama Room:</label>
                 <input type="text" placeholder="Masukkan nama room" id="roomname" name="roomname"
                     className="auth-input" />
             </section>
             <section
-                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg" style={ { background: 'rgba(41, 41, 56, 0.4)', border: '1px solid rgba(63, 63, 70, 0.3)' } }>
+                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <label htmlFor="jlhpemain" className="text-sm font-medium text-zinc-300">Jumlah Pemain:</label>
                 <HowlRangeVal disabled={ isRoleCombiLocked } eventChange={ e => setPlayerCount(elToNumber(e)) } min={ 7 } max={ 59 } defaultValue={ playerCount } id={ 'jlhpemain' } name={ 'jlhpemain' } />
             </section>
 
             <section
-                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg" style={ { background: 'rgba(41, 41, 56, 0.4)', border: '1px solid rgba(63, 63, 70, 0.3)' } }>
+                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <div className="flex justify-between w-full items-center">
                     <label className="text-sm font-medium text-zinc-300">Role Set:</label>
                     <button
@@ -82,7 +82,7 @@ function CreateRoomForm() {
             </section>
 
             <section
-                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg" style={ { background: 'rgba(41, 41, 56, 0.4)', border: '1px solid rgba(63, 63, 70, 0.3)' } }>
+                className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <HowlProgress
                     min={ 0 }
                     max={ 100 }
@@ -98,7 +98,7 @@ function CreateRoomForm() {
             </section>
 
             <section
-                className={ `flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg ${isAllRangeDisabled ? 'opacity-55' : 'opacity-100'}` } style={ { background: 'rgba(41, 41, 56, 0.4)', border: '1px solid rgba(63, 63, 70, 0.3)' } }>
+                className={ `flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg ${isAllRangeDisabled ? 'opacity-55' : 'opacity-100'} bg-glass-border/40 border border-zinc-700/30` }>
                 <div className="flex flex-col w-full">
                     <label className="font-bold text-zinc-200">Kombinasi konfigurasi role</label>
                     <span className="text-xs text-zinc-500">Total terkonfigurasi: { totalAmount }/{ playerCount }</span>
@@ -107,7 +107,7 @@ function CreateRoomForm() {
                     <span className="text-sm ml-0.5 text-zinc-300">Role Utama:</span>
                     <div className="flex flex-col items-start sm:items-center justify-between gap-2 w-full">
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(34, 211, 238, 0.25)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-cyan-400/25">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'warga' } className="text-[.9rem] font-normal w-full text-cyan-400">Warga:</label>
                                 <span className="text-xs text-zinc-500 select-none text-right w-full *:inline cursor-default">
@@ -117,7 +117,7 @@ function CreateRoomForm() {
                             <HowlRangeVal disabled={ isAllRangeDisabled } max={ rawConfig.max.warga } min={ rawConfig.min.warga } defaultValue={ getDefaultRoleAmount('warga') } id="warga" name="warga" eventChange={ e => addRoleByAmount("warga", elToNumber(e)) } />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(185, 28, 28, 0.35)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-red-700/35">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'werewolf' }
                                     className="text-[.9rem] font-normal w-full text-red-400">Werewolf:</label>
@@ -133,7 +133,7 @@ function CreateRoomForm() {
                     <span className="text-sm ml-0.5 text-zinc-300">Role Pelengkap:</span>
                     <div className="flex flex-col items-start sm:items-center justify-between gap-2 w-full">
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(34, 211, 238, 0.25)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-cyan-400/25">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'peramal' }
                                     className="text-[.9rem] font-normal w-full text-cyan-400">Peramal:</label>
@@ -144,7 +144,7 @@ function CreateRoomForm() {
                             <HowlRangeVal disabled={ isAllRangeDisabled } eventChange={ e => addRoleByAmount("peramal", elToNumber(e)) } max={ rawConfig.max.peramal } min={ rawConfig.min.peramal } defaultValue={ getDefaultRoleAmount('peramal') } id="peramal" name="peramal" />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(34, 211, 238, 0.25)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-cyan-400/25">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'penyihir' }
                                     className="text-[.9rem] font-normal w-full text-cyan-400">Penyihir:</label>
@@ -155,7 +155,7 @@ function CreateRoomForm() {
                             <HowlRangeVal disabled={ isAllRangeDisabled } eventChange={ e => addRoleByAmount("penyihir", elToNumber(e)) } max={ rawConfig.max.penyihir } min={ rawConfig.min.penyihir } defaultValue={ getDefaultRoleAmount('penyihir') } id="penyihir" name="penyihir" />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(34, 211, 238, 0.25)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-cyan-400/25">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'pemburu' }
                                     className="text-[.9rem] font-normal w-full text-cyan-400">Pemburu:</label>
@@ -166,7 +166,7 @@ function CreateRoomForm() {
                             <HowlRangeVal disabled={ isAllRangeDisabled } eventChange={ e => addRoleByAmount("pemburu", elToNumber(e)) } max={ rawConfig.max.pemburu } min={ rawConfig.min.pemburu } defaultValue={ getDefaultRoleAmount('pemburu') } id="pemburu" name="pemburu" />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(34, 211, 238, 0.25)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-cyan-400/25">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'dukun' }
                                     className="text-[.9rem] font-normal w-full text-cyan-400">Dukun:</label>
@@ -177,7 +177,7 @@ function CreateRoomForm() {
                             <HowlRangeVal disabled={ isAllRangeDisabled } eventChange={ e => addRoleByAmount("dukun", elToNumber(e)) } max={ rawConfig.max.dukun } min={ rawConfig.min.dukun } defaultValue={ getDefaultRoleAmount('dukun') } id="dukun" name="dukun" />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(34, 211, 238, 0.25)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-cyan-400/25">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'raja' }
                                     className="text-[.9rem] font-normal w-full text-cyan-400">Raja:</label>
@@ -188,7 +188,7 @@ function CreateRoomForm() {
                             <HowlRangeVal disabled={ isAllRangeDisabled } eventChange={ e => addRoleByAmount("raja", elToNumber(e)) } max={ rawConfig.max.raja } min={ rawConfig.min.raja } defaultValue={ getDefaultRoleAmount('raja') } id="raja" name="raja" />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(185, 28, 28, 0.35)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-red-700/35">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'blackwolf' }
                                     className="text-[.9rem] font-normal w-full text-red-400">Blackwolf:</label>
@@ -200,7 +200,7 @@ function CreateRoomForm() {
                                 name="blackwolf" />
                         </div>
                         <div
-                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.5)', border: '1px solid rgba(185, 28, 28, 0.35)' } }>
+                            className="w-full flex flex-col items-start justify-center gap-1 px-2 py-1.5 rounded-md bg-hl-primary/50 border border-red-700/35">
                             <div className="w-full flex items-center justify-between">
                                 <label htmlFor={ 'shapeshifter' }
                                     className="text-[.9rem] font-normal w-full text-red-400">Shapeshifter:</label>

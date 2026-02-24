@@ -23,7 +23,7 @@ export default function HowlProgress({
                     { label }
                 </label>
             ) }
-            <span className="w-full flex items-center justify-between gap-3 h-10 px-3 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.6)', border: '1px solid rgba(63, 63, 70, 0.4)' } }>
+            <span className="w-full flex items-center justify-between gap-3 h-10 px-3 rounded-md bg-hl-primary/60 border border-zinc-700/40">
                 <div className="flex items-center justify-center text-red-500">
                     <FontAwesomeIcon icon={ faPawClaws } className="w-4 h-4" />
                 </div>

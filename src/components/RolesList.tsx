@@ -71,8 +71,7 @@ export default function RolesList() {
             ) }
             <div className={ `transition-opacity duration-500 ${swiperReady ? 'opacity-100' : 'opacity-0 absolute inset-0'}` }>
                 <div className="flex flex-col items-center justify-center text-center">
-                    <h2 className="text-3xl font-bold mb-3 items-center justify-center flex gap-3 px-4 py-1.5 rounded-lg"
-                        style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }>
+                    <h2 className="text-3xl font-bold mb-3 items-center justify-center flex gap-3 px-4 py-1.5 rounded-lg bg-glass/70 border border-glass-border/50">
                         <FontAwesomeIcon icon={ faUserAlien } className="text-2xl text-red-400" />
                         <span className="text-zinc-100">Roles</span>
                         <FontAwesomeIcon icon={ faUserAstronaut } className="text-2xl text-cyan-400" />
@@ -125,27 +124,24 @@ export default function RolesList() {
                     <div
                         className="slider-controler absolute top-0 z-50 w-full max-w-xl md:max-w-lg min-h-2 flex justify-between font-bold text-2xl sm:text-3xl md:text-xl">
                         <button
-                            className="swiper-button-prev px-3 py-1 rounded-lg cursor-pointer hover:scale-95 transition-all duration-200 text-zinc-200 hover:text-white"
-                            style={ { background: 'linear-gradient(135deg, rgba(107,21,37,0.7), rgba(166,52,69,0.5))', border: '1px solid rgba(166, 52, 69, 0.4)' } }>
+                            className="swiper-button-prev px-3 py-1 rounded-lg cursor-pointer hover:scale-95 transition-all duration-200 text-zinc-200 hover:text-white bg-gradient-to-br from-[#6B1525B3] to-[#A6344580] border border-rose-accent/40">
                             <FontAwesomeIcon icon={ faArrowLeftLong } /></button>
                         <button
-                            className="swiper-button-next px-3 py-1 rounded-lg cursor-pointer hover:scale-95 transition-all duration-200 text-zinc-200 hover:text-white"
-                            style={ { background: 'linear-gradient(135deg, rgba(107,21,37,0.7), rgba(166,52,69,0.5))', border: '1px solid rgba(166, 52, 69, 0.4)' } }>
+                            className="swiper-button-next px-3 py-1 rounded-lg cursor-pointer hover:scale-95 transition-all duration-200 text-zinc-200 hover:text-white bg-gradient-to-br from-[#6B1525B3] to-[#A6344580] border border-rose-accent/40">
                             <FontAwesomeIcon icon={ faArrowRightLong } /></button>
                     </div>
                     <h1
                         className="px-4 py-1.5 rounded-lg w-fit text-center text-xl font-bold text-white transition-colors duration-300"
                         style={ {
                             background: isManusia
-                                ? 'linear-gradient(135deg, rgba(8, 145, 178, 0.6), rgba(34, 211, 238, 0.3))'
-                                : 'linear-gradient(135deg, rgba(107, 21, 37, 0.8), rgba(166, 52, 69, 0.5))',
-                            border: `1px solid ${isManusia ? 'rgba(34, 211, 238, 0.3)' : 'rgba(166, 52, 69, 0.4)'}`
+                                ? 'linear-gradient(135deg, #0891B299, #22D3EE4D)'
+                                : 'linear-gradient(135deg, #6B1525CC, #A6344580)',
+                            border: `1px solid ${isManusia ? '#22D3EE4D' : '#A6344566'}`
                         } }>
                         { activeRole.name }
                     </h1>
                     <div
-                        className="px-4 py-3 text-justify leading-relaxed text-sm text-zinc-300 rounded-lg max-w-lg"
-                        style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }>
+                        className="px-4 py-3 text-justify leading-relaxed text-sm text-zinc-300 rounded-lg max-w-lg bg-glass/70 border border-glass-border/50">
                         { activeRole.desc }
                     </div>
                 </div>

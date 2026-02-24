@@ -123,8 +123,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
     return (
         <div
-            className="rounded-lg overflow-hidden transition-all duration-300"
-            style={ { background: 'rgba(25, 25, 35, 0.85)', border: '1px solid rgba(41, 41, 56, 0.6)' } }
+            className="rounded-lg overflow-hidden transition-all duration-300 bg-glass/85 border border-glass-border/60"
         >
             <button
                 onClick={ () => setOpen(!open) }
@@ -151,8 +150,8 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 function RoleCardFa({ icon, name, desc, borderColor }: { icon: IconProp; name: string; desc: string; borderColor: string }) {
     return (
         <div
-            className="rounded-lg px-4 py-3 flex gap-3 items-start transition-all duration-200 hover:bg-white/[0.02]"
-            style={ { background: 'rgba(25, 25, 35, 0.7)', border: `1px solid ${borderColor}` } }
+            className="rounded-lg px-4 py-3 flex gap-3 items-start transition-all duration-200 hover:bg-white/[0.02] bg-glass/70 border"
+            style={ { borderColor: borderColor } }
         >
             <span className="text-lg sm:text-xl mt-0.5 shrink-0"><FontAwesomeIcon icon={ icon } /></span>
             <div className="min-w-0">
@@ -179,8 +178,7 @@ export default function AboutPage() {
                     <div className="flex gap-2.5 mt-3">
                         <Link
                             href="/create"
-                            className="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-px active:translate-y-0"
-                            style={ { background: 'linear-gradient(135deg, #6b1525, #a63445)', border: '1px solid rgba(166,52,69,0.4)' } }
+                            className="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-px active:translate-y-0 bg-gradient-to-br from-[#6B1525] to-[#A63445] border border-rose-accent/40"
                         >
                             Mulai Bermain
                         </Link>
@@ -188,8 +186,7 @@ export default function AboutPage() {
                             href="https://github.com/PencariKode/howly"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-zinc-300 transition-all duration-200 hover:-translate-y-px hover:text-white active:translate-y-0 flex items-center gap-2"
-                            style={ { background: 'rgba(41, 41, 56, 0.6)', border: '1px solid rgba(63, 63, 70, 0.5)' } }
+                            className="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-zinc-300 transition-all duration-200 hover:-translate-y-px hover:text-white active:translate-y-0 flex items-center gap-2 bg-glass-border/60 border border-zinc-700/50"
                         >
                             <FontAwesomeIcon icon={ faGithub } /> GitHub
                         </a>
@@ -198,24 +195,23 @@ export default function AboutPage() {
 
 
                 <section
-                    className="w-full rounded-xl p-5 sm:p-7 flex flex-col gap-4"
-                    style={ { background: 'rgba(25, 25, 35, 0.85)', border: '1px solid rgba(41, 41, 56, 0.6)', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3)' } }
+                    className="w-full rounded-xl p-5 sm:p-7 flex flex-col gap-4 bg-glass/85 border border-glass-border/60 shadow-[0_8px_32px_-8px] shadow-black/30"
                 >
-                    <h2 className="text-lg sm:text-xl font-bold text-white"><FontAwesomeIcon icon={faGamepadAlt} /> Apa itu Howly?</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white"><FontAwesomeIcon icon={ faGamepadAlt } /> Apa itu Howly?</h2>
                     <p className="text-[.82rem] sm:text-sm text-zinc-300 leading-relaxed">
                         <strong className="text-zinc-100">Howly</strong> adalah permainan <em className="text-rose-400 not-italic font-medium">Werewolf</em> klasik di mana para warga bekerja sama untuk menebak dan menyingkirkan semua Werewolf yang bersembunyi di antara mereka.
                         Tantangannya? Para warga tidak tahu siapa di antara mereka yang sebenarnya adalah Werewolf!
                     </p>
                     <div className="flex flex-col sm:flex-row gap-2.5">
-                        <div className="flex-1 flex gap-3 items-start rounded-lg px-3.5 py-3" style={ { background: 'rgba(234,179,8,0.05)', border: '1px solid rgba(234,179,8,0.12)' } }>
-                            <span className="text-xl mt-px shrink-0 text-amber-300"><FontAwesomeIcon icon={faSunAlt} /></span>
+                        <div className="flex-1 flex gap-3 items-start rounded-lg px-3.5 py-3 bg-[#EAB3080D] border border-[#EAB3081F]">
+                            <span className="text-xl mt-px shrink-0 text-amber-300"><FontAwesomeIcon icon={ faSunAlt } /></span>
                             <div>
                                 <p className="font-semibold text-amber-300 text-[.82rem]">Siang Hari</p>
                                 <p className="text-[.75rem] text-zinc-400 mt-0.5 leading-relaxed">Warga melakukan diskusi dan voting untuk menentukan siapa yang akan dieliminasi.</p>
                             </div>
                         </div>
-                        <div className="flex-1 flex gap-3 items-start rounded-lg px-3.5 py-3" style={ { background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.12)' } }>
-                            <span className="text-xl mt-px shrink-0 text-indigo-300"><FontAwesomeIcon icon={faCircleMoon} /></span>
+                        <div className="flex-1 flex gap-3 items-start rounded-lg px-3.5 py-3 bg-[#6366F10D] border border-[#6366F11F]">
+                            <span className="text-xl mt-px shrink-0 text-indigo-300"><FontAwesomeIcon icon={ faCircleMoon } /></span>
                             <div>
                                 <p className="font-semibold text-indigo-300 text-[.82rem]">Malam Hari</p>
                                 <p className="text-[.75rem] text-zinc-400 mt-0.5 leading-relaxed">Warga harus &quot;tertidur&quot;, memberikan kesempatan bagi Werewolf untuk membunuh salah satu warga.</p>
@@ -226,10 +222,9 @@ export default function AboutPage() {
 
 
                 <section
-                    className="w-full rounded-xl p-5 sm:p-7 flex flex-col gap-3"
-                    style={ { background: 'rgba(25, 25, 35, 0.85)', border: '1px solid rgba(41, 41, 56, 0.6)', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3)' } }
+                    className="w-full rounded-xl p-5 sm:p-7 flex flex-col gap-3 bg-glass/85 border border-glass-border/60 shadow-[0_8px_32px_-8px] shadow-black/30"
                 >
-                    <h2 className="text-lg sm:text-xl font-bold text-white"><FontAwesomeIcon icon={faBullseyeArrow} className="text-rose-500" /> Tujuan</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white"><FontAwesomeIcon icon={ faBullseyeArrow } className="text-rose-500" /> Tujuan</h2>
                     <p className="text-[.82rem] sm:text-sm text-zinc-300 leading-relaxed">
                         Aplikasi ini dibuat untuk <strong className="text-zinc-100">mempermudah</strong> orang-orang dalam memainkan permainan klasik Werewolf secara <strong className="text-zinc-100">luring (tatap muka)</strong>, sehingga semua pemain — termasuk yang memiliki peran tertentu — dapat menjalankan tugasnya tanpa kesulitan.
                     </p>
@@ -237,13 +232,12 @@ export default function AboutPage() {
 
 
                 <section className="w-full flex flex-col gap-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={faCircleStar} /> Fitur Dalam Game</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={ faCircleStar } /> Fitur Dalam Game</h2>
                     <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2.5">
                         { features.map((f, i) => (
                             <div
                                 key={ i }
-                                className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-start transition-all duration-200 hover:bg-white/[0.02]"
-                                style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                                className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-start transition-all duration-200 hover:bg-white/[0.02] bg-glass/70 border border-glass-border/50"
                             >
                                 <FontAwesomeIcon icon={ f.icon } className="text-rose-400 text-base mt-0.5 min-w-4 shrink-0" />
                                 <div className="min-w-0">
@@ -257,13 +251,12 @@ export default function AboutPage() {
 
 
                 <section className="w-full flex flex-col gap-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={faMicrochip} /> Tech Stack</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={ faMicrochip } /> Tech Stack</h2>
                     <div className="flex flex-wrap gap-2.5">
                         { techStack.map((t, i) => (
                             <div
                                 key={ i }
-                                className="w-[calc(50%-5px)] sm:w-[calc(33.333%-7px)] rounded-lg px-3 py-4 flex flex-col items-center text-center gap-1.5 transition-all duration-200 hover:bg-white/[0.02]"
-                                style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                                className="w-[calc(50%-5px)] sm:w-[calc(33.333%-7px)] rounded-lg px-3 py-4 flex flex-col items-center text-center gap-1.5 transition-all duration-200 hover:bg-white/[0.02] bg-glass/70 border border-glass-border/50"
                             >
                                 <FontAwesomeIcon icon={ t.icon } className="text-rose-400 text-xl" />
                                 <p className="font-semibold text-zinc-100 text-[.75rem] sm:text-[.82rem]">{ t.name }</p>
@@ -280,21 +273,21 @@ export default function AboutPage() {
                     <div className="flex flex-col gap-2">
                         <h3 className="text-xs font-bold text-yellow-400/80 uppercase tracking-widest px-0.5"><FontAwesomeIcon icon={ faCircle } /> Netral</h3>
                         { rolesDataFa.netral.map((r, i) => (
-                            <RoleCardFa key={ i } { ...r } borderColor="rgba(234,179,8,0.12)" />
+                            <RoleCardFa key={ i } { ...r } borderColor="#EAB3081F" />
                         )) }
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <h3 className="text-xs font-bold text-cyan-400/80 uppercase tracking-widest px-0.5"><FontAwesomeIcon icon={ faCircle } /> Tim Manusia</h3>
                         { rolesDataFa.manusia.map((r, i) => (
-                            <RoleCardFa key={ i } { ...r } borderColor="rgba(8,145,178,0.12)" />
+                            <RoleCardFa key={ i } { ...r } borderColor="#0891B21F" />
                         )) }
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <h3 className="text-xs font-bold text-red-400/80 uppercase tracking-widest px-0.5"><FontAwesomeIcon icon={ faCircle } /> Tim Werewolf</h3>
                         { rolesDataFa.werewolf.map((r, i) => (
-                            <RoleCardFa key={ i } { ...r } borderColor="rgba(166,52,69,0.12)" />
+                            <RoleCardFa key={ i } { ...r } borderColor="#A634451F" />
                         )) }
                     </div>
                 </section>
@@ -318,8 +311,7 @@ export default function AboutPage() {
                             href="https://www.linkedin.com/in/panjidepari"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group"
-                            style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group bg-glass/70 border border-glass-border/50"
                         >
                             <FontAwesomeIcon icon={ faLinkedinIn } className="text-[#0A66C2] text-lg min-w-5 shrink-0" />
                             <div className="min-w-0">
@@ -329,8 +321,7 @@ export default function AboutPage() {
                         </a>
                         <a
                             href="mailto:pencaricode@gmail.com"
-                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group"
-                            style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group bg-glass/70 border border-glass-border/50"
                         >
                             <FontAwesomeIcon icon={ faEnvelope } className="text-rose-400 text-lg min-w-5 shrink-0" />
                             <div className="min-w-0">
@@ -342,8 +333,7 @@ export default function AboutPage() {
                             href="https://github.com/PencariKode"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group"
-                            style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group bg-glass/70 border border-glass-border/50"
                         >
                             <FontAwesomeIcon icon={ faGithub } className="text-zinc-200 text-lg min-w-5 shrink-0" />
                             <div className="min-w-0">
@@ -355,8 +345,7 @@ export default function AboutPage() {
                             href="https://github.com/BriantPanji"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group"
-                            style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                            className="w-full sm:w-[calc(50%-5px)] rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group bg-glass/70 border border-glass-border/50"
                         >
                             <FontAwesomeIcon icon={ faGithub } className="text-zinc-200 text-lg min-w-5 shrink-0" />
                             <div className="min-w-0">
@@ -368,8 +357,7 @@ export default function AboutPage() {
                             href="https://instagram.com/panjidepari"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group"
-                            style={ { background: 'rgba(25, 25, 35, 0.7)', border: '1px solid rgba(41, 41, 56, 0.5)' } }
+                            className="w-full rounded-lg px-4 py-3.5 flex gap-3 items-center transition-all duration-200 hover:bg-white/[0.03] hover:-translate-y-px group bg-glass/70 border border-glass-border/50"
                         >
                             <FontAwesomeIcon icon={ faInstagram } className="text-[#E4405F] text-lg min-w-5 shrink-0" />
                             <div className="min-w-0">

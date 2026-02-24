@@ -9,8 +9,7 @@ export default function HelpPage() {
             <div className="w-full max-w-2xl mx-auto pt-16 sm:pt-24 pb-8 flex flex-col items-center gap-6">
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-white text-center">Bantuan</h1>
                 <div
-                    className="w-full rounded-xl p-6 sm:p-8 flex flex-col gap-4 text-center"
-                    style={ { background: 'rgba(25, 25, 35, 0.85)', border: '1px solid rgba(41, 41, 56, 0.6)', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3)' } }
+                    className="auth-card w-full max-w-lg bg-glass/85 border border-glass-border/60 shadow-[0_8px_32px_-8px] shadow-black/30"
                 >
                     <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
                         Butuh bantuan atau mengalami kendala saat menggunakan Howly? Saat ini, seluruh permintaan bantuan ditangani melalui <strong className="text-zinc-100">GitHub Issues</strong>.

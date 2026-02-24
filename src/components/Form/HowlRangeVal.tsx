@@ -33,15 +33,13 @@ export default function HowlRangeVal({
 
     return (
         <span
-            className={ `w-full flex items-center justify-between gap-2 h-10 px-2 rounded-md ${disabled ? 'cursor-not-allowed' : ''}` }
+            className={ `w-full flex items-center justify-between gap-2 h-10 px-2 rounded-md ${disabled ? 'cursor-not-allowed' : ''} bg-hl-primary/60 border border-zinc-700/40` }
             style={ {
                 touchAction: 'pan-y pinch-zoom',
                 willChange: 'transform',
-                background: 'rgba(20, 20, 28, 0.6)',
-                border: '1px solid rgba(63, 63, 70, 0.4)',
             } }
         >
-            <strong className="w-10 flex items-center justify-center rounded-sm text-zinc-200" style={ { background: 'rgba(41, 41, 56, 0.6)' } }>{ value }</strong>
+            <strong className="w-10 flex items-center justify-center rounded-sm text-zinc-200 bg-glass/60">{ value }</strong>
             <HowlRange
                 min={ min }
                 max={ max }

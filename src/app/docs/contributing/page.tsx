@@ -140,7 +140,7 @@ bunx prisma migrate dev`}</code></pre>
                 <ul>
                     <li>Background utama: <code>bg-hl-bg</code> (<code>#09090c</code>)</li>
                     <li>Text utama: <code>text-hl-text</code> (<code>#ededed</code>)</li>
-                    <li>Card/panel: <code>rgba(25, 25, 35, 0.85)</code> dengan border <code>rgba(41, 41, 56, 0.6)</code></li>
+                    <li>Card/panel: <code>bg-glass/85</code> (<code>#191923D9</code>) dengan border <code>border-glass-border/60</code> (<code>#29293899</code>)</li>
                     <li>Aksen utama: <code>rose-400</code> / <code>rose-500</code></li>
                     <li>Transisi: <code>transition-all duration-200</code> atau <code>duration-300</code></li>
                 </ul>

@@ -15,6 +15,13 @@
   --color-hl-tertiary: #292938;
   --font-sans: var(--font-rubik-sans);
   --breakpoint-xs: 32rem;
+
+  /* Glass surfaces & borders — use with opacity: bg-glass/85, border-glass-border/60, etc. */
+  --color-glass: #191923;
+  --color-glass-border: #292938;
+
+  /* Rose accent — use with opacity: border-rose-accent/40, etc. */
+  --color-rose-accent: #a63445;
 }
 
 body {
@@ -240,26 +247,18 @@ input[type="range"]:hover::-moz-range-thumb {
 
 @layer utilities {
   .auth-card {
-    @apply rounded-2xl p-8 animate-[auth-fade-in_0.5s_ease-out];
-    background: rgba(25, 25, 35, 0.92);
-    border: 1px solid rgba(41, 41, 56, 0.5);
+    @apply rounded-2xl p-8 animate-[auth-fade-in_0.5s_ease-out] bg-glass/92 border border-glass-border/50;
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.03),
-      0 20px 50px -12px rgba(0, 0, 0, 0.5);
+      0 0 0 1px #ffffff08,
+      0 20px 50px -12px #00000080;
   }
 
   .auth-oauth-btn {
-    @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm cursor-pointer transition-all duration-200 ease-in-out;
-    background: rgba(41, 41, 56, 0.6);
-    border: 1px solid rgba(63, 63, 70, 0.5);
-    color: #d4d4d8;
+    @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm cursor-pointer transition-all duration-200 ease-in-out bg-glass-border/60 border border-zinc-700/50 text-zinc-300;
   }
 
   .auth-oauth-btn:hover {
-    @apply -translate-y-px text-zinc-50;
-    background: rgba(63, 63, 70, 0.6);
-    border-color: rgba(113, 113, 122, 0.5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    @apply -translate-y-px text-zinc-50 bg-zinc-700/60 border-zinc-500/50 shadow-[0_4px_12px_black/30];
   }
 
   .auth-oauth-btn:active {
@@ -267,9 +266,7 @@ input[type="range"]:hover::-moz-range-thumb {
   }
 
   .auth-input {
-    @apply w-full rounded-lg px-3.5 py-2.5 text-sm text-zinc-50 outline-none transition-all duration-200 ease-in-out;
-    background: rgba(20, 20, 28, 0.6);
-    border: 1px solid rgba(63, 63, 70, 0.5);
+    @apply w-full rounded-lg px-3.5 py-2.5 text-sm text-zinc-50 outline-none transition-all duration-200 ease-in-out bg-hl-primary/60 border border-zinc-700/50;
   }
 
   .auth-input::placeholder {
@@ -277,19 +274,15 @@ input[type="range"]:hover::-moz-range-thumb {
   }
 
   .auth-input:focus {
-    border-color: rgba(166, 52, 69, 0.55);
-    box-shadow: 0 0 0 3px rgba(166, 52, 69, 0.12);
+    @apply border-rose-accent/55 shadow-[0_0_0_3px_rose-accent/12];
   }
 
   .auth-submit-btn {
-    @apply flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white cursor-pointer border-none transition-all duration-200 ease-in-out min-h-11;
-    background: linear-gradient(135deg, #6b1525, #a63445);
+    @apply flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white cursor-pointer border-none transition-all duration-200 ease-in-out min-h-11 bg-gradient-to-br from-[#6B1525] to-[#A63445];
   }
 
   .auth-submit-btn:hover:not(:disabled) {
-    @apply -translate-y-px;
-    background: linear-gradient(135deg, #8b2030, #c94d5e);
-    box-shadow: 0 4px 16px rgba(139, 32, 48, 0.4);
+    @apply -translate-y-px bg-gradient-to-br from-[#8B2030] to-[#C94D5E] shadow-[0_4px_16px_#8B203066];
   }
 
   .auth-submit-btn:active:not(:disabled) {
@@ -301,15 +294,11 @@ input[type="range"]:hover::-moz-range-thumb {
   }
 
   .auth-spinner {
-    @apply h-8 w-8 rounded-full animate-[auth-spin_0.8s_linear_infinite];
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top: 3px solid #a63445;
+    @apply h-8 w-8 rounded-full animate-[auth-spin_0.8s_linear_infinite] border-3 border-white/10 border-t-rose-accent;
   }
 
   .auth-spinner-sm {
-    @apply inline-block h-5 w-5 rounded-full animate-[auth-spin_0.7s_linear_infinite];
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top: 2px solid #fff;
+    @apply inline-block h-5 w-5 rounded-full animate-[auth-spin_0.7s_linear_infinite] border-2 border-[#FFFFFF4D] border-t-white;
   }
 }
 

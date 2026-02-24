@@ -99,10 +99,10 @@ export default function ProfilePage() {
             <div className="pointer-events-none fixed inset-0 z-0"
                 style={ {
                     background: `
-                        radial-gradient(ellipse 40% 50% at 0% 0%, rgba(107,21,37,0.40) 0%, transparent 70%),
-                        radial-gradient(ellipse 40% 50% at 100% 100%, rgba(139,32,48,0.30) 0%, transparent 70%),
-                        radial-gradient(ellipse 30% 40% at 100% 50%, rgba(166,52,69,0.25) 0%, transparent 70%),
-                        radial-gradient(ellipse 25% 30% at 25% 100%, rgba(107,21,37,0.30) 0%, transparent 70%)
+                        radial-gradient(ellipse 40% 50% at 0% 0%, #6B152566 0%, transparent 70%),
+                        radial-gradient(ellipse 40% 50% at 100% 100%, #8B20304D 0%, transparent 70%),
+                        radial-gradient(ellipse 30% 40% at 100% 50%, #A6344540 0%, transparent 70%),
+                        radial-gradient(ellipse 25% 30% at 25% 100%, #6B15254D 0%, transparent 70%)
                     `
                 } }
             />
@@ -117,13 +117,11 @@ export default function ProfilePage() {
                                     alt="Profile"
                                     width={ 96 }
                                     height={ 96 }
-                                    className="w-24 h-24 rounded-full object-cover"
-                                    style={ { border: '3px solid rgba(166, 52, 69, 0.5)' } }
+                                    className="w-24 h-24 rounded-full object-cover border-3 border-[#A6344580]"
                                 />
                             ) : (
                                 <div
-                                    className="w-24 h-24 rounded-full flex items-center justify-center text-zinc-400"
-                                    style={ { background: 'rgba(41, 41, 56, 0.6)', border: '3px solid rgba(63, 63, 70, 0.5)' } }>
+                                    className="w-24 h-24 rounded-full flex items-center justify-center text-zinc-400 bg-[#29293899] border-3 border-zinc-border">
                                     <FontAwesomeIcon icon={ faUser } className="text-3xl" />
                                 </div>
                             ) }
@@ -135,12 +133,10 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="flex gap-2">
-                            <span className="text-xs px-2.5 py-1 rounded-full text-zinc-300 font-medium"
-                                style={ { background: 'rgba(41, 41, 56, 0.6)', border: '1px solid rgba(63, 63, 70, 0.5)' } }>
+                            <span className="text-xs px-2.5 py-1 rounded-full text-zinc-300 font-medium bg-[#29293899] border border-zinc-border">
                                 { user.role || "USER" }
                             </span>
-                            <span className="text-xs px-2.5 py-1 rounded-full text-zinc-400"
-                                style={ { background: 'rgba(41, 41, 56, 0.4)', border: '1px solid rgba(63, 63, 70, 0.3)' } }>
+                            <span className="text-xs px-2.5 py-1 rounded-full text-zinc-400 bg-glass-border/40 border border-glass-border/30">
                                 Bergabung { joinDate }
                             </span>
                         </div>
@@ -195,8 +191,7 @@ export default function ProfilePage() {
                                     alt="Preview"
                                     width={ 64 }
                                     height={ 64 }
-                                    className="w-16 h-16 rounded-full object-cover"
-                                    style={ { border: '2px solid rgba(63, 63, 70, 0.5)' } }
+                                    className="w-16 h-16 rounded-full object-cover border-2 border-zinc-border"
                                     onError={ (e) => { (e.target as HTMLImageElement).style.display = 'none'; } }
                                 />
                             </div>
@@ -219,7 +214,7 @@ export default function ProfilePage() {
                     </form>
                 </div>
 
-                <div className="auth-card" style={ { borderColor: 'rgba(185, 28, 28, 0.3)' } }>
+                <div className="auth-card border-red-700/30">
                     <h2 className="text-lg font-bold text-red-400 mb-2">Zona Berbahaya</h2>
                     <p className="text-sm text-zinc-500 mb-4">
                         Menghapus akun bersifat permanen. Semua data termasuk sesi dan akun terhubung akan ikut terhapus.
@@ -227,8 +222,7 @@ export default function ProfilePage() {
                     <button
                         type="button"
                         onClick={ () => setShowDeleteModal(true) }
-                        className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 text-red-400 hover:text-red-300 hover:-translate-y-px"
-                        style={ { background: 'rgba(127, 29, 29, 0.2)', border: '1px solid rgba(185, 28, 28, 0.4)' } }
+                        className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 text-red-400 hover:text-red-300 hover:-translate-y-px bg-red-900/20 border border-red-700/40"
                     >
                         <FontAwesomeIcon icon={ faTrashCan } />
                         Hapus Akun Saya
@@ -238,7 +232,7 @@ export default function ProfilePage() {
 
             { showDeleteModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-                    <div className="auth-card w-full max-w-sm" style={ { borderColor: 'rgba(185, 28, 28, 0.4)' } }>
+                    <div className="auth-card w-full max-w-sm border-red-700/40">
                         <div className="flex flex-col items-center gap-4 text-center">
                             <FontAwesomeIcon icon={ faTriangleExclamation } className="text-4xl text-red-400" />
                             <h3 className="text-lg font-bold text-white">Hapus Akun?</h3>
@@ -264,8 +258,7 @@ export default function ProfilePage() {
                                     type="button"
                                     onClick={ handleDelete }
                                     disabled={ deleteConfirmText !== "HAPUS AKUN" || deleting }
-                                    className="flex-1 flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed text-white"
-                                    style={ { background: 'linear-gradient(135deg, #7f1d1d, #b91c1c)', border: '1px solid rgba(185, 28, 28, 0.6)' } }
+                                    className="flex-1 flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed text-white bg-gradient-to-br from-[#7F1D1D] to-[#B91C1C] border border-red-700/60"
                                 >
                                     { deleting ? <span className="auth-spinner-sm" /> : "Hapus" }
                                 </button>

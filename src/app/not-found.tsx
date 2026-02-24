@@ -9,10 +9,10 @@ export default function NotFound() {
             <div className="pointer-events-none fixed inset-0 z-0"
                 style={ {
                     background: `
-                        radial-gradient(ellipse 40% 50% at 0% 0%, rgba(107,21,37,0.40) 0%, transparent 70%),
-                        radial-gradient(ellipse 40% 50% at 100% 100%, rgba(139,32,48,0.30) 0%, transparent 70%),
-                        radial-gradient(ellipse 30% 40% at 100% 50%, rgba(166,52,69,0.25) 0%, transparent 70%),
-                        radial-gradient(ellipse 25% 30% at 25% 100%, rgba(107,21,37,0.30) 0%, transparent 70%)
+                        radial-gradient(ellipse 40% 50% at 0% 0%, #6B152566 0%, transparent 70%),
+                        radial-gradient(ellipse 40% 50% at 100% 100%, #8B20304D 0%, transparent 70%),
+                        radial-gradient(ellipse 30% 40% at 100% 50%, #A6344540 0%, transparent 70%),
+                        radial-gradient(ellipse 25% 30% at 25% 100%, #6B15254D 0%, transparent 70%)
                     `
                 } }
             />
@@ -26,8 +26,7 @@ export default function NotFound() {
                         />
                     </div>
                     <h1
-                        className="text-8xl font-black tracking-tighter bg-clip-text text-transparent select-none"
-                        style={ { backgroundImage: 'linear-gradient(135deg, #6b1525, #a63445, #c94d5e)' } }>
+                        className="text-8xl font-black tracking-tighter bg-clip-text text-transparent select-none bg-gradient-to-br from-[#6B1525] via-[#A63445] to-[#C94D5E]">
                         404
                     </h1>
 

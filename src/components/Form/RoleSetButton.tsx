@@ -13,10 +13,9 @@ function RoleSetButton({ roleConfig }: { roleConfig: RoleConfig }) {
     }
 
     return (
-        <span className="w-full flex items-center py-2 justify-around gap-2 min-h-10 h-fit px-2 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.6)', border: '1px solid rgba(63, 63, 70, 0.4)' } }>
+        <span className="w-full flex items-center py-2 justify-around gap-2 min-h-10 h-fit px-2 rounded-md bg-hl-primary/60 border border-zinc-700/40">
             <button
-                className={ ` rounded-md cursor-pointer px-3 py-1.5 text-sm hover:scale-102 disabled:opacity-45 disabled:hover:scale-100 disabled:cursor-not-allowed transition-all duration-200 ${roleCombi === "default" ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'} ` }
-                style={ roleCombi === "default" ? { background: 'linear-gradient(135deg, #6b1525, #a63445)', border: '1px solid rgba(166, 52, 69, 0.6)' } : { background: 'rgba(41, 41, 56, 0.6)', border: '1px solid rgba(63, 63, 70, 0.5)' } }
+                className={ ` rounded-md cursor-pointer px-3 py-1.5 text-sm hover:scale-102 disabled:opacity-45 disabled:hover:scale-100 disabled:cursor-not-allowed transition-all duration-200 ${roleCombi === "default" ? 'text-white font-semibold bg-gradient-to-br from-[#6B1525] to-[#A63445] border border-rose-accent/60' : 'text-zinc-400 hover:text-zinc-200 bg-glass/60 border border-zinc-700/50'} ` }
                 onClick={ setRoleConfigAndCombiToDefault }
                 type="button"
                 disabled={ isRoleCombiLocked }
@@ -25,8 +24,7 @@ function RoleSetButton({ roleConfig }: { roleConfig: RoleConfig }) {
                 Default
             </button>
             <button
-                className={ ` rounded-md cursor-pointer px-3 py-1.5 text-sm hover:scale-102 disabled:opacity-45 disabled:hover:scale-100 disabled:cursor-not-allowed transition-all duration-200 ${roleCombi === "custom" ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'} ` }
-                style={ roleCombi === "custom" ? { background: 'linear-gradient(135deg, #6b1525, #a63445)', border: '1px solid rgba(166, 52, 69, 0.6)' } : { background: 'rgba(41, 41, 56, 0.6)', border: '1px solid rgba(63, 63, 70, 0.5)' } }
+                className={ ` rounded-md cursor-pointer px-3 py-1.5 text-sm hover:scale-102 disabled:opacity-45 disabled:hover:scale-100 disabled:cursor-not-allowed transition-all duration-200 ${roleCombi === "custom" ? 'text-white font-semibold bg-gradient-to-br from-[#6B1525] to-[#A63445] border border-rose-accent/60' : 'text-zinc-400 hover:text-zinc-200 bg-glass/60 border border-zinc-700/50'} ` }
                 onClick={ () => setRoleCombi("custom") }
                 type="button"
                 disabled={ isRoleCombiLocked }
