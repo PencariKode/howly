@@ -1,7 +1,11 @@
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 import "./globals.css";
-import {ReactNode} from "react";
+import { ReactNode } from "react";
 import Body from "@c/Body";
+
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
 
 
 export const metadata: Metadata = {
@@ -10,17 +14,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+    children,
+}: Readonly<{
     children: ReactNode;
 }>) {
 
     return (
         <html lang="id">
-        <head>
-            <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"/>
-        </head>
-        <Body children={children} />
+            <head>
+            </head>
+            <Body children={ children } />
         </html>
     );
 }

@@ -10,20 +10,20 @@ export default function HowlRangeVal({
     max: number,
     defaultValue?: number,
     id?: string,
-    name?: string, 
+    name?: string,
     disabled?: boolean,
-    eventChange?: (e: FormEvent<HTMLInputElement>) => void 
+    eventChange?: (e: FormEvent<HTMLInputElement>) => void
 }) {
 
     const [value, setValue] = useState<number>(defaultValue || min);
 
-    // Memoize event handler to prevent recreation on every render
+    // biar gk dibuat ulang pas rerender
     const handleChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
         const newValue = Number((e.target as HTMLInputElement).value);
         setValue(newValue);
         if (eventChange) eventChange(e);
     }, [eventChange]);
-    
+
     useEffect(() => {
         if (defaultValue !== undefined) {
             setValue(defaultValue);
@@ -33,13 +33,13 @@ export default function HowlRangeVal({
 
     return (
         <span
-            className={ `minMaxWidth ring ring-hl-text/5 hover:ring-hl-text/25 active:scale-99 flex items-center justify-between gap-2 bg-hl-secondary h-10 px-2 rounded-md ${disabled ? 'cursor-not-allowed' : ''}` }
+            className={ `w-full flex items-center justify-between gap-2 h-10 px-2 rounded-md ${disabled ? 'cursor-not-allowed' : ''} bg-hl-primary/60 border border-zinc-700/40` }
             style={ {
                 touchAction: 'pan-y pinch-zoom',
-                willChange: 'transform'
+                willChange: 'transform',
             } }
         >
-            <strong className={  `bg-hl-tertiary w-10 flex items-center justify-center rounded-sm ${disabled ? 'opacity-50' : ''}` }>{ value }</strong>
+            <strong className="w-10 flex items-center justify-center rounded-sm text-zinc-200 bg-glass/60">{ value }</strong>
             <HowlRange
                 min={ min }
                 max={ max }
@@ -47,7 +47,7 @@ export default function HowlRangeVal({
                 id={ id }
                 name={ name }
                 eventChange={ handleChange }
-                disabled={disabled}
+                disabled={ disabled }
             />
         </span>
     );

@@ -1,100 +1,149 @@
-import {AuthOptions} from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
-import {MongoDBAdapter} from "@next-auth/mongodb-adapter";
-import clientPromise from "./src/lib/mongodb";
-import User from "./src/models/User";
-import dbConnect from "./src/lib/dbConnect";
+import { AuthOptions } from "next-auth";
 import bcrypt from "bcryptjs";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@l/prisma";
+import GitHub from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 
 export const authOptions: AuthOptions = {
-    adapter: MongoDBAdapter(clientPromise),
-    providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!
-        }),
-        GitHubProvider({
-            clientId: process.env.GITHUB_CLIENT_ID!,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET!
-        }),
-        CredentialsProvider({
-            name: "Credentials",
-            credentials: {
-                email: {label: "Email", type: "text"},
-                password: {label: "Password", type: "password"},
-                name: {label: "Name", type: "text"},
-                isRegister: {label: "Register", type: "text"}
-            },
-            async authorize(rawCredentials) {
-                const credentials = rawCredentials as {
-                    email?: string;
-                    password?: string;
-                    name?: string;
-                    isRegister?: string;
-                };
+  adapter: PrismaAdapter(prisma),
 
-                if (!credentials.email || !credentials.password || !credentials.isRegister || !credentials.isRegister) {
-                    throw new Error("Semua field harus diisi");
-                }
+  session: {
+    strategy: "jwt",
+  },
 
-                await dbConnect();
-                const user = await User.findOne({email: credentials?.email});
-                if (credentials?.isRegister === "true") {
-                    if (user) throw new Error("Email sudah terdaftar");
-                    if (!credentials.name || credentials.name.length < 3) {
-                        throw new Error("Nama harus terdiri dari minimal 3 karakter");
-                    }
+  providers: [
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
 
-                    const hashedPassword = await bcrypt.hash(credentials.password, 10);
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
 
-                    const newUser = new User({
-                        name: credentials.name,
-                        email: credentials.email,
-                        password: hashedPassword
-                    });
-                    await newUser.save();
-
-                    return {
-                        id: newUser._id,
-                        email: newUser.email,
-                        name: newUser.name
-                    };
-                } else {
-                    if (!user) throw new Error("Email tidak ditemukan");
-                    if (!user.password) {
-                        throw new Error("User terdaftar dengan metode lain, silakan masuk menggunakan metode tersebut");
-                    }
-                    const passwordMatch = await bcrypt.compare(credentials.password, user.password);
-                    if (!passwordMatch) throw new Error("Email atau password salah");
-
-                    return {
-                        id: user._id.toString(),
-                        email: user.email,
-                        name: user.name
-                    };
-                }
-            }
-        })
-    ],
-    session: {
-        strategy: "jwt"
-    },
-    callbacks: {
-        async jwt({token, user}) {
-            if (user) token.id = user.id;
-            return token;
-        },
-        async session({session, token}) {
-            if (session.user && token?.id) {
-                session.user.id = token.id as string;
-            }
-            return session;
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: {},
+        password: {},
+        name: {},
+        isRegister: {},
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email dan password wajib diisi");
         }
+
+        const existingUser = await prisma.user.findUnique({
+          where: { email: credentials.email },
+          include: { accounts: true },
+        });
+
+        // regis
+        if (credentials.isRegister === "true") {
+          if (existingUser) {
+            if (existingUser.accounts.length > 0) {
+              const providerName = existingUser.accounts[0].provider;
+              const displayName =
+                providerName.charAt(0).toUpperCase() + providerName.slice(1);
+              throw new Error(
+                `Email ini sudah terdaftar melalui ${displayName}. Silakan gunakan metode login tersebut.`,
+              );
+            }
+            throw new Error("Email sudah terdaftar");
+          }
+
+          if (!credentials.name || credentials.name.length < 3) {
+            throw new Error("Nama harus terdiri dari minimal 3 karakter");
+          }
+
+          const hashedPassword = await bcrypt.hash(credentials.password, 10);
+
+          const newUser = await prisma.user.create({
+            data: {
+              name: credentials.name,
+              email: credentials.email,
+              password: hashedPassword,
+            },
+          });
+
+          return newUser;
+        }
+
+        // login
+        if (!existingUser) {
+          throw new Error("Akun tidak ditemukan");
+        }
+
+        if (!existingUser.password) {
+          if (existingUser.accounts.length > 0) {
+            const providerName = existingUser.accounts[0].provider;
+            const displayName =
+              providerName.charAt(0).toUpperCase() + providerName.slice(1);
+            throw new Error(
+              `Email ini terdaftar melalui ${displayName}. Silakan gunakan metode login tersebut.`,
+            );
+          }
+          throw new Error("Akun tidak ditemukan");
+        }
+
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          existingUser.password,
+        );
+
+        if (!isValid) {
+          throw new Error("Password salah");
+        }
+
+        return existingUser;
+      },
+    }),
+  ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+
+      // refetch setelah update profile
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { name: true, image: true, role: true, createdAt: true },
+        });
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.picture = dbUser.image;
+          token.role = dbUser.role;
+          token.createdAt = dbUser.createdAt.toISOString();
+        }
+      }
+
+      return token;
     },
-    pages: {
-        signIn: "/auth/login"
+
+    async session({ session, token }) {
+      if (session.user) {
+        if (!token.id || !token.role) {
+          throw new Error("Missing token data");
+        }
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.createdAt = token.createdAt as string;
+      }
+      return session;
     },
-    secret: process.env.NEXTAUTH_SECRET
+  },
+
+  secret: process.env.NEXTAUTH_SECRET,
+
+  pages: {
+    signIn: "/login",
+  },
 };

@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {useUIStore} from "@/stores/uiStore";
+import { useUIStore } from "@/stores/uiStore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPawClaws } from "@fortawesome/pro-solid-svg-icons";
 
 type WolfTrack = {
     id: number;
@@ -45,20 +47,21 @@ export default function WolfTrackLayer() {
     }, []);
 
     return (
-        <div className={`${isScreenScrolled ? 'fixed' : 'fixed'} inset-0 -z-10 pointer-events-none minMaxWidth overflow-hidden h-screen `}>
-            {tracks.map(track => (
-                <i
-                    key={track.id}
-                    className="fa-solid fa-paw-claws text-rose-900 absolute transition-all duration-500 ease-out"
-                    style={{
+        <div className={ `${isScreenScrolled ? 'fixed' : 'fixed'} inset-0 -z-10 pointer-events-none minMaxWidth overflow-hidden h-screen ` }>
+            { tracks.map(track => (
+                <FontAwesomeIcon
+                    key={ track.id }
+                    icon={ faPawClaws }
+                    className="text-rose-900 absolute transition-all duration-500 ease-out"
+                    style={ {
                         top: track.top,
                         left: track.left,
                         fontSize: `${track.size}px`,
                         transform: `rotate(${track.rotate})`,
                         opacity: track.opacity,
-                    }}
+                    } }
                 />
-            ))}
+            )) }
         </div>
     );
 }
