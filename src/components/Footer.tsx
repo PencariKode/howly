@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/pro-solid-svg-icons";
 
 
 export default function Footer() {
@@ -9,7 +11,7 @@ export default function Footer() {
         <footer className="minMaxWidth">
             <div className="bg-hl-secondary text-hl-text py-4 text-center pb-22 sm:pb-1 px-5 h-fit">
                 <p className="text-xs pb-3">
-                    Made with <i className="fa-solid fa-heart text-red-500"></i> by <a target="_blank"
+                    Made with <FontAwesomeIcon icon={ faHeart } className="text-red-500" /> by <a target="_blank"
                         href="https://github.com/PencariKode">PencariKode</a>
                 </p>
                 <div style={ { borderTopWidth: '0.5px' } }

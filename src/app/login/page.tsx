@@ -1,12 +1,22 @@
 'use client';
 
 import { signIn, useSession } from "next-auth/react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { isEmail } from "validator";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 export default function LoginPage() {
+    return (
+        <Suspense fallback={ <div className="flex min-h-screen items-center justify-center bg-hl-bg"><div className="auth-spinner" /></div> }>
+            <LoginContent />
+        </Suspense>
+    );
+}
+
+function LoginContent() {
     const { status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -94,7 +104,7 @@ export default function LoginPage() {
                         className="auth-oauth-btn group flex-1"
                         title="Masuk dengan akun Google"
                     >
-                        <i className="fa-brands fa-google"></i>
+                        <FontAwesomeIcon icon={ faGoogle } size="xl" />
                         <span className="font-semibold">Google</span>
                     </button>
                     <button
@@ -102,7 +112,7 @@ export default function LoginPage() {
                         className="auth-oauth-btn group flex-1"
                         title="Masuk dengan akun GitHub"
                     >
-                        <i className="fa-brands fa-github"></i>
+                        <FontAwesomeIcon icon={ faGithub } size="xl" />
                         <span className="font-semibold">GitHub</span>
                     </button>
                 </div>

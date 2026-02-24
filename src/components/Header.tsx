@@ -3,6 +3,9 @@ import { useUIStore } from "@/stores/uiStore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faDna, faChartNetwork, faPersonToDoor } from "@fortawesome/pro-light-svg-icons";
+import { faPawClaws } from "@fortawesome/pro-solid-svg-icons";
 
 export default function Header() {
 
@@ -47,14 +50,14 @@ export default function Header() {
                 <div className={ `absolute transition-all duration-700 left-10 hidden sm:flex` }>
                     <Image ref={ ppRef } onClick={ handleDropMenu } className={ `${isScreenScrolled ? 'block' : 'hidden group-hover:block'} !aspect-square max-h-10 w-10 rounded-full cursor-pointer` } src={ ppSrc } alt={ 'PFP' } width={ 70 } height={ 70 } />
                     <nav ref={ menuBarRef } className={ `${isDropMenuOpen ? 'flex' : 'hidden'}  min-h-10 min-w-max pb-0.5 *:hover:bg-hl-primary/80 pt-1 px-2 *:px-3 *:py-1.5  font-extralight text-left bg-hl-tertiary/85  absolute left-5 top-[110%] rounded-b-sm rounded-tr-sm shadow-lg flex-col items-center justify-center divide-y-[.5px] divide-hl-text/20` }>
-                        <Link href={ status === "authenticated" ? "/profile" : "/login" } className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-user"></i> Profile</Link>
-                        <Link href="/create" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-dna"></i> Create</Link>
-                        <Link href="/join" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-chart-network"></i> Join</Link>
-                        <button onClick={ () => signOut({ callbackUrl: "/login" }) } className="cursor-pointer w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fa-light w-5 flex items-center justify-center fa-person-to-door"></i> Logout</button>
+                        <Link href={ status === "authenticated" ? "/profile" : "/login" } className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faUser } className="w-5 flex items-center justify-center" /> Profile</Link>
+                        <Link href="/create" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faDna } className="w-5 flex items-center justify-center" /> Create</Link>
+                        <Link href="/join" className="w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faChartNetwork } className="w-5 flex items-center justify-center" /> Join</Link>
+                        <button onClick={ () => signOut({ callbackUrl: "/login" }) } className="cursor-pointer w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><FontAwesomeIcon icon={ faPersonToDoor } className="w-5 flex items-center justify-center" /> Logout</button>
                     </nav>
                 </div>
                 <Link href="/" className="flex items-center justify-center gap-2 text-[1.6rem]">
-                    <i className={ `fa-solid fa-paw-claws text-xl flex items-center justify-center pb-[1px]` }></i>
+                    <FontAwesomeIcon icon={ faPawClaws } className="text-xl flex items-center justify-center pb-[1px]" />
                     <h1 className="font-extrabold">Howly</h1>
                 </Link>
             </div>
