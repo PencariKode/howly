@@ -25,9 +25,9 @@ export default function Footer() {
                     </div>
                     <div className="flex flex-col min-w-25 w-fit items-start *:hover:underline *:hover:font-normal">
                         <Link href="/help">Bantuan</Link>
-                        <Link href="/contribution">Contribution</Link>
-                        <Link href="/tos">Terms of Service</Link>
-                        <Link href="/privacy">Kebijakan Privasi</Link>
+                        <Link href="/docs/contributing">Contributing</Link>
+                        <Link href="/docs/tos">Terms of Service</Link>
+                        <Link href="/docs/privacy">Kebijakan Privasi</Link>
                     </div>
                     <div className="flex flex-col min-w-25 w-fit items-start *:hover:underline *:hover:font-normal">
                         <Link href="/critique">Kritik dan Saran</Link>
