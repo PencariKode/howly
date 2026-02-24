@@ -1,11 +1,11 @@
 'use client';
 
-import {FormEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 
 export default function HowlRange({
-      min, max, defaultValue, id, name, disabled, eventChange
-    }: {
+    min, max, defaultValue, id, name, disabled, eventChange
+}: {
     min: number,
     max: number,
     defaultValue?: number,
@@ -21,13 +21,14 @@ export default function HowlRange({
 
     // memoize bg style
     const getBackgroundStyle = useCallback((val: number): string => {
-        const percent = ((val - min) / (max - min)) * 100;
+        const range = max - min;
+        const percent = range === 0 ? (min === 0 ? 0 : 100) : ((val - min) / range) * 100;
         return `linear-gradient(to right, #e0e0e0 0%, #e0e0e0 ${percent}%, #14141c ${percent}%, #14141c 100%)`;
     }, [min, max]);
 
     // memoize bg style sekarang
-    const currentBackgroundStyle = useMemo(() => 
-        getBackgroundStyle(value), 
+    const currentBackgroundStyle = useMemo(() =>
+        getBackgroundStyle(value),
         [value, getBackgroundStyle]
     );
 
@@ -53,24 +54,30 @@ export default function HowlRange({
         }
     }, [defaultValue, getBackgroundStyle]);
 
+    const isSingleValue = min === max;
+    const isZeroRange = isSingleValue && min === 0;
+    const effectiveMax = isSingleValue ? min + 1 : max;
+    const effectiveValue = isSingleValue ? (isZeroRange ? min : min + 1) : value;
+
     return (
-        <input
-            ref={rangeRef}
-            type="range"
-            min={min}
-            max={max}
-            value={value}
-            id={id}
-            name={name}
-            disabled={disabled}
-            className="!w-full h-2.5 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-            onInput={handleInput}
-            onChange={eventChange}
-            style={{
-                background: currentBackgroundStyle,
-                touchAction: 'pan-x',
-                willChange: 'background'
-            }}
-        />
+        <>
+            <input
+                ref={ rangeRef }
+                type="range"
+                min={ min }
+                max={ effectiveMax }
+                value={ effectiveValue }
+                disabled={ disabled || isSingleValue }
+                className="!w-full h-2.5 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                onInput={ handleInput }
+                onChange={ eventChange }
+                style={ {
+                    background: currentBackgroundStyle,
+                    touchAction: 'pan-x',
+                    willChange: 'background'
+                } }
+            />
+            { id && <input type="hidden" id={ id } name={ name } value={ value } /> }
+        </>
     );
 };
