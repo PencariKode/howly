@@ -34,7 +34,7 @@ export default async function Page() {
                     ) : (
                         <div className={ `flex flex-col items-center justify-center gap-2` }>
                             <h1 className="text-xl font-bold text-center text-red-800">Anda harus login untuk membuat room</h1>
-                            <p className="text-sm text-center">Please <Link className={ `hover:underline text-cyan-600` } href="/auth/login">log in</Link> to continue</p>
+                            <p className="text-sm text-center">Please <Link className={ `hover:underline text-cyan-600` } href="/login">log in</Link> to continue</p>
                         </div>
                     ) }
 
