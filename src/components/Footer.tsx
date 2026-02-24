@@ -18,10 +18,10 @@ export default function Footer() {
                     className=" border-t-neutral-50/20 items-start flex flex-wrap justify-between gap-5 font-extralight  minMaxWidth pt-3 text-xs px-2 sm:px-10 md:justify-start md:gap-10 sm:py-5 text-hl-text/70">
                     <div className="flex flex-col min-w-25 w-fit items-start *:hover:underline *:hover:font-normal">
                         {/*<a href="https://github.com/PencariKode">PencariKode</a>*/ }
-                        <Link href="/about">Tentang</Link>
+                        <Link href="/docs#about">Tentang</Link>
                         <Link href={ status === "authenticated" ? "/profile" : "/login" }>Akun</Link>
-                        <Link href="/contact">Kontak</Link>
-                        <Link href="/faq">FAQ</Link>
+                        <Link href="/docs#contact">Kontak</Link>
+                        <Link href="/docs#faq">FAQ</Link>
                     </div>
                     <div className="flex flex-col min-w-25 w-fit items-start *:hover:underline *:hover:font-normal">
                         <Link href="/help">Bantuan</Link>
