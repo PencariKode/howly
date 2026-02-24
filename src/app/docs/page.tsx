@@ -12,6 +12,23 @@ import {
     faBellOn,
     faRocketLaunch,
     faChevronDown,
+    faMailboxOpenLetter,
+    faMessageQuestion,
+    faUserGear,
+    faMicrochip,
+    faCircleStar,
+    faGamepadAlt,
+    faSunAlt,
+    faCircleMoon,
+    faBullseyeArrow,
+    faUserCrown,
+    faUserAlt,
+    faCrystalBall,
+    faFlaskRoundPotion,
+    faBookSkull,
+    faBadgeSheriff,
+    faMasksTheater,
+    faCircle,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
     faReact,
@@ -19,6 +36,7 @@ import {
     faGithub,
     faLinkedinIn,
     faInstagram,
+    faWolfPackBattalion,
 } from "@fortawesome/free-brands-svg-icons";
 import {
     faCode,
@@ -29,6 +47,7 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import Link from "next/link";
 import MainContainer from "@c/MainContainer";
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const features = [
     { icon: faComments, name: 'Real-Time Chat', desc: 'Fitur chat bawaan untuk memudahkan pemain dengan peran tertentu berkomunikasi secara efektif.' },
@@ -49,21 +68,21 @@ const techStack = [
     { icon: faCode, name: 'API-first', desc: 'Komunikasi client-server yang efisien' },
 ];
 
-const rolesData = {
+const rolesDataFa = {
     netral: [
-        { emoji: '👑', name: 'Gamemaster', desc: 'Moderator yang mengatur jalannya permainan. Bersifat netral dan tidak berpihak. Role ini tidak bermain.' },
+        { icon: faBadgeSheriff, name: 'Gamemaster', desc: 'Moderator yang mengatur jalannya permainan. Bersifat netral dan tidak berpihak. Role ini tidak bermain.' },
     ],
     manusia: [
-        { emoji: '🧑‍🌾', name: 'Warga', desc: 'Role dasar tanpa kemampuan khusus. Berpartisipasi dalam voting siang hari untuk mengeliminasi pemain.' },
-        { emoji: '🔮', name: 'Peramal', desc: 'Setiap malam dapat melihat role pemain lain. Tugasnya menemukan Werewolf dan menyampaikan info secara strategis.' },
-        { emoji: '🧪', name: 'Penyihir', desc: 'Setiap malam dapat memberikan ramuan — membunuh Werewolf, atau menghidupkan kembali manusia yang terbunuh.' },
-        { emoji: '👻', name: 'Dukun', desc: 'Dapat berkomunikasi dengan pemain yang sudah mati pada malam hari untuk mengungkap identitas Werewolf.' },
-        { emoji: '🤴', name: 'Raja', desc: 'Setiap 2 hari sekali dapat mengambil hak suara pemain lain dan memberikan vote 2× pada hari yang sama.' },
+        { icon: faUserAlt, name: 'Warga', desc: 'Role dasar tanpa kemampuan khusus. Berpartisipasi dalam voting siang hari untuk mengeliminasi pemain.' },
+        { icon: faCrystalBall, name: 'Peramal', desc: 'Setiap malam dapat melihat role pemain lain. Tugasnya menemukan Werewolf dan menyampaikan info secara strategis.' },
+        { icon: faFlaskRoundPotion, name: 'Penyihir', desc: 'Setiap malam dapat memberikan ramuan — membunuh Werewolf, atau menghidupkan kembali manusia yang terbunuh.' },
+        { icon: faBookSkull, name: 'Dukun', desc: 'Dapat berkomunikasi dengan pemain yang sudah mati pada malam hari untuk mengungkap identitas Werewolf.' },
+        { icon: faUserCrown, name: 'Raja', desc: 'Setiap 2 hari sekali dapat mengambil hak suara pemain lain dan memberikan vote 2× pada hari yang sama.' },
     ],
     werewolf: [
-        { emoji: '🐺', name: 'Werewolf', desc: 'Antagonis utama. Menyembunyikan identitas di siang hari, dan memilih satu manusia untuk dibunuh pada malam hari.' },
-        { emoji: '🐺', name: 'Black Wolf', desc: 'Seperti Werewolf, tetapi satu kali dapat mengubah seorang manusia menjadi Werewolf.' },
-        { emoji: '🎭', name: 'Shapeshifter', desc: 'Dapat berubah menjadi pemain lain selama satu hari, menjalani peran & chat sebagai pemain tersebut.' },
+        { icon: faPawClaws, name: 'Werewolf', desc: 'Antagonis utama. Menyembunyikan identitas di siang hari, dan memilih satu manusia untuk dibunuh pada malam hari.' },
+        { icon: faWolfPackBattalion, name: 'Black Wolf', desc: 'Seperti Werewolf, tetapi satu kali dapat mengubah seorang manusia menjadi Werewolf.' },
+        { icon: faMasksTheater, name: 'Shapeshifter', desc: 'Dapat berubah menjadi pemain lain selama satu hari, menjalani peran & chat sebagai pemain tersebut.' },
     ],
 };
 
@@ -129,13 +148,13 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 
-function RoleCard({ emoji, name, desc, borderColor }: { emoji: string; name: string; desc: string; borderColor: string }) {
+function RoleCardFa({ icon, name, desc, borderColor }: { icon: IconProp; name: string; desc: string; borderColor: string }) {
     return (
         <div
             className="rounded-lg px-4 py-3 flex gap-3 items-start transition-all duration-200 hover:bg-white/[0.02]"
             style={ { background: 'rgba(25, 25, 35, 0.7)', border: `1px solid ${borderColor}` } }
         >
-            <span className="text-lg sm:text-xl mt-0.5 shrink-0">{ emoji }</span>
+            <span className="text-lg sm:text-xl mt-0.5 shrink-0"><FontAwesomeIcon icon={ icon } /></span>
             <div className="min-w-0">
                 <p className="font-semibold text-zinc-100 text-[.85rem] sm:text-sm">{ name }</p>
                 <p className="text-[.75rem] sm:text-xs text-zinc-400 leading-relaxed mt-0.5">{ desc }</p>
@@ -143,7 +162,6 @@ function RoleCard({ emoji, name, desc, borderColor }: { emoji: string; name: str
         </div>
     );
 }
-
 
 export default function AboutPage() {
     return (
@@ -183,21 +201,21 @@ export default function AboutPage() {
                     className="w-full rounded-xl p-5 sm:p-7 flex flex-col gap-4"
                     style={ { background: 'rgba(25, 25, 35, 0.85)', border: '1px solid rgba(41, 41, 56, 0.6)', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3)' } }
                 >
-                    <h2 className="text-lg sm:text-xl font-bold text-white">🎮 Apa itu Howly?</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white"><FontAwesomeIcon icon={faGamepadAlt} /> Apa itu Howly?</h2>
                     <p className="text-[.82rem] sm:text-sm text-zinc-300 leading-relaxed">
                         <strong className="text-zinc-100">Howly</strong> adalah permainan <em className="text-rose-400 not-italic font-medium">Werewolf</em> klasik di mana para warga bekerja sama untuk menebak dan menyingkirkan semua Werewolf yang bersembunyi di antara mereka.
                         Tantangannya? Para warga tidak tahu siapa di antara mereka yang sebenarnya adalah Werewolf!
                     </p>
                     <div className="flex flex-col sm:flex-row gap-2.5">
                         <div className="flex-1 flex gap-3 items-start rounded-lg px-3.5 py-3" style={ { background: 'rgba(234,179,8,0.05)', border: '1px solid rgba(234,179,8,0.12)' } }>
-                            <span className="text-xl mt-px shrink-0">🌞</span>
+                            <span className="text-xl mt-px shrink-0 text-amber-300"><FontAwesomeIcon icon={faSunAlt} /></span>
                             <div>
                                 <p className="font-semibold text-amber-300 text-[.82rem]">Siang Hari</p>
                                 <p className="text-[.75rem] text-zinc-400 mt-0.5 leading-relaxed">Warga melakukan diskusi dan voting untuk menentukan siapa yang akan dieliminasi.</p>
                             </div>
                         </div>
                         <div className="flex-1 flex gap-3 items-start rounded-lg px-3.5 py-3" style={ { background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.12)' } }>
-                            <span className="text-xl mt-px shrink-0">🌙</span>
+                            <span className="text-xl mt-px shrink-0 text-indigo-300"><FontAwesomeIcon icon={faCircleMoon} /></span>
                             <div>
                                 <p className="font-semibold text-indigo-300 text-[.82rem]">Malam Hari</p>
                                 <p className="text-[.75rem] text-zinc-400 mt-0.5 leading-relaxed">Warga harus &quot;tertidur&quot;, memberikan kesempatan bagi Werewolf untuk membunuh salah satu warga.</p>
@@ -211,7 +229,7 @@ export default function AboutPage() {
                     className="w-full rounded-xl p-5 sm:p-7 flex flex-col gap-3"
                     style={ { background: 'rgba(25, 25, 35, 0.85)', border: '1px solid rgba(41, 41, 56, 0.6)', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3)' } }
                 >
-                    <h2 className="text-lg sm:text-xl font-bold text-white">🎯 Tujuan</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white"><FontAwesomeIcon icon={faBullseyeArrow} className="text-rose-500" /> Tujuan</h2>
                     <p className="text-[.82rem] sm:text-sm text-zinc-300 leading-relaxed">
                         Aplikasi ini dibuat untuk <strong className="text-zinc-100">mempermudah</strong> orang-orang dalam memainkan permainan klasik Werewolf secara <strong className="text-zinc-100">luring (tatap muka)</strong>, sehingga semua pemain — termasuk yang memiliki peran tertentu — dapat menjalankan tugasnya tanpa kesulitan.
                     </p>
@@ -219,7 +237,7 @@ export default function AboutPage() {
 
 
                 <section className="w-full flex flex-col gap-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center">✨ Fitur Dalam Game</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={faCircleStar} /> Fitur Dalam Game</h2>
                     <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2.5">
                         { features.map((f, i) => (
                             <div
@@ -239,7 +257,7 @@ export default function AboutPage() {
 
 
                 <section className="w-full flex flex-col gap-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center">🏗️ Tech Stack</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={faMicrochip} /> Tech Stack</h2>
                     <div className="flex flex-wrap gap-2.5">
                         { techStack.map((t, i) => (
                             <div
@@ -257,33 +275,33 @@ export default function AboutPage() {
 
 
                 <section className="w-full flex flex-col gap-5">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center">🐺 Daftar Role</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={ faUserGear } /> Daftar Role</h2>
 
                     <div className="flex flex-col gap-2">
-                        <h3 className="text-xs font-bold text-yellow-400/80 uppercase tracking-widest px-0.5">🟡 Netral</h3>
-                        { rolesData.netral.map((r, i) => (
-                            <RoleCard key={ i } { ...r } borderColor="rgba(234,179,8,0.12)" />
+                        <h3 className="text-xs font-bold text-yellow-400/80 uppercase tracking-widest px-0.5"><FontAwesomeIcon icon={ faCircle } /> Netral</h3>
+                        { rolesDataFa.netral.map((r, i) => (
+                            <RoleCardFa key={ i } { ...r } borderColor="rgba(234,179,8,0.12)" />
                         )) }
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <h3 className="text-xs font-bold text-cyan-400/80 uppercase tracking-widest px-0.5">🔵 Tim Manusia</h3>
-                        { rolesData.manusia.map((r, i) => (
-                            <RoleCard key={ i } { ...r } borderColor="rgba(8,145,178,0.12)" />
+                        <h3 className="text-xs font-bold text-cyan-400/80 uppercase tracking-widest px-0.5"><FontAwesomeIcon icon={ faCircle } /> Tim Manusia</h3>
+                        { rolesDataFa.manusia.map((r, i) => (
+                            <RoleCardFa key={ i } { ...r } borderColor="rgba(8,145,178,0.12)" />
                         )) }
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <h3 className="text-xs font-bold text-red-400/80 uppercase tracking-widest px-0.5">🔴 Tim Werewolf</h3>
-                        { rolesData.werewolf.map((r, i) => (
-                            <RoleCard key={ i } { ...r } borderColor="rgba(166,52,69,0.12)" />
+                        <h3 className="text-xs font-bold text-red-400/80 uppercase tracking-widest px-0.5"><FontAwesomeIcon icon={ faCircle } /> Tim Werewolf</h3>
+                        { rolesDataFa.werewolf.map((r, i) => (
+                            <RoleCardFa key={ i } { ...r } borderColor="rgba(166,52,69,0.12)" />
                         )) }
                     </div>
                 </section>
 
 
                 <section className="w-full flex flex-col gap-3" id="faq">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center mb-1">❓ FAQ</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center mb-1"><FontAwesomeIcon icon={ faMessageQuestion } /> FAQ</h2>
                     { faqItems.map((item, i) => (
                         <FAQItem key={ i } question={ item.question } answer={ item.answer } />
                     )) }
@@ -291,7 +309,7 @@ export default function AboutPage() {
 
 
                 <section className="w-full flex flex-col gap-4" id="contact">
-                    <h2 className="text-lg sm:text-xl font-bold text-white text-center">📬 Kontak</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-white text-center"><FontAwesomeIcon icon={ faMailboxOpenLetter } /> Kontak</h2>
                     <p className="text-[.8rem] sm:text-sm text-zinc-400 text-center leading-relaxed">
                         Punya pertanyaan, saran, atau ingin berkolaborasi? Hubungi kami melalui salah satu platform di bawah ini.
                     </p>
