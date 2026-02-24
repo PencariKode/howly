@@ -79,10 +79,10 @@ function LoginContent() {
     return (
         <div className="flex min-h-screen items-center justify-center bg-hl-bg px-4 py-12">
             <div className="pointer-events-none fixed inset-0 z-0">
-                <div className="absolute -top-32 -left-32 h-[28rem] w-[28rem] rounded-full bg-[#6b1525] opacity-40 blur-[150px]" />
-                <div className="absolute -right-32 -bottom-32 h-[26rem] w-[26rem] rounded-full bg-[#8b2030] opacity-30 blur-[140px]" />
-                <div className="absolute top-1/2 -right-16 h-[20rem] w-[20rem] rounded-full bg-[#a63445] opacity-25 blur-[120px]" />
-                <div className="absolute -bottom-16 left-1/4 h-[18rem] w-[18rem] rounded-full bg-[#6b1525] opacity-30 blur-[120px]" />
+                <div className="absolute -top-32 -left-32 h-[14rem] w-[14rem] sm:h-[28rem] sm:w-[28rem] rounded-full bg-[#6b1525] opacity-40 blur-[100px] sm:blur-[150px]" />
+                <div className="absolute -right-32 -bottom-32 h-[12rem] w-[12rem] sm:h-[26rem] sm:w-[26rem] rounded-full bg-[#8b2030] opacity-30 blur-[90px] sm:blur-[140px]" />
+                <div className="absolute top-1/2 -right-16 h-[10rem] w-[10rem] sm:h-[20rem] sm:w-[20rem] rounded-full bg-[#a63445] opacity-25 blur-[80px] sm:blur-[120px]" />
+                <div className="absolute -bottom-16 left-1/4 h-[9rem] w-[9rem] sm:h-[18rem] sm:w-[18rem] rounded-full bg-[#6b1525] opacity-30 blur-[80px] sm:blur-[120px]" />
             </div>
 
             <div className="auth-card relative z-10 w-full max-w-md">
