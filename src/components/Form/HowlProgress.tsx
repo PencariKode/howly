@@ -19,12 +19,12 @@ export default function HowlProgress({
     return (
         <div className="flex flex-col gap-1 w-full">
             { label && (
-                <label className="text-base font-bold">
+                <label className="text-base font-bold text-zinc-200">
                     { label }
                 </label>
             ) }
-            <span className={ "minMaxWidth ring ring-hl-text/5  flex items-center justify-between gap-3 bg-hl-secondary h-10 px-3 rounded-md" }>
-                <div className="flex items-center justify-center text-red-800">
+            <span className="w-full flex items-center justify-between gap-3 h-10 px-3 rounded-md" style={ { background: 'rgba(20, 20, 28, 0.6)', border: '1px solid rgba(63, 63, 70, 0.4)' } }>
+                <div className="flex items-center justify-center text-red-500">
                     <FontAwesomeIcon icon={ faPawClaws } className="w-4 h-4" />
                 </div>
 
@@ -37,7 +37,7 @@ export default function HowlProgress({
                     />
                 </div>
 
-                <div className="flex items-center justify-center text-cyan-600">
+                <div className="flex items-center justify-center text-cyan-400">
                     <FontAwesomeIcon icon={ faUsers } className="w-4 h-4" />
                 </div>
             </span>

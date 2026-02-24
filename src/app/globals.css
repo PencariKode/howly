@@ -249,8 +249,7 @@ input[type="range"]:hover::-moz-range-thumb {
 @layer utilities {
   .auth-card {
     @apply rounded-2xl p-8 animate-[auth-fade-in_0.5s_ease-out];
-    background: rgba(25, 25, 35, 0.85);
-    backdrop-filter: blur(20px);
+    background: rgba(25, 25, 35, 0.92);
     border: 1px solid rgba(41, 41, 56, 0.5);
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.03),
