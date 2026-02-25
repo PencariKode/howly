@@ -22,6 +22,8 @@ export default function RootLayout({
     return (
         <html lang="id">
             <head>
+                <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+                <link rel="stylesheet" href="/fontawesome/css/etch-solid.css" />
             </head>
             <Body children={ children } />
         </html>
