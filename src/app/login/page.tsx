@@ -194,13 +194,13 @@ function LoginContent() {
                     <span className="text-center text-[0.65rem] text-zinc-500">
                         Dengan mengklik <em className="font-semibold">masuk</em>, Anda
                         menyetujui{ " " }
-                        <Link className="underline-offset-2 hover:underline" href="/tos">
+                        <Link className="underline-offset-2 hover:underline" href="/docs/tos">
                             Persyaratan Layanan
                         </Link>{ " " }
                         dan{ " " }
                         <Link
                             className="underline-offset-2 hover:underline"
-                            href="/privacy"
+                            href="/docs/privacy"
                         >
                             Kebijakan Privasi
                         </Link>{ " " }

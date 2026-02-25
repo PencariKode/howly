@@ -1,13 +1,13 @@
 'use client';
 
-import HowlProgress from "./HowlProgress";
-import HowlRangeVal from "./HowlRangeVal";
+import HowlProgress from "@c/Form/HowlProgress";
+import HowlRangeVal from "@c/Form/HowlRangeVal";
 import RoleBalance from "@/lib/roleConfig";
 import useGameConfigStore from "@/stores/gameConfigStore";
 import type { RoleConfig } from "@/types/roleconfig";
 import { useEffect, useMemo, useRef, useCallback, useState, FormEvent } from "react";
 import useThrottle from "@/lib/useThrottle";
-import RoleSetButton from "./RoleSetButton";
+import RoleSetButton from "@c/Form/RoleSetButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faLockOpen } from "@fortawesome/pro-light-svg-icons";
 
@@ -51,13 +51,21 @@ function CreateRoomForm() {
         return Math.max(roleConfig[role], rawConfig.min[role]);
     }
 
+    function handleRoomName(e: FormEvent<HTMLInputElement>) {
+        const value = e.currentTarget.value;
+        if (value.length > 20) {
+            e.currentTarget.value = value.slice(0, 20);
+        }
+        setGameTitle(e.currentTarget.value);
+    }
+
     return (
         <form className="flex flex-col items-center justify-center gap-4 py-2 w-full">
             <section
                 className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <label htmlFor="roomname" className="text-sm font-medium text-zinc-300">Nama Room:</label>
                 <input type="text" placeholder="Masukkan nama room" id="roomname" name="roomname" autoComplete="roomname"
-                    className="auth-input" />
+                    className="auth-input" onChange={handleRoomName} defaultValue={gameTitle} />
             </section>
             <section
                 className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">

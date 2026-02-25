@@ -4,7 +4,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@r/auth";
 import SimpleFormHeader from "@c/Form/SimpleFormHeader";
-import CreateRoomForm from "@/components/Form/CreateRoomForm";
+import CreateRoomForm from "./CreateRoomForm";
 import Link from "next/link";
 
 
