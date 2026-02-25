@@ -56,7 +56,7 @@ function CreateRoomForm() {
             <section
                 className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <label htmlFor="roomname" className="text-sm font-medium text-zinc-300">Nama Room:</label>
-                <input type="text" placeholder="Masukkan nama room" id="roomname" name="roomname"
+                <input type="text" placeholder="Masukkan nama room" id="roomname" name="roomname" autoComplete="roomname"
                     className="auth-input" />
             </section>
             <section

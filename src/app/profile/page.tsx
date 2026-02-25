@@ -108,7 +108,7 @@ export default function ProfilePage() {
             />
 
             <div className="relative z-10 w-full max-w-lg flex flex-col gap-5">
-                <div className="auth-card">
+                <div className="auth-card rounded-md!">
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
                             { user.image ? (
@@ -143,11 +143,11 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="auth-card">
+                <div className="auth-card rounded-md!">
                     <h2 className="text-lg font-bold text-white mb-4">Edit Profil</h2>
 
                     { message && (
-                        <div className={ `mb-4 px-3 py-2 rounded-lg text-sm ${message.type === "success" ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" : "bg-red-500/15 text-red-400 border border-red-500/30"}` }>
+                        <div className={ `mb-4 px-3 py-2 rounded-md text-sm ${message.type === "success" ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" : "bg-red-500/15 text-red-400 border border-red-500/30"}` }>
                             { message.text }
                         </div>
                     ) }
@@ -200,7 +200,7 @@ export default function ProfilePage() {
                         <button
                             type="submit"
                             disabled={ saving }
-                            className="auth-submit-btn mt-1 flex items-center justify-center gap-2"
+                            className="auth-submit-btn rounded-md! mt-1 flex items-center justify-center gap-2"
                         >
                             { saving ? (
                                 <span className="auth-spinner-sm" />
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                     </form>
                 </div>
 
-                <div className="auth-card border-red-700/30">
+                <div className="auth-card border-red-700/30  rounded-md!">
                     <h2 className="text-lg font-bold text-red-400 mb-2">Zona Berbahaya</h2>
                     <p className="text-sm text-zinc-500 mb-4">
                         Menghapus akun bersifat permanen. Semua data termasuk sesi dan akun terhubung akan ikut terhapus.

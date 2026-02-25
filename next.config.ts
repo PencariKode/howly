@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       { hostname: "cdn.discordapp.com" },
       { hostname: "i.imgur.com" },
       { hostname: "cdn.pixabay.com" },
+      { hostname: "upload.wikimedia.org" },
     ],
   },
 };

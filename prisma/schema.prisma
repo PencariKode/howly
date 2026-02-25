@@ -25,6 +25,11 @@ model User {
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+
+
+  ownedRooms Room[] @relation("RoomOwner")
+
+  participatedRooms Room[] @relation("RoomPlayers")
 }
 
 
@@ -69,4 +74,50 @@ enum Role {
   ADMIN
 }
 
+model Room {
+  id String @id @default(cuid())
+  code String @db.VarChar(6) @unique
+  name String
+  playerCount Int
 
+  roleSet RoleSet @default(DEFAULT)
+  status RoomStatus @default(WAITING)
+
+
+  ownerId String
+  owner   User   @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  players User[] @relation("RoomPlayers")
+
+  roleConfig RoleConfig?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum RoleSet {
+  DEFAULT
+  CUSTOM
+}
+
+enum RoomStatus {
+  WAITING
+  PLAYING
+  ENDED
+}
+
+model RoleConfig {
+  id           String @id @default(cuid())
+  warga        Int
+  werewolf     Int
+  peramal      Int
+  penyihir     Int
+  pemburu      Int?
+  dukun        Int?
+  raja         Int?
+  blackwolf    Int?
+  shapeshifter Int?
+  
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId String @unique
+}
