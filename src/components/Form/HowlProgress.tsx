@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPawClaws, faUsers } from "@fortawesome/pro-solid-svg-icons";
+
 
 interface HowlProgressProps {
     min?: number;
@@ -25,7 +24,7 @@ export default function HowlProgress({
             ) }
             <span className="w-full flex items-center justify-between gap-3 h-10 px-3 rounded-md bg-hl-primary/60 border border-zinc-700/40">
                 <div className="flex items-center justify-center text-red-500">
-                    <FontAwesomeIcon icon={ faPawClaws } className="w-4 h-4" />
+                    <i className="fas fa-paw-claws w-4 h-4" />
                 </div>
 
                 <div className="flex-1 bg-cyan-900 h-2.5 rounded-lg overflow-hidden">
@@ -38,7 +37,7 @@ export default function HowlProgress({
                 </div>
 
                 <div className="flex items-center justify-center text-cyan-400">
-                    <FontAwesomeIcon icon={ faUsers } className="w-4 h-4" />
+                    <i className="fas fa-users w-4 h-4" />
                 </div>
             </span>
         </div>

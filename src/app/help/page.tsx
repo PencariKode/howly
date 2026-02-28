@@ -1,7 +1,5 @@
 import MainContainer from "@c/MainContainer";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpRightFromSquare } from "@fortawesome/pro-solid-svg-icons";
 
 export default function HelpPage() {
     return (
@@ -21,7 +19,7 @@ export default function HelpPage() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center gap-2 mx-auto px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-rose-500/20 border border-rose-500/30 hover:bg-rose-500/30 transition-all duration-200"
                     >
-                        <FontAwesomeIcon icon={ faArrowUpRightFromSquare } className="text-xs" />
+                        <i className="fas fa-arrow-up-right-from-square text-xs" />
                         Buka GitHub Issues
                     </a>
                 </div>

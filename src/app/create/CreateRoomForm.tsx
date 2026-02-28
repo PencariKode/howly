@@ -8,8 +8,6 @@ import type { RoleConfig } from "@/types/roleconfig";
 import { useEffect, useMemo, useRef, useCallback, useState, FormEvent } from "react";
 import useThrottle from "@/lib/useThrottle";
 import RoleSetButton from "@c/Form/RoleSetButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faLockOpen } from "@fortawesome/pro-light-svg-icons";
 
 function elToNumber(el: FormEvent<HTMLInputElement>): number {
     return Number((el.target as HTMLInputElement).value);
@@ -65,7 +63,7 @@ function CreateRoomForm() {
                 className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <label htmlFor="roomname" className="text-sm font-medium text-zinc-300">Nama Room:</label>
                 <input type="text" placeholder="Masukkan nama room" id="roomname" name="roomname" autoComplete="roomname"
-                    className="auth-input" onChange={handleRoomName} defaultValue={gameTitle} />
+                    className="auth-input" onChange={ handleRoomName } defaultValue={ gameTitle } />
             </section>
             <section
                 className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
@@ -83,7 +81,7 @@ function CreateRoomForm() {
                         onClick={ () => setRoleCombiLocked(!isRoleCombiLocked) }
                         title={ `Klik untuk ${isRoleCombiLocked ? 'membuka' : 'mengunci'} pilihan` }
                     >
-                        <FontAwesomeIcon icon={ isRoleCombiLocked ? faLock : faLockOpen } className="h-fit w-fit" />
+                        <i className={ `${isRoleCombiLocked ? 'fal fa-lock' : 'fal fa-lock-open'} h-fit w-fit` } />
                     </button>
                 </div>
                 <RoleSetButton roleConfig={ rawConfig.recom } />

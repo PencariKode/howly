@@ -1,7 +1,4 @@
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPawClaws } from "@fortawesome/pro-solid-svg-icons";
-import { faGhost } from "@fortawesome/pro-light-svg-icons";
 
 export default function NotFound() {
     return (
@@ -20,9 +17,8 @@ export default function NotFound() {
             <div className="auth-card relative z-10 w-full max-w-md text-center">
                 <div className="flex flex-col items-center gap-5">
                     <div className="relative">
-                        <FontAwesomeIcon
-                            icon={ faGhost }
-                            className="text-7xl text-zinc-600 animate-[auth-float_3s_ease-in-out_infinite]"
+                        <i
+                            className="fal fa-ghost text-7xl text-zinc-600 animate-[auth-float_3s_ease-in-out_infinite]"
                         />
                     </div>
                     <h1
@@ -38,7 +34,7 @@ export default function NotFound() {
                     </div>
 
                     <Link href="/" className="auth-submit-btn mt-2 w-full max-w-xs flex items-center justify-center gap-2 no-underline">
-                        <FontAwesomeIcon icon={ faPawClaws } className="text-sm" />
+                        <i className="fas fa-paw-claws text-sm" />
                         Kembali ke Home
                     </Link>
 

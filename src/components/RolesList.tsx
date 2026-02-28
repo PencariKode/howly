@@ -5,8 +5,7 @@ import Swiper from 'swiper';
 import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Navigation } from 'swiper/modules'
 import { useEffect, useRef, useState } from 'react'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserAlien, faUserAstronaut, faArrowLeftLong, faArrowRightLong } from "@fortawesome/pro-solid-svg-icons";
+
 
 import { roles } from "@l/roles";
 
@@ -72,9 +71,9 @@ export default function RolesList() {
             <div className={ `transition-opacity duration-500 ${swiperReady ? 'opacity-100' : 'opacity-0 absolute inset-0'}` }>
                 <div className="flex flex-col items-center justify-center text-center">
                     <h2 className="text-3xl font-bold mb-3 items-center justify-center flex gap-3 px-4 py-1.5 rounded-lg bg-glass/70 border border-glass-border/50">
-                        <FontAwesomeIcon icon={ faUserAlien } className="text-2xl text-red-400" />
+                        <i className="fas fa-user-alien text-2xl text-red-400" />
                         <span className="text-zinc-100">Roles</span>
-                        <FontAwesomeIcon icon={ faUserAstronaut } className="text-2xl text-cyan-400" />
+                        <i className="fas fa-user-astronaut text-2xl text-cyan-400" />
                     </h2>
                     <p className="mb-8 text-zinc-400">Temukan role (peran) yang tersedia di <b className="text-zinc-200">Howly</b>.</p>
                 </div>
@@ -125,10 +124,10 @@ export default function RolesList() {
                         className="slider-controler absolute top-0 z-50 w-full max-w-xl md:max-w-lg min-h-2 flex justify-between font-bold text-2xl sm:text-3xl md:text-xl">
                         <button
                             className="swiper-button-prev px-3 py-1 rounded-lg cursor-pointer hover:scale-95 transition-all duration-200 text-zinc-200 hover:text-white bg-gradient-to-br from-[#6B1525B3] to-[#A6344580] border border-rose-accent/40">
-                            <FontAwesomeIcon icon={ faArrowLeftLong } /></button>
+                            <i className="fas fa-arrow-left-long" /></button>
                         <button
                             className="swiper-button-next px-3 py-1 rounded-lg cursor-pointer hover:scale-95 transition-all duration-200 text-zinc-200 hover:text-white bg-gradient-to-br from-[#6B1525B3] to-[#A6344580] border border-rose-accent/40">
-                            <FontAwesomeIcon icon={ faArrowRightLong } /></button>
+                            <i className="fas fa-arrow-right-long" /></button>
                     </div>
                     <h1
                         className="px-4 py-1.5 rounded-lg w-fit text-center text-xl font-bold text-white transition-colors duration-300"

@@ -5,8 +5,6 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { isEmail, isStrongPassword } from "validator";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 export default function RegisterPage() {
     return (
@@ -151,7 +149,7 @@ function RegisterContent() {
                         className="auth-oauth-btn group flex-1"
                         title="Daftar dengan akun Google"
                     >
-                        <FontAwesomeIcon icon={ faGoogle } size="xl" />
+                        <i className="fab fa-google text-xl" />
                         <span className="font-semibold">Google</span>
                     </button>
                     <button
@@ -159,7 +157,7 @@ function RegisterContent() {
                         className="auth-oauth-btn group flex-1"
                         title="Daftar dengan akun GitHub"
                     >
-                        <FontAwesomeIcon icon={ faGithub } size="xl" />
+                        <i className="fab fa-github text-xl" />
                         <span className="font-semibold">GitHub</span>
                     </button>
                 </div>

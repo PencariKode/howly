@@ -7,6 +7,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
+import "../../public/fontawesome/css/all.min.css";
 
 export const metadata: Metadata = {
     title: "Howly - Home Page",
@@ -22,8 +23,6 @@ export default function RootLayout({
     return (
         <html lang="id">
             <head>
-                <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
-                <link rel="stylesheet" href="/fontawesome/css/etch-solid.css" />
             </head>
             <Body children={ children } />
         </html>

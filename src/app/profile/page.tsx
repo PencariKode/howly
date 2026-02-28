@@ -4,8 +4,6 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, FormEvent } from "react";
 import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faFloppyDisk, faTrashCan, faTriangleExclamation } from "@fortawesome/pro-light-svg-icons";
 
 export default function ProfilePage() {
     const { data: session, status, update } = useSession();
@@ -122,7 +120,7 @@ export default function ProfilePage() {
                             ) : (
                                 <div
                                     className="w-24 h-24 rounded-full flex items-center justify-center text-zinc-400 bg-[#29293899] border-3 border-zinc-border">
-                                    <FontAwesomeIcon icon={ faUser } className="text-3xl" />
+                                    <i className="fal fa-user text-3xl" />
                                 </div>
                             ) }
                         </div>
@@ -206,7 +204,7 @@ export default function ProfilePage() {
                                 <span className="auth-spinner-sm" />
                             ) : (
                                 <>
-                                    <FontAwesomeIcon icon={ faFloppyDisk } className="text-sm" />
+                                    <i className="fal fa-floppy-disk text-sm" />
                                     Simpan Perubahan
                                 </>
                             ) }
@@ -224,7 +222,7 @@ export default function ProfilePage() {
                         onClick={ () => setShowDeleteModal(true) }
                         className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 text-red-400 hover:text-red-300 hover:-translate-y-px bg-red-900/20 border border-red-700/40"
                     >
-                        <FontAwesomeIcon icon={ faTrashCan } />
+                        <i className="fal fa-trash-can" />
                         Hapus Akun Saya
                     </button>
                 </div>
@@ -234,7 +232,7 @@ export default function ProfilePage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
                     <div className="auth-card w-full max-w-sm border-red-700/40">
                         <div className="flex flex-col items-center gap-4 text-center">
-                            <FontAwesomeIcon icon={ faTriangleExclamation } className="text-4xl text-red-400" />
+                            <i className="fal fa-triangle-exclamation text-4xl text-red-400" />
                             <h3 className="text-lg font-bold text-white">Hapus Akun?</h3>
                             <p className="text-sm text-zinc-400">
                                 Tindakan ini tidak dapat dibatalkan. Ketik <strong className="text-red-400">HAPUS AKUN</strong> untuk konfirmasi.

@@ -1,12 +1,8 @@
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBlockQuestion } from "@fortawesome/pro-solid-svg-icons";
-
 export default function HowToPlay() {
     return (
         <section id="howtoplay" className="min-h-screen minMaxWidth flex items-center justify-center">
             <div className="flex flex-col gap-4 pt-16 pb-8 px-4 max-w-3xl">
-                <h2 className="text-3xl font-bold items-center justify-center flex gap-2"><FontAwesomeIcon icon={ faBlockQuestion } /> How to Play <FontAwesomeIcon icon={ faBlockQuestion } /></h2>
+                <h2 className="text-3xl font-bold items-center justify-center flex gap-2"><i className="fas fa-block-question" /> How to Play <i className="fas fa-block-question" /></h2>
                 <p className="text-base mb-2">Ikuti langkah-langkah ini untuk bermain:</p>
                 <ol className="list-decimal mb-2 marker:font-bold list-inside flex flex-col gap-y-4.5 text-base *:leading-[1.18] *:hover:text-hl-text/80 *:even:pl-5">
                     <li>Masuk / Buat sebuah <i>Room</i>.</li>
