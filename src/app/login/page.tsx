@@ -5,10 +5,13 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { isEmail } from "validator";
+import Spinner from "@c/Spinner";
+import PrimaryButton from "@c/Buttons/Primary";
+import OutlineButton from "@c/Buttons/Outline";
 
 export default function LoginPage() {
     return (
-        <Suspense fallback={ <div className="flex min-h-screen items-center justify-center bg-hl-bg"><div className="auth-spinner" /></div> }>
+        <Suspense fallback={ <div className="flex min-h-screen items-center justify-center bg-hl-bg"><Spinner /></div> }>
             <LoginContent />
         </Suspense>
     );
@@ -69,7 +72,7 @@ function LoginContent() {
     if (status === "loading") {
         return (
             <div className="flex min-h-screen items-center justify-center bg-hl-bg">
-                <div className="auth-spinner" />
+                <Spinner />
             </div>
         );
     }
@@ -83,7 +86,7 @@ function LoginContent() {
                 <div className="absolute -bottom-16 left-1/4 h-[9rem] w-[9rem] sm:h-[18rem] sm:w-[18rem] rounded-full bg-[#6b1525] opacity-30 blur-[80px] sm:blur-[120px]" />
             </div>
 
-            <div className="auth-card relative z-10 w-full max-w-md">
+            <div className="glass-card relative z-10 w-full max-w-md">
                 <div className="mb-6 text-center">
                     <h1 className="text-2xl font-bold tracking-tight text-white">
                         Masuk ke Akun
@@ -97,22 +100,22 @@ function LoginContent() {
                     Masuk dengan akun:
                 </p>
                 <div className="flex gap-3">
-                    <button
+                    <OutlineButton
                         onClick={ () => signIn("google", { callbackUrl }) }
-                        className="auth-oauth-btn group flex-1"
+                        className="group flex-1"
                         title="Masuk dengan akun Google"
                     >
                         <i className="fab fa-google text-xl" />
                         <span className="font-semibold">Google</span>
-                    </button>
-                    <button
+                    </OutlineButton>
+                    <OutlineButton
                         onClick={ () => signIn("github", { callbackUrl }) }
-                        className="auth-oauth-btn group flex-1"
+                        className="group flex-1"
                         title="Masuk dengan akun GitHub"
                     >
                         <i className="fab fa-github text-xl" />
                         <span className="font-semibold">GitHub</span>
-                    </button>
+                    </OutlineButton>
                 </div>
 
                 <div className="my-6 flex items-center gap-3">
@@ -137,7 +140,7 @@ function LoginContent() {
                             value={ email }
                             onChange={ (e) => setEmail(e.target.value) }
                             placeholder="email@example.com"
-                            className={ `auth-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
+                            className={ `base-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
                         />
                         { errForm.type === "email" && (
                             <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
@@ -157,20 +160,20 @@ function LoginContent() {
                             value={ password }
                             onChange={ (e) => setPassword(e.target.value) }
                             placeholder="Masukkan password"
-                            className={ `auth-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
+                            className={ `base-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
                         />
                         { errForm.type === "password" && (
                             <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
                         ) }
                     </div>
 
-                    <button
+                    <PrimaryButton
                         type="submit"
                         disabled={ loading }
-                        className="auth-submit-btn mt-1"
+                        className="mt-1"
                     >
-                        { loading ? <span className="auth-spinner-sm" /> : "Masuk" }
-                    </button>
+                        { loading ? <Spinner size="sm" /> : "Masuk" }
+                    </PrimaryButton>
                     <Link
                         className="text-xs -mt-1 italic text-[#c9586a] hover:underline text-right"
                         href="/auth/forgot"

@@ -5,6 +5,7 @@ import checkRoom from "./checkRoom";
 import { formatRoomCode } from "@/utils";
 import DangerButton from "@c/Buttons/Danger";
 import PrimaryButton from "@c/Buttons/Primary";
+import Spinner from "@c/Spinner";
 
 const errorMessages = {
     codeLength: "Panjang kode room hanya boleh 6 karakter",
@@ -33,7 +34,7 @@ export default function JoinRoomForm() {
                         name="roomCode"
                         autoComplete="off"
                         id="roomCode"
-                        className={ `auth-input text-center disabled:opacity-50 disabled:cursor-wait ${error.length > 0 ? '!border-2 !border-orange-600 !outline-none !ring-0 !focus:border-orange-600 !focus:ring-0 !focus:outline-none' : ''}` }
+                        className={ `base-input text-center disabled:opacity-50 disabled:cursor-wait ${error.length > 0 ? '!border-2 !border-orange-600 !outline-none !ring-0 !focus:border-orange-600 !focus:ring-0 !focus:outline-none' : ''}` }
                         value={ roomCode }
                         placeholder="AB1-C23"
                         onChange={ (e) => handleRoomCode(e.target.value) }
@@ -54,7 +55,7 @@ export default function JoinRoomForm() {
                         onClick={ handleJoin }
                         disabled={ !isMounted || isLoading }
                     >
-                        { isLoading ? <span className="auth-spinner-sm" /> : "Masuk Room" }
+                        { isLoading ? <Spinner size="sm" /> : "Masuk Room" }
                     </PrimaryButton>
 
                     { showLongLoadingMessage && (
