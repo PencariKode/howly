@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, FormEvent } from "react";
 import Image from "next/image";
+import DangerButton from "@c/Buttons/Danger";
 
 export default function ProfilePage() {
     const { data: session, status, update } = useSession();
@@ -252,14 +253,13 @@ export default function ProfilePage() {
                                 >
                                     Batal
                                 </button>
-                                <button
-                                    type="button"
+                                <DangerButton
                                     onClick={ handleDelete }
                                     disabled={ deleteConfirmText !== "HAPUS AKUN" || deleting }
-                                    className="flex-1 flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed text-white bg-gradient-to-br from-[#7F1D1D] to-[#B91C1C] border border-red-700/60"
+                                    className="flex-1"
                                 >
                                     { deleting ? <span className="auth-spinner-sm" /> : "Hapus" }
-                                </button>
+                                </DangerButton>
                             </div>
                         </div>
                     </div>
