@@ -6,20 +6,20 @@
 }
 
 @theme inline {
+  /*--color-hl-primary: #191923;*/
+  --font-sans: var(--font-rubik-sans);
   --color-hl-bg: #09090c;
   --color-hl-text: #ededed;
   --color-hl-text2: #d1d1d1;
-  /*--color-hl-primary: #191923;*/
   --color-hl-primary: #14141c;
   --color-hl-secondary: #191923;
   --color-hl-tertiary: #292938;
-  --font-sans: var(--font-rubik-sans);
   --breakpoint-xs: 32rem;
-
+  
   /* Glass surfaces & borders — use with opacity: bg-glass/85, border-glass-border/60, etc. */
   --color-glass: #191923;
   --color-glass-border: #292938;
-
+  
   /* Rose accent — use with opacity: border-rose-accent/40, etc. */
   --color-rose-accent: #a63445;
 }
