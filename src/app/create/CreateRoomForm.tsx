@@ -57,6 +57,8 @@ const RoleInputItem = ({
     );
 };
 
+import { createRoomAction } from "./actions";
+
 function CreateRoomForm() {
 
 
@@ -101,8 +103,16 @@ function CreateRoomForm() {
         setGameTitle(e.currentTarget.value);
     }
 
+    const handleCreateRoom = async (formData: FormData) => {
+        await createRoomAction({
+            roomName: gameTitle,
+            playerCount,
+            roleConfig,
+        });
+    };
+
     return (
-        <form className="flex flex-col items-center justify-center gap-4 py-2 w-full">
+        <form action={handleCreateRoom} className="flex flex-col items-center justify-center gap-4 py-2 w-full">
             <section
                 className="flex flex-col items-start justify-center w-full gap-1.5 px-3 py-3 rounded-lg bg-glass-border/40 border border-zinc-700/30">
                 <label htmlFor="roomname" className="text-sm font-medium text-zinc-300">Nama Room:</label>
