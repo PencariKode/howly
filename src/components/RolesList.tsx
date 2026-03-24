@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 
 
 import { roles } from "@l/roles";
+import Spinner from "@c/Spinner";
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -65,7 +66,7 @@ export default function RolesList() {
             {/* loading spinner */ }
             { !swiperReady && (
                 <div className="flex items-center justify-center min-h-[60vh]">
-                    <div className="auth-spinner" />
+                    <Spinner />
                 </div>
             ) }
             <div className={ `transition-opacity duration-500 ${swiperReady ? 'opacity-100' : 'opacity-0 absolute inset-0'}` }>

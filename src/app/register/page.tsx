@@ -5,10 +5,13 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { isEmail, isStrongPassword } from "validator";
+import Spinner from "@c/Spinner";
+import PrimaryButton from "@c/Buttons/Primary";
+import OutlineButton from "@c/Buttons/Outline";
 
 export default function RegisterPage() {
     return (
-        <Suspense fallback={ <div className="flex min-h-screen items-center justify-center bg-hl-bg"><div className="auth-spinner" /></div> }>
+        <Suspense fallback={ <div className="flex min-h-screen items-center justify-center bg-hl-bg"><Spinner /></div> }>
             <RegisterContent />
         </Suspense>
     );
@@ -116,7 +119,7 @@ function RegisterContent() {
     if (status === "loading") {
         return (
             <div className="flex min-h-screen items-center justify-center bg-hl-bg">
-                <div className="auth-spinner" />
+                <Spinner />
             </div>
         );
     }
@@ -130,7 +133,7 @@ function RegisterContent() {
                 <div className="absolute -top-16 right-1/4 h-[9rem] w-[9rem] sm:h-[18rem] sm:w-[18rem] rounded-full bg-[#6b1525] opacity-30 blur-[80px] sm:blur-[120px]" />
             </div>
 
-            <div className="auth-card relative z-10 w-full max-w-md">
+            <div className="glass-card relative z-10 w-full max-w-md">
                 <div className="mb-6 text-center">
                     <h1 className="text-2xl font-bold tracking-tight text-white">
                         Buat Akun Baru
@@ -144,22 +147,22 @@ function RegisterContent() {
                     Daftar dengan akun:
                 </p>
                 <div className="flex gap-3">
-                    <button
+                    <OutlineButton
                         onClick={ () => signIn("google", { callbackUrl }) }
-                        className="auth-oauth-btn group flex-1"
+                        className="group flex-1"
                         title="Daftar dengan akun Google"
                     >
                         <i className="fab fa-google text-xl" />
                         <span className="font-semibold">Google</span>
-                    </button>
-                    <button
+                    </OutlineButton>
+                    <OutlineButton
                         onClick={ () => signIn("github", { callbackUrl }) }
-                        className="auth-oauth-btn group flex-1"
+                        className="group flex-1"
                         title="Daftar dengan akun GitHub"
                     >
                         <i className="fab fa-github text-xl" />
                         <span className="font-semibold">GitHub</span>
-                    </button>
+                    </OutlineButton>
                 </div>
 
                 <div className="my-6 flex items-center gap-3">
@@ -184,7 +187,7 @@ function RegisterContent() {
                             value={ name }
                             onChange={ (e) => setName(e.target.value) }
                             placeholder="Howly Molly"
-                            className={ `auth-input ${errForm.type === "name" ? "ring-red-500/60" : ""}` }
+                            className={ `base-input ${errForm.type === "name" ? "ring-red-500/60" : ""}` }
                         />
                         { errForm.type === "name" && (
                             <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
@@ -204,7 +207,7 @@ function RegisterContent() {
                             value={ email }
                             onChange={ (e) => setEmail(e.target.value) }
                             placeholder="email@example.com"
-                            className={ `auth-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
+                            className={ `base-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
                         />
                         { errForm.type === "email" && (
                             <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
@@ -224,7 +227,7 @@ function RegisterContent() {
                             value={ password }
                             onChange={ (e) => setPassword(e.target.value) }
                             placeholder="Masukkan password"
-                            className={ `auth-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
+                            className={ `base-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
                         />
                         { errForm.type === "password" && (
                             <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
@@ -244,20 +247,20 @@ function RegisterContent() {
                             value={ passwordConfirm }
                             onChange={ (e) => setPasswordConfirm(e.target.value) }
                             placeholder="Ulangi password"
-                            className={ `auth-input ${errForm.type === "passwordConfirm" ? "ring-red-500/60" : ""}` }
+                            className={ `base-input ${errForm.type === "passwordConfirm" ? "ring-red-500/60" : ""}` }
                         />
                         { errForm.type === "passwordConfirm" && (
                             <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
                         ) }
                     </div>
 
-                    <button
+                    <PrimaryButton
                         type="submit"
                         disabled={ loading }
-                        className="auth-submit-btn mt-1"
+                        className="mt-1"
                     >
-                        { loading ? <span className="auth-spinner-sm" /> : "Daftar" }
-                    </button>
+                        { loading ? <Spinner size="sm" /> : "Daftar" }
+                    </PrimaryButton>
                 </form>
 
                 <div className="mt-6 flex flex-col items-center gap-3">

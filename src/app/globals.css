@@ -246,69 +246,69 @@ input[type="range"]:hover::-moz-range-thumb {
 /* Auth Styles */
 
 @layer utilities {
-  .auth-card {
-    @apply rounded-2xl p-8 animate-[auth-fade-in_0.5s_ease-out] bg-glass/92 border border-glass-border/50;
+  .glass-card {
+    @apply rounded-2xl p-8 animate-[fade-in_0.5s_ease-out] bg-glass/92 border border-glass-border/50;
     box-shadow:
       0 0 0 1px #ffffff08,
       0 20px 50px -12px #00000080;
   }
 
-  .auth-oauth-btn {
+  .outline-btn {
     @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm cursor-pointer transition-all duration-200 ease-in-out bg-glass-border/60 border border-zinc-700/50 text-zinc-300;
   }
 
-  .auth-oauth-btn:hover {
+  .outline-btn:hover {
     @apply -translate-y-px text-zinc-50 bg-zinc-700/60 border-zinc-500/50 shadow-[0_4px_12px_black/30];
   }
 
-  .auth-oauth-btn:active {
+  .outline-btn:active {
     @apply translate-y-0;
   }
 
-  .auth-input {
+  .base-input {
     @apply w-full rounded-lg px-3.5 py-2.5 text-sm text-zinc-50 outline-none transition-all duration-200 ease-in-out bg-hl-primary/60 border border-zinc-700/50;
   }
 
-  .auth-input::placeholder {
+  .base-input::placeholder {
     @apply text-zinc-600;
   }
 
-  .auth-input:focus {
+  .base-input:focus {
     @apply border-rose-accent/55 shadow-[0_0_0_3px_rose-accent/12];
   }
 
-  .auth-submit-btn {
+  .primary-btn {
     @apply flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white cursor-pointer border-none transition-all duration-200 ease-in-out min-h-11 bg-gradient-to-br from-[#6B1525] to-[#A63445];
   }
 
-  .auth-submit-btn:hover:not(:disabled) {
+  .primary-btn:hover:not(:disabled) {
     @apply -translate-y-px bg-gradient-to-br from-[#8B2030] to-[#C94D5E] shadow-[0_4px_16px_#8B203066];
   }
 
-  .auth-submit-btn:active:not(:disabled) {
+  .primary-btn:active:not(:disabled) {
     @apply translate-y-0;
   }
 
-  .auth-submit-btn:disabled {
+  .primary-btn:disabled {
     @apply opacity-70 cursor-not-allowed;
   }
 
-  .auth-spinner {
-    @apply h-8 w-8 rounded-full animate-[auth-spin_0.8s_linear_infinite] border-3 border-white/10 border-t-rose-accent;
+  .spinner {
+    @apply h-8 w-8 rounded-full animate-[spin-slow_0.8s_linear_infinite] border-3 border-white/10 border-t-rose-accent;
   }
 
-  .auth-spinner-sm {
-    @apply inline-block h-5 w-5 rounded-full animate-[auth-spin_0.7s_linear_infinite] border-2 border-[#FFFFFF4D] border-t-white;
+  .spinner-sm {
+    @apply inline-block h-5 w-5 rounded-full animate-[spin-slow_0.7s_linear_infinite] border-2 border-[#FFFFFF4D] border-t-white;
   }
 }
 
-@keyframes auth-spin {
+@keyframes spin-slow {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes auth-fade-in {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateY(12px);
@@ -319,7 +319,7 @@ input[type="range"]:hover::-moz-range-thumb {
   }
 }
 
-@keyframes auth-float {
+@keyframes float-anim {
   0%,
   100% {
     transform: translateY(0);

@@ -9,7 +9,7 @@ export default function PrimaryButton({ children, className = "", ...props }: Pr
         <button
             type="button"
             {...props}
-            className={ `auth-submit-btn disabled:opacity-50 disabled:cursor-wait ${className}` }
+            className={ `primary-btn disabled:opacity-50 disabled:cursor-wait ${className}` }
         >
             { children }
         </button>

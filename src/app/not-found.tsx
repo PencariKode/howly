@@ -14,11 +14,11 @@ export default function NotFound() {
                 } }
             />
 
-            <div className="auth-card relative z-10 w-full max-w-md text-center">
+            <div className="glass-card relative z-10 w-full max-w-md text-center">
                 <div className="flex flex-col items-center gap-5">
                     <div className="relative">
                         <i
-                            className="fal fa-ghost text-7xl text-zinc-600 animate-[auth-float_3s_ease-in-out_infinite]"
+                            className="fal fa-ghost text-7xl text-zinc-600 animate-[float-anim_3s_ease-in-out_infinite]"
                         />
                     </div>
                     <h1
@@ -33,7 +33,7 @@ export default function NotFound() {
                         </p>
                     </div>
 
-                    <Link href="/" className="auth-submit-btn mt-2 w-full max-w-xs flex items-center justify-center gap-2 no-underline">
+                    <Link href="/" className="primary-btn mt-2 w-full max-w-xs flex items-center justify-center gap-2 no-underline">
                         <i className="fas fa-paw-claws text-sm" />
                         Kembali ke Home
                     </Link>

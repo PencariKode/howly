@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, FormEvent } from "react";
 import Image from "next/image";
 import DangerButton from "@c/Buttons/Danger";
+import Spinner from "@c/Spinner";
+import PrimaryButton from "@c/Buttons/Primary";
+import OutlineButton from "@c/Buttons/Outline";
 
 export default function ProfilePage() {
     const { data: session, status, update } = useSession();
@@ -34,7 +37,7 @@ export default function ProfilePage() {
     if (status === "loading") {
         return (
             <div className="flex min-h-screen items-center justify-center bg-hl-bg">
-                <div className="auth-spinner" />
+                <Spinner />
             </div>
         );
     }
@@ -107,7 +110,7 @@ export default function ProfilePage() {
             />
 
             <div className="relative z-10 w-full max-w-lg flex flex-col gap-5">
-                <div className="auth-card rounded-md!">
+                <div className="glass-card rounded-md!">
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
                             { user.image ? (
@@ -142,7 +145,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="auth-card rounded-md!">
+                <div className="glass-card rounded-md!">
                     <h2 className="text-lg font-bold text-white mb-4">Edit Profil</h2>
 
                     { message && (
@@ -162,7 +165,7 @@ export default function ProfilePage() {
                                 value={ name }
                                 onChange={ (e) => setName(e.target.value) }
                                 placeholder="Nama lengkap"
-                                className="auth-input"
+                                className="base-input"
                                 minLength={ 3 }
                                 required
                             />
@@ -178,7 +181,7 @@ export default function ProfilePage() {
                                 value={ image }
                                 onChange={ (e) => setImage(e.target.value) }
                                 placeholder="https://example.com/avatar.jpg"
-                                className="auth-input"
+                                className="base-input"
                             />
                             <p className="mt-1 text-xs text-zinc-600">Kosongkan untuk menghapus foto profil</p>
                         </div>
@@ -196,24 +199,24 @@ export default function ProfilePage() {
                             </div>
                         ) }
 
-                        <button
+                        <PrimaryButton
                             type="submit"
                             disabled={ saving }
-                            className="auth-submit-btn rounded-md! mt-1 flex items-center justify-center gap-2"
+                            className="rounded-md! mt-1 flex items-center justify-center gap-2"
                         >
                             { saving ? (
-                                <span className="auth-spinner-sm" />
+                                <Spinner size="sm" />
                             ) : (
                                 <>
                                     <i className="fal fa-floppy-disk text-sm" />
                                     Simpan Perubahan
                                 </>
                             ) }
-                        </button>
+                        </PrimaryButton>
                     </form>
                 </div>
 
-                <div className="auth-card border-red-700/30  rounded-md!">
+                <div className="glass-card border-red-700/30  rounded-md!">
                     <h2 className="text-lg font-bold text-red-400 mb-2">Zona Berbahaya</h2>
                     <p className="text-sm text-zinc-500 mb-4">
                         Menghapus akun bersifat permanen. Semua data termasuk sesi dan akun terhubung akan ikut terhapus.
@@ -231,7 +234,7 @@ export default function ProfilePage() {
 
             { showDeleteModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-                    <div className="auth-card w-full max-w-sm border-red-700/40">
+                    <div className="glass-card w-full max-w-sm border-red-700/40">
                         <div className="flex flex-col items-center gap-4 text-center">
                             <i className="fal fa-triangle-exclamation text-4xl text-red-400" />
                             <h3 className="text-lg font-bold text-white">Hapus Akun?</h3>
@@ -243,22 +246,21 @@ export default function ProfilePage() {
                                 value={ deleteConfirmText }
                                 onChange={ (e) => setDeleteConfirmText(e.target.value) }
                                 placeholder="Ketik HAPUS AKUN"
-                                className="auth-input text-center"
+                                className="base-input text-center"
                             />
                             <div className="flex gap-3 w-full">
-                                <button
-                                    type="button"
+                                <OutlineButton
                                     onClick={ () => { setShowDeleteModal(false); setDeleteConfirmText(""); } }
-                                    className="auth-oauth-btn flex-1 justify-center"
+                                    className="flex-1 justify-center"
                                 >
                                     Batal
-                                </button>
+                                </OutlineButton>
                                 <DangerButton
                                     onClick={ handleDelete }
                                     disabled={ deleteConfirmText !== "HAPUS AKUN" || deleting }
                                     className="flex-1"
                                 >
-                                    { deleting ? <span className="auth-spinner-sm" /> : "Hapus" }
+                                    { deleting ? <Spinner size="sm" /> : "Hapus" }
                                 </DangerButton>
                             </div>
                         </div>
