@@ -10,6 +10,7 @@ import { joinRoomAction, leaveRoomAction, kickPlayerAction, disbandRoomAction } 
 import { useRouter } from "next/navigation";
 import { useUIStore } from "@/stores/uiStore";
 import { RoomPlayer, RoomRoleConfig, WaitingRoomProps } from "@/types/room";
+import { gameTips } from "@/constants/gameTips";
 
 import OutlineButton from "@c/Buttons/Outline";
 
@@ -112,6 +113,66 @@ function RoleConfigSummary({ config }: { config: RoomRoleConfig }) {
                 </span>
             )) }
         </div>
+    );
+}
+
+function TipsAndTricksCard() {
+    const [currentTipIndex, setCurrentTipIndex] = useState(0);
+    const [tipFade, setTipFade] = useState(true);
+    const [isRandomizing, setIsRandomizing] = useState(false);
+
+    useEffect(() => {
+        setCurrentTipIndex(Math.floor(Math.random() * gameTips.length));
+        const interval = setInterval(() => {
+            setTipFade(false);
+            setTimeout(() => {
+                setCurrentTipIndex(Math.floor(Math.random() * gameTips.length));
+                setTipFade(true);
+            }, 500);
+        }, 6500);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    function randomizeTips() {
+        if (isRandomizing) return;
+        setIsRandomizing(true);
+        setTipFade(false);
+
+        setTimeout(() => {
+            let nextIndex;
+            do {
+                nextIndex = Math.floor(Math.random() * gameTips.length);
+            } while (nextIndex === currentTipIndex && gameTips.length > 1);
+
+            setCurrentTipIndex(nextIndex);
+            setTipFade(true);
+            setTimeout(() => setIsRandomizing(false), 500);
+        }, 500);
+    }
+
+
+    return (
+        <div className="glass-card flex items-start gap-3 bg-hl-primary/30 border-dashed border-zinc-700/50 relative">
+            <button 
+                className={ `absolute right-4 top-4 bg-amber-500/10 w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition-all duration-200 rounded-full flex items-center justify-center border border-amber-500/20 ${isRandomizing ? 'animate-spin-slow' : ''}` } 
+                type="button" 
+                onClick={randomizeTips}
+                title="Acak Tips"
+            >
+                <i className="fas fa-dice text-amber-500/80 text-xs" />
+            </button>
+            <div className="w-8 h-8 flex-shrink-0 mt-0.5 rounded-full bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
+                <i className="fas fa-lightbulb text-amber-500/80 text-sm" />
+            </div>
+            <div className="flex flex-col min-w-0">
+                <span className="text-[0.765rem] font-bold text-amber-500/70 uppercase tracking-[0.15em] mb-1">Tips & Trick</span>
+                <p className={ `text-xs text-zinc-300/80 transition-opacity duration-500 leading-relaxed ${tipFade ? 'opacity-100' : 'opacity-0'}` }>
+                    { gameTips[currentTipIndex] }
+                </p>
+            </div>
+        </div>
+
     );
 }
 
@@ -323,6 +384,9 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                     </div>
                 </div>
 
+                {/*PK: Tips & Tricks Card */ }
+                { (isOwner || liveIsPlayer) && <TipsAndTricksCard /> }
+
                 <div className="glass-card">
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-semibold text-zinc-300">
@@ -400,10 +464,10 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                                 <i className="fas fa-play mr-2" />
                                 Mulai Permainan
                             </PrimaryButton>
-                            <DangerButton 
-                                className="w-full" 
-                                onClick={() => setShowDisbandModal(true)}
-                                disabled={isPending}
+                            <DangerButton
+                                className="w-full"
+                                onClick={ () => setShowDisbandModal(true) }
+                                disabled={ isPending }
                             >
                                 <i className="fas fa-door-open mr-2" />
                                 Bubarkan Room
@@ -444,7 +508,7 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                 </div>
             </div>
 
-            {/*PK: Modal Bubarkan Room */}
+            {/*PK: Modal Bubarkan Room */ }
             { showDisbandModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
                     <div className="glass-card w-full max-w-sm border-red-700/40">
@@ -456,25 +520,25 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                             <p className="text-sm text-zinc-400">
                                 Apakah kamu yakin ingin membubarkan room ini? Semua pemain akan dikeluarkan. Tindakan ini tidak dapat dibatalkan.
                             </p>
-                            
+
                             <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
                                 <OutlineButton
                                     onClick={ () => setShowDisbandModal(false) }
                                     className="flex-1 justify-center"
-                                    disabled={isPending}
+                                    disabled={ isPending }
                                 >
                                     Batal
                                 </OutlineButton>
                                 <DangerButton
                                     onClick={ handleDisbandRoom }
                                     className="flex-1"
-                                    disabled={isPending}
+                                    disabled={ isPending }
                                 >
-                                    {isPending ? (
+                                    { isPending ? (
                                         <><i className="fas fa-spinner fa-spin mr-2" /> Memproses...</>
                                     ) : (
                                         "Ya, Bubarkan"
-                                    )}
+                                    ) }
                                 </DangerButton>
                             </div>
                         </div>

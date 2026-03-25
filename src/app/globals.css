@@ -22,6 +22,17 @@
   
   /* Rose accent — use with opacity: border-rose-accent/40, etc. */
   --color-rose-accent: #a63445;
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  --animate-spin-slow: spin-slow 0.8s linear infinite;
 }
 
 body {
