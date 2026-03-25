@@ -14,7 +14,7 @@ export const werewolfRoleWeights: RolePowerWeightWolf = {
     shapeshifter: 6,
 };
 
-class RoleBalance {
+export class RoleBalance {
     protected playerCount: number;
     // protected humanRoleWeights: RolePowerWeightHuman;
     // protected werewolfRoleWeights: RolePowerWeightWolf;
