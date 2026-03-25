@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef, RefObject } from "react";
 import checkRoom from "./checkRoom";
-import { formatRoomCode } from "@/utils";
+import { formatRoomCode, serializeRoomCode } from "@/utils";
 import DangerButton from "@c/Buttons/Danger";
 import PrimaryButton from "@c/Buttons/Primary";
 import Spinner from "@c/Spinner";
+import { useRouter } from "next/navigation";
 
 const errorMessages = {
     codeLength: "Panjang kode room hanya boleh 6 karakter",
@@ -14,7 +15,8 @@ const errorMessages = {
     codeEmpty: "Kode room tidak boleh kosong",
     codeNotFound: "Kode room tidak ditemukan",
     codeError: "Terjadi kesalahan saat mencari kode room",
-    offline: "Pastikan koneksi internet Anda aktif untuk bisa masuk ke dalam room"
+    offline: "Pastikan koneksi internet Anda aktif untuk bisa masuk ke dalam room",
+    kicked: "Anda tidak dapat bergabung ke room ini karena baru saja ditendang. Silakan tunggu 1 menit."
 };
 
 export default function JoinRoomForm() {
@@ -121,6 +123,7 @@ function useJoinRoom() {
     const [showErrorPopup, setShowErrorPopup] = useState(false);
     const closeBtnRef = useRef<HTMLButtonElement>(null);
     const [isMounted, setIsMounted] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         setIsMounted(true);
@@ -177,8 +180,23 @@ function useJoinRoom() {
         }, 1000);
 
         try {
+            const serialized = serializeRoomCode(roomCode);
+            //PK: Cek cookie, dikick atau tidak
+            const kickCookie = document.cookie
+                .split("; ")
+                .find((row) => row.startsWith(`kicked_from_${serialized}=`));
+
+            if (kickCookie) {
+                setError(errorMessages.kicked);
+                setIsLoading(false);
+                setShowLongLoadingMessage(false);
+                return;
+            }
+
             const room = await checkRoom(roomCode);
-            if (!room) {
+            if (room) {
+                router.push(`/room/${room.code}`);
+            } else {
                 setError(errorMessages.codeNotFound);
                 setShowErrorPopup(true);
             }

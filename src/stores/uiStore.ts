@@ -6,11 +6,13 @@ type UIState = {
     isDropMenuOpen: boolean;
     isMobileMenuOpen: boolean;
     isHeaderOpen: boolean;
+    isInActiveRoom: boolean;
     toggleScreenScrolled: (isScrolled: boolean) => void;
     toggleDropMenu: (isOpen: boolean) => void;
     toggleMobileMenu: (isOpen: boolean) => void;
     toggleHeader: (isOpen: boolean) => void;
     setLastScrollTop: (scrollTop: number) => void;
+    setInActiveRoom: (isActive: boolean) => void;
 };
 
 export const useUIStore = create<UIState>((set) => ({
@@ -19,14 +21,11 @@ export const useUIStore = create<UIState>((set) => ({
     isDropMenuOpen: false,
     isMobileMenuOpen: false,
     isHeaderOpen: true,
-    toggleScreenScrolled: (isScrolled) =>
-        set((state) => ({ ...state, isScreenScrolled: isScrolled })),
-    toggleDropMenu: (isOpen) =>
-        set((state) => ({ ...state, isDropMenuOpen: isOpen })),
-    toggleMobileMenu: (isOpen) =>
-        set((state) => ({ ...state, isMobileMenuOpen: isOpen })),
-    toggleHeader: (isOpen) =>
-        set((state) => ({ ...state, isHeaderOpen: isOpen })),
-    setLastScrollTop: (scrollTop) =>
-        set((state) => ({ ...state, lastScrollTop: scrollTop })),
+    isInActiveRoom: false,
+    toggleScreenScrolled: (isScrolled) => set({ isScreenScrolled: isScrolled }),
+    toggleDropMenu: (isOpen) => set({ isDropMenuOpen: isOpen }),
+    toggleMobileMenu: (isOpen) => set({ isMobileMenuOpen: isOpen }),
+    toggleHeader: (isOpen) => set({ isHeaderOpen: isOpen }),
+    setLastScrollTop: (scrollTop) => set({ lastScrollTop: scrollTop }),
+    setInActiveRoom: (isActive) => set({ isInActiveRoom: isActive }),
 }));

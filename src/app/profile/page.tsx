@@ -64,7 +64,8 @@ export default function ProfilePage() {
                 await update(); // refresh session
                 setMessage({ type: "success", text: "Profil berhasil diperbarui!" });
             }
-        } catch {
+        } catch (error) {
+            console.error("Error saving profile:", error);
             setMessage({ type: "error", text: "Terjadi kesalahan" });
         }
 
@@ -85,7 +86,8 @@ export default function ProfilePage() {
                 setMessage({ type: "error", text: data.error });
                 setDeleting(false);
             }
-        } catch {
+        } catch (error) {
+            console.error("Error deleting profile:", error);
             setMessage({ type: "error", text: "Gagal menghapus akun" });
             setDeleting(false);
         }

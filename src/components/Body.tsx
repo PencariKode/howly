@@ -6,6 +6,7 @@ import { ReactNode, useEffect } from "react";
 import { useUIStore } from "@/stores/uiStore";
 import Footer from "@c/Footer";
 import { SessionProvider } from "next-auth/react";
+import RoomGuard from "@c/RoomGuard";
 
 
 export default function Body({ children }: { children: ReactNode }) {
@@ -77,6 +78,7 @@ export default function Body({ children }: { children: ReactNode }) {
             className={ `${jetbrains.variable} antialiased bg-hl-bg relative overflow-x-hidden hl-scrollbar minMaxWidth min-h-screen ` }
         >
             <SessionProvider>
+                <RoomGuard />
                 <Header />
                 { children }
                 <BottomBar />
