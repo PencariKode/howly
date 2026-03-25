@@ -153,26 +153,27 @@ function TipsAndTricksCard() {
 
 
     return (
-        <div className="glass-card flex items-start gap-3 bg-hl-primary/30 border-dashed border-zinc-700/50 relative">
-            <button 
-                className={ `absolute right-4 top-4 bg-amber-500/10 w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition-all duration-200 rounded-full flex items-center justify-center border border-amber-500/20 ${isRandomizing ? 'animate-spin-slow' : ''}` } 
-                type="button" 
-                onClick={randomizeTips}
-                title="Acak Tips"
-            >
-                <i className="fas fa-dice text-amber-500/80 text-xs" />
-            </button>
+        <div className="flex items-start gap-3 relative w-full">
             <div className="w-8 h-8 flex-shrink-0 mt-0.5 rounded-full bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
                 <i className="fas fa-lightbulb text-amber-500/80 text-sm" />
             </div>
-            <div className="flex flex-col min-w-0">
-                <span className="text-[0.765rem] font-bold text-amber-500/70 uppercase tracking-[0.15em] mb-1">Tips & Trick</span>
+            <div className="flex flex-col min-w-0 w-full">
+                <div className="flex items-center justify-between mb-1">
+                    <span className="text-[0.765rem] font-bold text-amber-500/70 uppercase tracking-[0.15em]">Tips & Trick</span>
+                    <button
+                        className={ `bg-amber-500/10 w-7 h-7 cursor-pointer hover:bg-amber-500/20 transition-all duration-200 rounded-full flex items-center justify-center border border-amber-500/20 ${isRandomizing ? 'animate-spin-slow' : ''}` }
+                        type="button"
+                        onClick={ randomizeTips }
+                        title="Acak Tips"
+                    >
+                        <i className="fas fa-dice text-amber-500/80 text-[0.65rem]" />
+                    </button>
+                </div>
                 <p className={ `text-xs text-zinc-300/80 transition-opacity duration-500 leading-relaxed ${tipFade ? 'opacity-100' : 'opacity-0'}` }>
                     { gameTips[currentTipIndex] }
                 </p>
             </div>
         </div>
-
     );
 }
 
@@ -340,171 +341,190 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                 } }
             />
 
-            <div className="relative z-10 w-full max-w-lg flex flex-col gap-5">
+            <div className="relative z-10 w-full max-w-lg lg:max-w-5xl">
                 <div className="glass-card">
                     <SimpleFormHeader />
+                    <div className="flex flex-col lg:flex-row lg:gap-10">
 
-                    <div className="flex flex-col items-center gap-1 mb-4">
-                        <h1 className="text-2xl font-bold tracking-tight text-white">{ room.name }</h1>
-                        <p className="text-sm text-zinc-400">Menunggu pemain bergabung...</p>
-                    </div>
+                        {/*PK: Kolom Kiri — Info Room, Role Config, Tips */}
+                        <div className="flex flex-col flex-1 min-w-0">
 
-                    {/*PK: Kode Room */ }
-                    <div className="flex flex-col items-center gap-2 mb-4">
-                        <span className="text-xs text-zinc-500 uppercase tracking-widest">Kode Room</span>
-                        <button
-                            onClick={ handleCopyCode }
-                            className="group flex items-center gap-2 px-5 py-2.5 rounded-lg bg-hl-primary/60 border border-zinc-700/40 hover:border-zinc-500/60 transition-all duration-200 cursor-pointer"
-                            title="Klik untuk menyalin kode"
-                        >
-                            <span className="font-mono text-2xl font-extrabold tracking-[0.3em] text-white">
-                                { formattedCode }
-                            </span>
-                            <i className={ `${codeCopied ? 'fas fa-check text-green-400' : 'far fa-copy text-zinc-400 group-hover:text-zinc-200'} transition-colors text-sm` } />
-                        </button>
-                        { codeCopied && (
-                            <span className="text-xs text-green-400 animate-pulse">Kode disalin!</span>
-                        ) }
-                    </div>
+                            <div className="flex flex-col items-center gap-1 mb-4">
+                                <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">{ room.name }</h1>
+                                <p className="text-sm text-zinc-400">Menunggu pemain bergabung...</p>
+                            </div>
 
-                    {/*PK: Progress bar */ }
-                    <div className="w-full px-1">
-                        <div className="flex items-center justify-between text-xs text-zinc-400 mb-1.5">
-                            <span>Pemain bergabung</span>
-                            <span className="font-mono">
-                                <span className="text-white font-bold">{ joinedCount }</span>/{ totalSlots }
-                            </span>
-                        </div>
-                        <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
-                            <div
-                                className="h-full rounded-full bg-gradient-to-r from-[#8b2030] to-[#c9586a] transition-all duration-500 ease-out"
-                                style={ { width: `${Math.min((joinedCount / totalSlots) * 100, 100)}%` } }
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/*PK: Tips & Tricks Card */ }
-                { (isOwner || liveIsPlayer) && <TipsAndTricksCard /> }
-
-                <div className="glass-card">
-                    <div className="flex items-center justify-between mb-3">
-                        <h2 className="text-sm font-semibold text-zinc-300">
-                            <i className="fas fa-users mr-2 text-zinc-500" />
-                            Daftar Pemain
-                        </h2>
-                        <span className="text-xs text-zinc-500">{ joinedCount } pemain</span>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <PlayerCard player={ liveOwner } isOwnerRole />
-
-                        { isOwner || liveIsPlayer ? (
-                            <>
-                                {/*PK: Players - hanya terlihat oleh owner atau pemain yang sudah join */ }
-                                { livePlayers.map(player => (
-                                    <PlayerCard
-                                        key={ player.id }
-                                        player={ player }
-                                        canKick={ isOwner }
-                                        onKick={ handleKickPlayer }
-                                        isKicking={ kickingId === player.id }
-                                    />
-                                )) }
-
-                                {/* Empty Slots */ }
-                                { joinedCount < totalSlots && (
-                                    <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-dashed border-zinc-700/40 opacity-40">
-                                        <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center">
-                                            <i className="fas fa-user-plus text-xs text-zinc-600" />
-                                        </div>
-                                        <span className="text-sm text-zinc-600 italic">
-                                            { totalSlots - joinedCount } slot tersisa
-                                        </span>
-                                    </div>
+                            {/*PK: Kode Room */}
+                            <div className="flex flex-col items-center gap-2 mb-4">
+                                <span className="text-xs text-zinc-500 uppercase tracking-widest">Kode Room</span>
+                                <button
+                                    onClick={ handleCopyCode }
+                                    className="group flex items-center gap-2 px-5 py-2.5 rounded-lg bg-hl-primary/60 border border-zinc-700/40 hover:border-zinc-500/60 transition-all duration-200 cursor-pointer"
+                                    title="Klik untuk menyalin kode"
+                                >
+                                    <span className="font-mono text-2xl font-extrabold tracking-[0.3em] text-white">
+                                        { formattedCode }
+                                    </span>
+                                    <i className={ `${codeCopied ? 'fas fa-check text-green-400' : 'far fa-copy text-zinc-400 group-hover:text-zinc-200'} transition-colors text-sm` } />
+                                </button>
+                                { codeCopied && (
+                                    <span className="text-xs text-green-400 animate-pulse">Kode disalin!</span>
                                 ) }
-                            </>
-                        ) : (
-                            /*PK: hanya tampilkan jumlah pemain untuk nonjoin*/
-                            joinedCount > 0 && (
-                                <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-hl-primary/30 border border-zinc-700/20">
-                                    <div className="w-9 h-9 rounded-full bg-zinc-700/60 flex items-center justify-center">
-                                        <i className="fas fa-user-group text-xs text-zinc-400" />
-                                    </div>
-                                    <span className="text-sm text-zinc-400">
-                                        { joinedCount } pemain sudah bergabung
+                            </div>
+
+                            {/*PK: Progress bar */}
+                            <div className="w-full px-1 mb-6">
+                                <div className="flex items-center justify-between text-xs text-zinc-400 mb-1.5">
+                                    <span>Pemain bergabung</span>
+                                    <span className="font-mono">
+                                        <span className="text-white font-bold">{ joinedCount }</span>/{ totalSlots }
                                     </span>
                                 </div>
-                            )
-                        ) }
-                    </div>
-                </div>
+                                <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full bg-gradient-to-r from-[#8b2030] to-[#c9586a] transition-all duration-500 ease-out"
+                                        style={ { width: `${Math.min((joinedCount / totalSlots) * 100, 100)}%` } }
+                                    />
+                                </div>
+                            </div>
 
-                { room.roleConfig && (
-                    <div className="glass-card">
-                        <div className="flex items-center mb-3">
-                            <h2 className="text-sm font-semibold text-zinc-300">
-                                <i className="fas fa-shield-halved mr-2 text-zinc-500" />
-                                Konfigurasi Role
-                            </h2>
-                        </div>
-                        <RoleConfigSummary config={ room.roleConfig } />
-                    </div>
-                ) }
-
-                {/*PK: Tombol Aksi */ }
-                <div className="glass-card">
-                    { isOwner ? (
-                        <div className="flex flex-col gap-3">
-                            <PrimaryButton
-                                className="w-full"
-                                disabled={ joinedCount < 1 }
-                                title={ joinedCount < 1 ? "Nunggu setidaknya 1 pemain bergabung" : "Mulai permainan" }
-                            >
-                                <i className="fas fa-play mr-2" />
-                                Mulai Permainan
-                            </PrimaryButton>
-                            <DangerButton
-                                className="w-full"
-                                onClick={ () => setShowDisbandModal(true) }
-                                disabled={ isPending }
-                            >
-                                <i className="fas fa-door-open mr-2" />
-                                Bubarkan Room
-                            </DangerButton>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-3 items-center">
-                            { error && (
-                                <p className="text-sm text-red-400 text-center bg-red-950/30 border border-red-700/30 rounded-lg px-3 py-2 w-full">
-                                    <i className="fas fa-circle-exclamation mr-1.5" />
-                                    { error }
-                                </p>
+                            {/*PK: Konfigurasi Role */}
+                            { room.roleConfig && (
+                                <div className="border-t border-zinc-700/40 pt-5 mb-5">
+                                    <div className="flex items-center mb-3">
+                                        <h2 className="text-sm font-semibold text-zinc-300">
+                                            <i className="fas fa-shield-halved mr-2 text-zinc-500" />
+                                            Konfigurasi Role
+                                        </h2>
+                                    </div>
+                                    <RoleConfigSummary config={ room.roleConfig } />
+                                </div>
                             ) }
-                            { liveIsPlayer ? (
-                                <>
-                                    <p className="text-sm text-zinc-400 text-center">
-                                        <i className="fas fa-clock mr-1.5 text-amber-500/70" />
-                                        Menunggu moderator memulai permainan...
-                                    </p>
-                                    <DangerButton className="w-full" onClick={ handleLeaveRoom } disabled={ isPending }>
-                                        <i className={ `${isPending ? 'fas fa-spinner fa-spin' : 'fas fa-right-from-bracket'} mr-2` } />
-                                        { isPending ? 'Memproses...' : 'Keluar Room' }
-                                    </DangerButton>
-                                </>
-                            ) : (
-                                <>
-                                    <p className="text-sm text-zinc-400 text-center mb-1">
-                                        Kamu belum bergabung ke room ini.
-                                    </p>
-                                    <PrimaryButton className="w-full" onClick={ handleJoinRoom } disabled={ isPending }>
-                                        <i className={ `${isPending ? 'fas fa-spinner fa-spin' : 'fas fa-right-to-bracket'} mr-2` } />
-                                        { isPending ? 'Bergabung...' : 'Gabung Room' }
-                                    </PrimaryButton>
-                                </>
+
+                            {/*PK: Tips & Tricks */}
+                            { (isOwner || liveIsPlayer) && (
+                                <div className="border-t border-zinc-700/40 pt-5">
+                                    <TipsAndTricksCard />
+                                </div>
                             ) }
                         </div>
-                    ) }
+
+                        {/*PK: Separator vertikal (desktop) / horizontal (mobile) */}
+                        <div className="border-b lg:border-b-0 lg:border-l border-zinc-700/40 my-6 lg:my-0" />
+
+                        {/*PK: Kolom Kanan — Daftar Pemain & Aksi */}
+                        <div className="flex flex-col flex-1 min-w-0">
+                            {/*PK: Daftar Pemain */}
+                            <div className="mb-6">
+                                <div className="flex items-center justify-between mb-3">
+                                    <h2 className="text-sm font-semibold text-zinc-300">
+                                        <i className="fas fa-users mr-2 text-zinc-500" />
+                                        Daftar Pemain
+                                    </h2>
+                                    <span className="text-xs text-zinc-500">{ joinedCount } pemain</span>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <PlayerCard player={ liveOwner } isOwnerRole />
+
+                                    { isOwner || liveIsPlayer ? (
+                                        <>
+                                            {/*PK: Players - hanya terlihat oleh owner atau pemain yang sudah join */}
+                                            { livePlayers.map(player => (
+                                                <PlayerCard
+                                                    key={ player.id }
+                                                    player={ player }
+                                                    canKick={ isOwner }
+                                                    onKick={ handleKickPlayer }
+                                                    isKicking={ kickingId === player.id }
+                                                />
+                                            )) }
+
+                                            {/* Empty Slots */}
+                                            { joinedCount < totalSlots && (
+                                                <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-dashed border-zinc-700/40 opacity-40">
+                                                    <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center">
+                                                        <i className="fas fa-user-plus text-xs text-zinc-600" />
+                                                    </div>
+                                                    <span className="text-sm text-zinc-600 italic">
+                                                        { totalSlots - joinedCount } slot tersisa
+                                                    </span>
+                                                </div>
+                                            ) }
+                                        </>
+                                    ) : (
+                                        /*PK: hanya tampilkan jumlah pemain untuk nonjoin*/
+                                        joinedCount > 0 && (
+                                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-hl-primary/30 border border-zinc-700/20">
+                                                <div className="w-9 h-9 rounded-full bg-zinc-700/60 flex items-center justify-center">
+                                                    <i className="fas fa-user-group text-xs text-zinc-400" />
+                                                </div>
+                                                <span className="text-sm text-zinc-400">
+                                                    { joinedCount } pemain sudah bergabung
+                                                </span>
+                                            </div>
+                                        )
+                                    ) }
+                                </div>
+                            </div>
+
+                            {/*PK: Tombol Aksi */}
+                            <div className="border-t border-zinc-700/40 pt-5 mt-auto">
+                                { isOwner ? (
+                                    <div className="flex flex-col gap-3">
+                                        <PrimaryButton
+                                            className="w-full"
+                                            disabled={ joinedCount < 1 }
+                                            title={ joinedCount < 1 ? "Nunggu setidaknya 1 pemain bergabung" : "Mulai permainan" }
+                                        >
+                                            <i className="fas fa-play mr-2" />
+                                            Mulai Permainan
+                                        </PrimaryButton>
+                                        <DangerButton
+                                            className="w-full"
+                                            onClick={ () => setShowDisbandModal(true) }
+                                            disabled={ isPending }
+                                        >
+                                            <i className="fas fa-door-open mr-2" />
+                                            Bubarkan Room
+                                        </DangerButton>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-3 items-center">
+                                        { error && (
+                                            <p className="text-sm text-red-400 text-center bg-red-950/30 border border-red-700/30 rounded-lg px-3 py-2 w-full">
+                                                <i className="fas fa-circle-exclamation mr-1.5" />
+                                                { error }
+                                            </p>
+                                        ) }
+                                        { liveIsPlayer ? (
+                                            <>
+                                                <p className="text-sm text-zinc-400 text-center">
+                                                    <i className="fas fa-clock mr-1.5 text-amber-500/70" />
+                                                    Menunggu moderator memulai permainan...
+                                                </p>
+                                                <DangerButton className="w-full" onClick={ handleLeaveRoom } disabled={ isPending }>
+                                                    <i className={ `${isPending ? 'fas fa-spinner fa-spin' : 'fas fa-right-from-bracket'} mr-2` } />
+                                                    { isPending ? 'Memproses...' : 'Keluar Room' }
+                                                </DangerButton>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-sm text-zinc-400 text-center mb-1">
+                                                    Kamu belum bergabung ke room ini.
+                                                </p>
+                                                <PrimaryButton className="w-full" onClick={ handleJoinRoom } disabled={ isPending }>
+                                                    <i className={ `${isPending ? 'fas fa-spinner fa-spin' : 'fas fa-right-to-bracket'} mr-2` } />
+                                                    { isPending ? 'Bergabung...' : 'Gabung Room' }
+                                                </PrimaryButton>
+                                            </>
+                                        ) }
+                                    </div>
+                                ) }
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
