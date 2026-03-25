@@ -83,6 +83,7 @@ function ErrorModal({ message, onClose }: { message: string | null, onClose: () 
                         <PrimaryButton
                             onClick={ onClose }
                             className="flex-1 justify-center"
+                            fullWidth
                         >
                             Tutup
                         </PrimaryButton>
@@ -256,7 +257,7 @@ function CreateRoomForm() {
                         >
                             Reset
                         </OutlineButton>
-                        <PrimaryButton className="flex-[2] !py-3 text-base" type="submit">Buat Room</PrimaryButton>
+                        <PrimaryButton className="flex-[2] !py-3 text-base" type="submit" fullWidth>Buat Room</PrimaryButton>
                     </section>
                 </div>
             </form>

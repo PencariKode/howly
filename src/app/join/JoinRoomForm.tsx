@@ -56,6 +56,7 @@ export default function JoinRoomForm() {
                     <PrimaryButton
                         onClick={ handleJoin }
                         disabled={ !isMounted || isLoading }
+                        fullWidth
                     >
                         { isLoading ? <Spinner size="sm" /> : "Masuk Room" }
                     </PrimaryButton>

@@ -202,6 +202,7 @@ function LoginContent() {
                             type="submit"
                             disabled={ loading }
                             className="mt-1"
+                            fullWidth
                         >
                             { loading ? <Spinner size="sm" /> : "Masuk" }
                         </PrimaryButton>
