@@ -6,10 +6,12 @@ import DangerButton from "@c/Buttons/Danger";
 import { formatRoomCode } from "@/utils";
 import Image from "next/image";
 import { useState, useTransition, useEffect, useRef } from "react";
-import { joinRoomAction, leaveRoomAction, kickPlayerAction } from "./actions";
+import { joinRoomAction, leaveRoomAction, kickPlayerAction, disbandRoomAction } from "./actions";
 import { useRouter } from "next/navigation";
 import { useUIStore } from "@/stores/uiStore";
 import { RoomPlayer, RoomRoleConfig, WaitingRoomProps } from "@/types/room";
+
+import OutlineButton from "@c/Buttons/Outline";
 
 function UserProfilePhoto({ player }: { player: RoomPlayer }) {
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -65,7 +67,7 @@ function PlayerCard({
                     <span className="text-sm font-medium text-zinc-200 truncate">
                         { player.name || "Anonim" }
                     </span>
-                    <span className="text-[0.65rem] text-zinc-500">
+                    <span className="text-[0.65rem] text-zinc-500 select-none">
                         { isOwnerRole ? "Moderator" : "Pemain" }
                     </span>
                 </div>
@@ -101,9 +103,9 @@ function RoleConfigSummary({ config }: { config: RoomRoleConfig }) {
     return (
         <div className="flex flex-wrap gap-2">
             { roles.map(role => (
-                <span key={ role.key } className={ `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${role.isRed
-                    ? 'bg-red-950/50 border-red-700/40 text-red-400'
-                    : 'bg-cyan-950/40 border-cyan-700/30 text-cyan-400'
+                <span key={ role.key } className={ `inline-flex select-none items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border transition-all duration-200 cursor-default ${role.isRed
+                    ? 'bg-red-950/50 border-red-700/40 text-red-400 hover:bg-red-900/60 hover:border-red-600/60 hover:-translate-y-0.5'
+                    : 'bg-cyan-950/40 border-cyan-700/30 text-cyan-400 hover:bg-cyan-900/50 hover:border-cyan-600/50 hover:-translate-y-0.5'
                     }` }>
                     { role.label }
                     <span className={ `font-bold ${role.isRed ? 'text-red-300' : 'text-cyan-300'}` }>{ role.value }</span>
@@ -118,6 +120,7 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
     const [kickingId, setKickingId] = useState<string | null>(null);
+    const [showDisbandModal, setShowDisbandModal] = useState(false);
     const isLeaving = useRef(false);
     const router = useRouter();
     const formattedCode = formatRoomCode(room.code);
@@ -145,7 +148,18 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                 try {
                     const data = JSON.parse(event.data);
 
-                    const currentIsStillPlayer = data.players.some((p: any) => p.id === currentUserId);
+                    if (data.status === "DISBANDED") {
+                        if (isOwner) {
+                            router.push("/");
+                        } else {
+                            // Redirect other players with a notification that the room was disbanded
+                            document.cookie = `kicked_from_${room.code}=disbanded; path=/; max-age=5`;
+                            router.push("/?disbanded=1");
+                        }
+                        return;
+                    }
+
+                    const currentIsStillPlayer = data.players?.some((p: any) => p.id === currentUserId) ?? false;
                     const currentWasPlayer = playersRef.current.some(p => p.id === currentUserId);
 
                     if (!currentIsStillPlayer && currentWasPlayer && !isLeaving.current && !isOwner) {
@@ -236,6 +250,18 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                 setError(e.message || "Gagal menendang pemain.");
             } finally {
                 setKickingId(null);
+            }
+        });
+    }
+
+    function handleDisbandRoom() {
+        setError(null);
+        startTransition(async () => {
+            try {
+                await disbandRoomAction(room.code);
+            } catch (e: any) {
+                setError(e.message || "Gagal membubarkan room.");
+                setShowDisbandModal(false);
             }
         });
     }
@@ -374,7 +400,11 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                                 <i className="fas fa-play mr-2" />
                                 Mulai Permainan
                             </PrimaryButton>
-                            <DangerButton className="w-full">
+                            <DangerButton 
+                                className="w-full" 
+                                onClick={() => setShowDisbandModal(true)}
+                                disabled={isPending}
+                            >
                                 <i className="fas fa-door-open mr-2" />
                                 Bubarkan Room
                             </DangerButton>
@@ -413,6 +443,44 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                     ) }
                 </div>
             </div>
+
+            {/*PK: Modal Bubarkan Room */}
+            { showDisbandModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                    <div className="glass-card w-full max-w-sm border-red-700/40">
+                        <div className="flex flex-col items-center gap-4 text-center">
+                            <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-1">
+                                <i className="fas fa-door-open text-2xl text-red-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Bubarkan Room?</h3>
+                            <p className="text-sm text-zinc-400">
+                                Apakah kamu yakin ingin membubarkan room ini? Semua pemain akan dikeluarkan. Tindakan ini tidak dapat dibatalkan.
+                            </p>
+                            
+                            <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
+                                <OutlineButton
+                                    onClick={ () => setShowDisbandModal(false) }
+                                    className="flex-1 justify-center"
+                                    disabled={isPending}
+                                >
+                                    Batal
+                                </OutlineButton>
+                                <DangerButton
+                                    onClick={ handleDisbandRoom }
+                                    className="flex-1"
+                                    disabled={isPending}
+                                >
+                                    {isPending ? (
+                                        <><i className="fas fa-spinner fa-spin mr-2" /> Memproses...</>
+                                    ) : (
+                                        "Ya, Bubarkan"
+                                    )}
+                                </DangerButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) }
         </div>
     );
 }

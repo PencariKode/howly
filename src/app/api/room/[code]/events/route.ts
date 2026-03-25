@@ -62,7 +62,13 @@ async function sendRoomData(
             },
         });
 
-        if (!room) return;
+        if (!room) {
+            const disbandedData = JSON.stringify({
+                status: "DISBANDED"
+            });
+            controller.enqueue(encoder.encode(`data: ${disbandedData}\n\n`));
+            return;
+        }
 
         const data = JSON.stringify({
             players: room.players,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, RefObject } from "react";
-import checkRoom from "./checkRoom";
+import { joinRoomAction } from "@/app/room/[code]/actions";
 import { formatRoomCode, serializeRoomCode } from "@/utils";
 import DangerButton from "@c/Buttons/Danger";
 import PrimaryButton from "@c/Buttons/Primary";
@@ -193,12 +193,21 @@ function useJoinRoom() {
                 return;
             }
 
-            const room = await checkRoom(roomCode);
-            if (room) {
-                router.push(`/room/${room.code}`);
-            } else {
-                setError(errorMessages.codeNotFound);
-                setShowErrorPopup(true);
+            try {
+                await joinRoomAction(serialized);
+                router.push(`/room/${serialized}`);
+            } catch (actionError: any) {
+                if (actionError.message === "Room tidak ditemukan.") {
+                    setError(errorMessages.codeNotFound);
+                    setShowErrorPopup(true);
+                } else if (
+                    actionError.message === "Kamu sudah bergabung di room ini." ||
+                    actionError.message === "Pemilik room tidak bisa bergabung sebagai pemain."
+                ) {
+                    router.push(`/room/${serialized}`);
+                } else {
+                    setError(actionError.message || errorMessages.codeError);
+                }
             }
         } catch (error) {
             console.error(error);

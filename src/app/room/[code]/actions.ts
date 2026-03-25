@@ -119,3 +119,26 @@ export async function kickPlayerAction(roomCode: string, targetUserId: string) {
 
     notifyRoomUpdate(roomCode);
 }
+
+export async function disbandRoomAction(roomCode: string) {
+    const userId = await requireAuth();
+
+    const room = await prisma.room.findUnique({
+        where: { code: roomCode },
+        select: { ownerId: true }
+    });
+
+    if (!room) {
+        throw new Error("Room tidak ditemukan.");
+    }
+
+    if (room.ownerId !== userId) {
+        throw new Error("Hanya pemilik room yang bisa membubarkan room.");
+    }
+
+    await prisma.room.delete({
+        where: { code: roomCode }
+    });
+
+    notifyRoomUpdate(roomCode);
+}
