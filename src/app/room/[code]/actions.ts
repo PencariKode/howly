@@ -5,6 +5,9 @@ import { authOptions } from "@r/auth";
 import { prisma } from "@l/prisma";
 import { roomEvents } from "@l/roomEvents";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+
+const ACTIVE_ROOM_COOKIE = process.env.NEXT_PUBLIC_ACTIVE_ROOM_COOKIE || "active_room";
 
 /**
  * PK: Cek user udah login / belum
@@ -62,6 +65,25 @@ export async function joinRoomAction(roomCode: string) {
         },
     });
 
+
+    // PK: auto redirect
+    const cookieStore = await cookies();
+
+    cookieStore.set(ACTIVE_ROOM_COOKIE, roomCode.toUpperCase(), {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+    });
+
+    cookieStore.set("active_room_hint", roomCode.toUpperCase(), {
+        httpOnly: false,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 6,
+    });
+
     notifyRoomUpdate(roomCode);
 }
 
@@ -76,6 +98,10 @@ export async function leaveRoomAction(roomCode: string) {
             },
         },
     });
+
+    const cookieStore = await cookies();
+    cookieStore.delete(ACTIVE_ROOM_COOKIE);
+    cookieStore.delete("active_room_hint");
 
     notifyRoomUpdate(roomCode);
 }
@@ -139,6 +165,10 @@ export async function disbandRoomAction(roomCode: string) {
     await prisma.room.delete({
         where: { code: roomCode }
     });
+
+    const cookieStore = await cookies();
+    cookieStore.delete(ACTIVE_ROOM_COOKIE);
+    cookieStore.delete("active_room_hint");
 
     notifyRoomUpdate(roomCode);
 }

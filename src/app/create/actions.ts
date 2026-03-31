@@ -6,6 +6,9 @@ import { createRoomCode } from '@r/utils';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@r/auth";
+import { cookies } from "next/headers";
+
+const ACTIVE_ROOM_COOKIE = process.env.NEXT_PUBLIC_ACTIVE_ROOM_COOKIE || "active_room";
 
 export interface CreateRoomPayload {
     roomName: string;
@@ -39,6 +42,24 @@ export async function createRoomAction(data: CreateRoomPayload) {
                 }
             }
         }
+    });
+
+    //PK: auto redirect
+    const cookieStore = await cookies();
+
+    cookieStore.set(ACTIVE_ROOM_COOKIE, roomCode.toUpperCase(), {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+    });
+
+    cookieStore.set("active_room_hint", roomCode.toUpperCase(), {
+        httpOnly: false,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 6,
     });
 
     redirect(`/room/${roomCode}`);

@@ -187,6 +187,9 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
     const router = useRouter();
     const formattedCode = formatRoomCode(room.code);
 
+    const setInActiveRoom = useUIStore(state => state.setInActiveRoom);
+    const setActiveRoomCode = useUIStore(state => state.setActiveRoomCode);
+
     //PK: State live dari SSE
     const [livePlayers, setLivePlayers] = useState<RoomPlayer[]>(room.players);
     const playersRef = useRef<RoomPlayer[]>(room.players);
@@ -212,10 +215,16 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
 
                     if (data.status === "DISBANDED") {
                         if (isOwner) {
+                            setInActiveRoom(false);
+                            setActiveRoomCode(null);
+                            document.cookie = "active_room_hint=; path=/; max-age=0";
                             router.push("/");
                         } else {
-                            // Redirect other players with a notification that the room was disbanded
+                            //PK: redirect player lain dengan notif kalau room dibubarkan
                             document.cookie = `kicked_from_${room.code}=disbanded; path=/; max-age=5`;
+                            setInActiveRoom(false);
+                            setActiveRoomCode(null);
+                            document.cookie = "active_room_hint=; path=/; max-age=0";
                             router.push("/?disbanded=1");
                         }
                         return;
@@ -226,6 +235,9 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
 
                     if (!currentIsStillPlayer && currentWasPlayer && !isLeaving.current && !isOwner) {
                         document.cookie = `kicked_from_${room.code}=1; path=/; max-age=60`;
+                        setInActiveRoom(false);
+                        setActiveRoomCode(null);
+                        document.cookie = "active_room_hint=; path=/; max-age=0";
                         router.push(`/?kicked=1&room=${room.code}`);
                         return;
                     }
@@ -264,11 +276,11 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
     const totalSlots = room.playerCount;
 
     //PK: Sync status aktif room ke uiStore (untuk hide/show BottomBar & Header)
-    const setInActiveRoom = useUIStore(state => state.setInActiveRoom);
     useEffect(() => {
-        setInActiveRoom(isOwner || liveIsPlayer);
-        return () => setInActiveRoom(false);
-    }, [isOwner, liveIsPlayer, setInActiveRoom]);
+        const isActive = isOwner || liveIsPlayer;
+        setInActiveRoom(isActive);
+        setActiveRoomCode(isActive ? room.code : null);
+    }, [isOwner, liveIsPlayer, room.code, setInActiveRoom, setActiveRoomCode]);
 
     function handleCopyCode() {
         navigator.clipboard.writeText(room.code);
