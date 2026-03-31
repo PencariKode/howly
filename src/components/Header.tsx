@@ -50,7 +50,7 @@ export default function Header() {
                         </nav>
                     </div>
                 ) }
-                <Link href="/" className="flex items-center justify-center gap-2 text-[1.6rem]">
+                <Link href={!isInActiveRoom ? "/" : ""} className="flex items-center justify-center gap-2 text-[1.6rem]">
                     <FontAwesomeIcon icon={ faPawClaws } className="text-xl flex items-center justify-center pb-[1px]" />
                     <h1 className="font-extrabold">Howly</h1>
                 </Link>

@@ -10,7 +10,7 @@ import { joinRoomAction, leaveRoomAction, kickPlayerAction, disbandRoomAction } 
 import { useRouter } from "next/navigation";
 import { useUIStore } from "@/stores/uiStore";
 import { RoomPlayer, RoomRoleConfig, WaitingRoomProps } from "@/types/room";
-import { gameTips } from "@/constants/gameTips";
+import { gameTips } from "@l/gameTips";
 
 import OutlineButton from "@c/Buttons/Outline";
 
