@@ -28,7 +28,7 @@ class RoomEventEmitter {
     }
 }
 
-//PK: (Singleton) biar roomEvents gk terduplicate setiap render
+//PK: (Singleton) biar roomEvents gk terduplicate setiap render — HARUS persist di semua env termasuk production
 const globalForEmitter = globalThis as unknown as { roomEvents?: RoomEventEmitter };
 export const roomEvents = globalForEmitter.roomEvents ?? new RoomEventEmitter();
-if (process.env.NODE_ENV !== 'production') globalForEmitter.roomEvents = roomEvents;
+globalForEmitter.roomEvents = roomEvents;

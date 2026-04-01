@@ -5,8 +5,10 @@ import { authOptions } from "@r/auth";
 import { prisma } from "@l/prisma";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import Link from "next/link";
 import WaitingRoom from "./WaitingRoom";
+import GameRoom from "./GameRoom";
+
+const ACTIVE_ROOM_COOKIE = process.env.NEXT_PUBLIC_ACTIVE_ROOM_COOKIE || "active_room";
 
 interface RoomPageProps {
     params: Promise<{ code: string }>;
@@ -43,10 +45,29 @@ export default async function RoomPage({ params }: RoomPageProps) {
                 select: { id: true, name: true, image: true },
             },
             roleConfig: true,
+            gameSession: {
+                include: {
+                    players: {
+                        include: {
+                            user: {
+                                select: { id: true, name: true, image: true },
+                            },
+                        },
+                    },
+                },
+            },
         },
     });
 
     if (!room) {
+        //PK: bersihkan cookie active_room jika mengarah ke room yang sudah dihapus
+        const cookieStore = await cookies();
+        const activeRoomCookie = cookieStore.get(ACTIVE_ROOM_COOKIE)?.value;
+        if (activeRoomCookie?.toUpperCase() === code) {
+            cookieStore.delete(ACTIVE_ROOM_COOKIE);
+            cookieStore.delete("active_room_hint");
+        }
+
         return (
             <div className="flex min-h-screen items-center justify-center bg-hl-bg px-4 py-12">
                 <div className="pointer-events-none fixed inset-0 z-0"
@@ -64,7 +85,8 @@ export default async function RoomPage({ params }: RoomPageProps) {
                         <i className="fas fa-ghost text-4xl text-zinc-500" />
                         <h1 className="text-2xl font-bold text-white">Room Tidak Ditemukan</h1>
                         <p className="text-sm text-zinc-400 text-center">Room dengan kode <span className="font-mono text-red-400">{code}</span> tidak ditemukan atau sudah dihapus.</p>
-                        <Link href="/join" className="primary-btn mt-2 px-6">Kembali</Link>
+                        {/* PK: pakai <a> bukan <Link> agar hard navigation yg mengambil cookie terbaru */}
+                        <a href="/" className="primary-btn mt-2 px-6">Kembali ke Beranda</a>
                     </div>
                 </div>
             </div>
@@ -73,6 +95,53 @@ export default async function RoomPage({ params }: RoomPageProps) {
 
     const isOwner = room.ownerId === session.user.id;
     const isPlayer = room.players.some(p => p.id === session.user.id);
+
+    //PK: jika game playing dan ada gameSession -> render GameRoom
+    if (room.status === "PLAYING" && room.gameSession) {
+        const currentGamePlayer = room.gameSession.players.find(
+            (gp) => gp.userId === session.user.id
+        );
+
+        const gamePlayers = room.gameSession.players.map((gp) => ({
+            id: gp.id,
+            userId: gp.userId,
+            name: gp.user.name,
+            image: gp.user.image,
+            role: (gp.userId === session.user.id || !gp.isAlive || isOwner)
+                ? gp.role
+                : null,
+            isAlive: gp.isAlive,
+            isOnline: gp.isOnline,
+            lastSeenAt: gp.lastSeenAt.toISOString(),
+        }));
+
+        return (
+            <GameRoom
+                room={{
+                    id: room.id,
+                    code: room.code,
+                    name: room.name,
+                    playerCount: room.playerCount,
+                    status: room.status,
+                    owner: room.owner,
+                    players: room.players,
+                    roleConfig: room.roleConfig,
+                    createdAt: room.createdAt.toISOString(),
+                }}
+                gameSession={{
+                    id: room.gameSession.id,
+                    startedAt: room.gameSession.startedAt.toISOString(),
+                    isPaused: room.gameSession.isPaused,
+                    pausedAt: room.gameSession.pausedAt?.toISOString() ?? null,
+                    totalPausedMs: room.gameSession.totalPausedMs,
+                    players: gamePlayers,
+                }}
+                currentUserId={session.user.id as string}
+                currentPlayerRole={currentGamePlayer?.role ?? null}
+                isOwner={isOwner}
+            />
+        );
+    }
 
     return (
         <WaitingRoom
@@ -93,3 +162,4 @@ export default async function RoomPage({ params }: RoomPageProps) {
         />
     );
 }
+

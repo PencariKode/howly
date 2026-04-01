@@ -35,3 +35,33 @@ export interface WaitingRoomProps {
     isPlayer: boolean;
     currentUserId: string;
 }
+
+// === Game Types ===
+
+export interface GamePlayerData {
+    id: string;
+    userId: string;
+    name: string | null;
+    image: string | null;
+    role: string | null;    // null jika masih hidup (hidden dari player lain)
+    isAlive: boolean;
+    isOnline: boolean;
+    lastSeenAt: string;
+}
+
+export interface GameSessionData {
+    id: string;
+    startedAt: string;
+    isPaused: boolean;
+    pausedAt: string | null;
+    totalPausedMs: number;
+    players: GamePlayerData[];
+}
+
+export interface GameRoomProps {
+    room: RoomData;
+    gameSession: GameSessionData;
+    currentUserId: string;
+    currentPlayerRole: string | null;  // role player sendiri (null jika moderator)
+    isOwner: boolean;
+}

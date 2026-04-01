@@ -30,6 +30,8 @@ model User {
   ownedRooms Room[] @relation("RoomOwner")
 
   participatedRooms Room[] @relation("RoomPlayers")
+
+  gamePlayers GamePlayer[]
 }
 
 
@@ -90,6 +92,7 @@ model Room {
   players User[] @relation("RoomPlayers")
 
   roleConfig RoleConfig?
+  gameSession GameSession?
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -120,4 +123,33 @@ model RoleConfig {
   
   room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId String @unique
+}
+
+model GameSession {
+  id            String   @id @default(cuid())
+  roomId        String   @unique
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  startedAt     DateTime @default(now())
+  isPaused      Boolean  @default(false)
+  pausedAt      DateTime?
+  totalPausedMs Int      @default(0)
+
+  players       GamePlayer[]
+}
+
+model GamePlayer {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+
+  gameSessionId String
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+
+  role          String
+  isAlive       Boolean     @default(true)
+  isOnline      Boolean     @default(true)
+  lastSeenAt    DateTime    @default(now())
+
+  @@unique([userId, gameSessionId])
 }

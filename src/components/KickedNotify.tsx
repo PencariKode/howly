@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import DangerButton from "@c/Buttons/Danger";
 
-type NotificationType = 'kicked' | 'disbanded' | null;
+type NotificationType = 'kicked' | 'disbanded' | 'ended' | null;
 
 export default function KickedNotify({ roomCode }: { roomCode?: string }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +22,11 @@ export default function KickedNotify({ roomCode }: { roomCode?: string }) {
             setIsOpen(true);
             const newUrl = window.location.pathname;
             window.history.replaceState({}, '', newUrl);
+        } else if (urlParams.get('ended') === '1') {
+            setType('ended');
+            setIsOpen(true);
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
         }
     }, []);
 
@@ -33,6 +38,8 @@ export default function KickedNotify({ roomCode }: { roomCode?: string }) {
                 <div className="w-14 h-14 rounded-full bg-red-500/15 flex items-center justify-center">
                     {type === 'kicked' ? (
                         <i className="fa-solid fa-user-slash text-red-500 text-2xl"></i>
+                    ) : type === 'ended' ? (
+                        <i className="fa-solid fa-flag-checkered text-red-500 text-2xl"></i>
                     ) : (
                         <i className="fa-solid fa-door-open text-red-500 text-2xl"></i>
                     )}
@@ -40,7 +47,9 @@ export default function KickedNotify({ roomCode }: { roomCode?: string }) {
                 
                 <div className="text-center">
                     <h3 className="text-lg font-bold text-white mb-1">
-                        {type === 'kicked' ? "Anda Telah Ditendang" : "Room Dibubarkan"}
+                        {type === 'kicked' 
+                            ? "Anda Telah Ditendang" 
+                            : type === 'ended' ? "Permainan Diakhiri" : "Room Dibubarkan"}
                     </h3>
                     
                     <p className="text-xs text-zinc-400">
@@ -48,6 +57,11 @@ export default function KickedNotify({ roomCode }: { roomCode?: string }) {
                             <>
                                 Maaf, Anda telah ditendang dari room {roomCode ? <span className="text-red-400 font-mono">[{roomCode}]</span> : 'tersebut'} oleh moderator. 
                                 Anda tidak dapat bergabung kembali selama 1 menit.
+                            </>
+                        ) : type === 'ended' ? (
+                            <>
+                                Permainan di room {roomCode ? <span className="text-red-400 font-mono">[{roomCode}]</span> : 'tersebut'} telah diakhiri oleh moderator. 
+                                Semua pemain dikembalikan ke halaman utama.
                             </>
                         ) : (
                             <>

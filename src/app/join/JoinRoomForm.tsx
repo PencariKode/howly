@@ -195,20 +195,24 @@ function useJoinRoom() {
             }
 
             try {
-                await joinRoomAction(serialized);
-                router.push(`/room/${serialized}`);
-            } catch (actionError: any) {
-                if (actionError.message === "Room tidak ditemukan.") {
-                    setError(errorMessages.codeNotFound);
-                    setShowErrorPopup(true);
-                } else if (
-                    actionError.message === "Kamu sudah bergabung di room ini." ||
-                    actionError.message === "Pemilik room tidak bisa bergabung sebagai pemain."
-                ) {
-                    router.push(`/room/${serialized}`);
+                const res = await joinRoomAction(serialized);
+                if (res?.error) {
+                    if (res.error === "Room tidak ditemukan.") {
+                        setError(errorMessages.codeNotFound);
+                        setShowErrorPopup(true);
+                    } else if (
+                        res.error === "Kamu sudah bergabung di room ini." ||
+                        res.error === "Pemilik room tidak bisa bergabung sebagai pemain."
+                    ) {
+                        router.push(`/room/${serialized}`);
+                    } else {
+                        setError(res.error || errorMessages.codeError);
+                    }
                 } else {
-                    setError(actionError.message || errorMessages.codeError);
+                    router.push(`/room/${serialized}`);
                 }
+            } catch (actionError: any) {
+                setError(actionError.message || errorMessages.codeError);
             }
         } catch (error) {
             console.error(error);

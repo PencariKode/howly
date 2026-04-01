@@ -6,11 +6,13 @@ import DangerButton from "@c/Buttons/Danger";
 import { formatRoomCode } from "@/utils";
 import Image from "next/image";
 import { useState, useTransition, useEffect, useRef } from "react";
-import { joinRoomAction, leaveRoomAction, kickPlayerAction, disbandRoomAction } from "./actions";
+import { joinRoomAction, leaveRoomAction, kickPlayerAction, disbandRoomAction, startGameAction } from "./actions";
 import { useRouter } from "next/navigation";
 import { useUIStore } from "@/stores/uiStore";
 import { RoomPlayer, RoomRoleConfig, WaitingRoomProps } from "@/types/room";
 import { gameTips } from "@l/gameTips";
+
+const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
 
 import OutlineButton from "@c/Buttons/Outline";
 
@@ -245,6 +247,12 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                     setLivePlayers(data.players);
                     setLiveOwner(data.owner);
                     setLiveStatus(data.status);
+
+                    //PK: Jika status berubah jadi PLAYING, refresh agar server component merender GameRoom
+                    if (data.status === "PLAYING") {
+                        router.refresh();
+                        return;
+                    }
                 } catch (error) {
                     console.error("Error processing room event data:", error);
                 }
@@ -262,7 +270,7 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
             eventSource?.close();
             clearTimeout(reconnectTimer);
         };
-    }, [room.code, currentUserId, isOwner]);
+    }, [room.code, currentUserId, isOwner, router]);
 
     //PK: Sync props saat server component rerender (setelah join/leave sendiri)
     useEffect(() => {
@@ -274,6 +282,13 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
     const liveIsPlayer = livePlayers.some(p => p.id === currentUserId);
     const joinedCount = livePlayers.length;
     const totalSlots = room.playerCount;
+
+    //PK: sort players: diri sendiri muncul pertama (setelah moderator)
+    const sortedPlayers = [...livePlayers].sort((a, b) => {
+        if (a.id === currentUserId) return -1;
+        if (b.id === currentUserId) return 1;
+        return 0;
+    });
 
     //PK: Sync status aktif room ke uiStore (untuk hide/show BottomBar & Header)
     useEffect(() => {
@@ -291,12 +306,9 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
     function handleJoinRoom() {
         setError(null);
         startTransition(async () => {
-            try {
-                await joinRoomAction(room.code);
-                router.refresh();
-            } catch (e: any) {
-                setError(e.message || "Gagal bergabung ke room.");
-            }
+            const res = await joinRoomAction(room.code);
+            if (res?.error) setError(res.error);
+            else router.refresh();
         });
     }
 
@@ -304,12 +316,12 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
         setError(null);
         isLeaving.current = true;
         startTransition(async () => {
-            try {
-                await leaveRoomAction(room.code);
-                router.refresh();
-            } catch (e: any) {
+            const res = await leaveRoomAction(room.code);
+            if (res?.error) {
                 isLeaving.current = false;
-                setError(e.message || "Gagal keluar dari room.");
+                setError(res.error);
+            } else {
+                router.refresh();
             }
         });
     }
@@ -318,30 +330,42 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
         setError(null);
         setKickingId(userId);
         startTransition(async () => {
-            try {
-                await kickPlayerAction(room.code, userId);
-            } catch (e: any) {
-                setError(e.message || "Gagal menendang pemain.");
-            } finally {
-                setKickingId(null);
-            }
+            const res = await kickPlayerAction(room.code, userId);
+            setKickingId(null);
+            if (res?.error) setError(res.error);
         });
     }
 
     function handleDisbandRoom() {
         setError(null);
         startTransition(async () => {
-            try {
-                await disbandRoomAction(room.code);
-            } catch (e: any) {
-                setError(e.message || "Gagal membubarkan room.");
+            const res = await disbandRoomAction(room.code);
+            if (res?.error) {
+                setError(res.error);
                 setShowDisbandModal(false);
             }
         });
     }
 
+    function handleStartGame() {
+        setError(null);
+        startTransition(async () => {
+            const res = await startGameAction(room.code);
+            if (res?.error) setError(res.error);
+        });
+    }
+
+    //PK: fix stuck — paksa keluar dari room jika user terjebak
+    function handleFixStuck() {
+        setInActiveRoom(false);
+        setActiveRoomCode(null);
+        document.cookie = "active_room_hint=; path=/; max-age=0";
+        document.cookie = "active_room=; path=/; max-age=0";
+        window.location.href = "/";
+    }
+
     return (
-        <div className="flex min-h-screen items-center justify-center bg-hl-bg px-4 py-12">
+        <div className="flex min-h-screen items-center justify-center bg-hl-bg px-4 pt-20 pb-12 sm:pt-32 sm:pb-12">
             <div className="pointer-events-none fixed inset-0 z-0"
                 style={ {
                     background: `
@@ -442,7 +466,7 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                                     { isOwner || liveIsPlayer ? (
                                         <>
                                             {/*PK: Players - hanya terlihat oleh owner atau pemain yang sudah join */}
-                                            { livePlayers.map(player => (
+                                            { sortedPlayers.map(player => (
                                                 <PlayerCard
                                                     key={ player.id }
                                                     player={ player }
@@ -486,11 +510,12 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                                     <div className="flex flex-col gap-3">
                                         <PrimaryButton
                                             className="w-full"
-                                            disabled={ joinedCount < 1 }
-                                            title={ joinedCount < 1 ? "Nunggu setidaknya 1 pemain bergabung" : "Mulai permainan" }
+                                            onClick={handleStartGame}
+                                            disabled={ isPending || (!isDevMode && joinedCount < totalSlots) }
+                                            title={ (!isDevMode && joinedCount < totalSlots) ? "Menunggu pemain penuh" : "Mulai permainan" }
                                         >
                                             <i className="fas fa-play mr-2" />
-                                            Mulai Permainan
+                                            { isDevMode && joinedCount < totalSlots ? "Mulai Permainan (Dev Mode)" : "Mulai Permainan" }
                                         </PrimaryButton>
                                         <DangerButton
                                             className="w-full"
@@ -500,6 +525,14 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                                             <i className="fas fa-door-open mr-2" />
                                             Bubarkan Room
                                         </DangerButton>
+                                        <button
+                                            onClick={ handleFixStuck }
+                                            className="w-full text-center text-[0.7rem] text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer py-1"
+                                            title="Gunakan jika halaman tidak responsif atau kamu terjebak di room ini"
+                                        >
+                                            <i className="fas fa-wrench mr-1" />
+                                            Fix Stuck
+                                        </button>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-3 items-center">
@@ -531,6 +564,14 @@ export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: 
                                                 </PrimaryButton>
                                             </>
                                         ) }
+                                        <button
+                                            onClick={ handleFixStuck }
+                                            className="w-full text-center text-[0.7rem] text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer py-1"
+                                            title="Gunakan jika halaman tidak responsif atau kamu terjebak di room ini"
+                                        >
+                                            <i className="fas fa-wrench mr-1" />
+                                            Fix Stuck
+                                        </button>
                                     </div>
                                 ) }
                             </div>

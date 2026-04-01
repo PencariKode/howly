@@ -35,10 +35,10 @@ export default function Header() {
     function handleDropMenu() { toggleDropMenu(!isDropMenuOpen) }
 
     return (
-        <header className={ `flex items-center justify-center px-4 min-h-14 max-h-18 group sm:max-h-24 minMaxWidth text-hl-text ${isScreenScrolled ? 'bg-hl-primary h-14 sm:h-18' : 'h-18 sm:h-24 bg-transparent'} sticky top-0 !z-50 transition-all duration-500 ${isHeaderOpen ? 'opacity-100 translate-0' : 'opacity-0 -translate-y-16'}` }>
-            <div className={ `flex items-center justify-center minMaxWidth relative` }>
-                { !isInActiveRoom && (
-                    <div className={ `absolute transition-all duration-700 right-4 sm:right-10 hidden sm:flex` }>
+        <>
+            <header className={ `${isInActiveRoom ? 'absolute' : 'fixed'} w-full left-0 right-0 flex items-center justify-center px-4 min-h-14 max-h-18 group sm:max-h-24 minMaxWidth text-hl-text ${!isInActiveRoom && isScreenScrolled ? 'bg-hl-primary h-14 sm:h-18' : 'h-18 sm:h-24 bg-transparent'} top-0 !z-50 transition-all duration-500 ${isHeaderOpen ? 'opacity-100 translate-0' : 'opacity-0 -translate-y-16'}` }>
+                <div className={ `flex items-center justify-center minMaxWidth relative w-full` }>
+                    <div className={ `absolute transition-all duration-700 right-4 sm:right-10 ${!isInActiveRoom ? 'hidden sm:flex' : 'hidden'}` }>
                         <button onClick={ handleDropMenu } className="flex items-center justify-center w-10 h-10 rounded-md cursor-pointer text-hl-text hover:bg-hl-text/10 transition-all duration-200">
                             <i className="fal fa-bars text-xl" />
                         </button>
@@ -49,12 +49,12 @@ export default function Header() {
                             { status === "authenticated" && <button onClick={ () => signOut({ callbackUrl: "/login" }) } className="cursor-pointer w-full text-[.95rem] lg:text-base transition-all duration-300 flex items-center gap-2"><i className="fal fa-person-to-door w-5 flex items-center justify-center" /> Logout</button> }
                         </nav>
                     </div>
-                ) }
-                <Link href={!isInActiveRoom ? "/" : ""} className="flex items-center justify-center gap-2 text-[1.6rem]">
-                    <FontAwesomeIcon icon={ faPawClaws } className="text-xl flex items-center justify-center pb-[1px]" />
-                    <h1 className="font-extrabold">Howly</h1>
-                </Link>
-            </div>
-        </header>
+                    <Link href="/" className="flex items-center justify-center gap-2 text-[1.6rem]">
+                        <FontAwesomeIcon icon={ faPawClaws } className="text-xl flex items-center justify-center pb-[1px]" />
+                        <h1 className="font-extrabold">Howly</h1>
+                    </Link>
+                </div>
+            </header>
+        </>
     );
 };
