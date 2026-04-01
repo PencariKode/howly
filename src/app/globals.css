@@ -22,6 +22,17 @@
   
   /* Rose accent — use with opacity: border-rose-accent/40, etc. */
   --color-rose-accent: #a63445;
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  --animate-spin-slow: spin-slow 0.8s linear infinite;
 }
 
 body {
@@ -278,7 +289,7 @@ input[type="range"]:hover::-moz-range-thumb {
   }
 
   .primary-btn {
-    @apply flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white cursor-pointer border-none transition-all duration-200 ease-in-out min-h-11 bg-gradient-to-br from-[#6B1525] to-[#A63445];
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-xs sm:text-sm font-semibold text-white cursor-pointer transition-all duration-200 ease-in-out bg-gradient-to-br from-[#6B1525] to-[#A63445] border border-rose-accent/40 shadow-[0_2px_10px_#6B152533];
   }
 
   .primary-btn:hover:not(:disabled) {

@@ -18,14 +18,13 @@ export default function CreateJoinRoom({children}: {children: React.ReactNode}) 
                 } }
             />
 
-            <div className="relative z-10 w-full max-w-lg flex flex-col gap-5">
-                <div className="glass-card">
+            <div className="relative z-10 w-full max-w-lg lg:max-w-4xl flex flex-col gap-5 lg:gap-8">
+                <div className="glass-card w-full">
                     <SimpleFormHeader />
                     {children}
                 </div>
 
-                <div className="glass-card">
-                    <SimpleFormHeader />
+                <div className="glass-card w-full">
                     <div className="flex flex-col items-center justify-center gap-1 mb-4">
                         <h1 className="text-xl font-bold tracking-tight text-white">Kiat & Catatan</h1>
                         <p className="text-sm text-zinc-400">Beberapa catatan untuk membantumu</p>

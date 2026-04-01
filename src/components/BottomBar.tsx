@@ -9,6 +9,9 @@ export default function BottomBar() {
 
     // const isHeaderOpen = useUIStore(state => state.isHeaderOpen);
     const isScreenScrolled = useUIStore(state => state.isScreenScrolled);
+    const isInActiveRoom = useUIStore(state => state.isInActiveRoom);
+
+    if (isInActiveRoom) return null;
 
     return (
         <nav

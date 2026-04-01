@@ -1,0 +1,623 @@
+'use client';
+
+import SimpleFormHeader from "@c/Form/SimpleFormHeader";
+import PrimaryButton from "@c/Buttons/Primary";
+import DangerButton from "@c/Buttons/Danger";
+import { formatRoomCode } from "@/utils";
+import Image from "next/image";
+import { useState, useTransition, useEffect, useRef } from "react";
+import { joinRoomAction, leaveRoomAction, kickPlayerAction, disbandRoomAction, startGameAction } from "./actions";
+import { useRouter } from "next/navigation";
+import { useUIStore } from "@/stores/uiStore";
+import { RoomPlayer, RoomRoleConfig, WaitingRoomProps } from "@/types/room";
+import { gameTips } from "@l/gameTips";
+
+const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
+
+import OutlineButton from "@c/Buttons/Outline";
+
+function UserProfilePhoto({ player }: { player: RoomPlayer }) {
+    const [imgLoaded, setImgLoaded] = useState(false);
+    return (
+        player.image ? (
+            <>
+                { !imgLoaded && (
+                    <div className="absolute inset-0 rounded-full bg-zinc-700 animate-pulse" />
+                ) }
+                <Image
+                    src={ player.image }
+                    alt={ player.name || "Player" }
+                    width={ 36 }
+                    height={ 36 }
+                    className={ `rounded-full object-cover w-9 h-9 transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}` }
+                    onLoad={ () => setImgLoaded(true) }
+                />
+            </>
+        ) : (
+            <div className="w-full h-full rounded-full bg-zinc-700 flex items-center justify-center text-sm font-bold text-zinc-300">
+                { (player.name || "?")[0].toUpperCase() }
+            </div>
+        )
+    );
+}
+
+function PlayerCard({
+    player,
+    isOwnerRole,
+    canKick,
+    onKick,
+    isKicking
+}: {
+    player: RoomPlayer;
+    isOwnerRole?: boolean;
+    canKick?: boolean;
+    onKick?: (userId: string) => void;
+    isKicking?: boolean;
+}) {
+
+    return (
+        <div className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-hl-primary/50 border border-zinc-700/30 transition-all duration-200 hover:border-zinc-600/50 group">
+            <div className="flex items-center gap-3 overflow-hidden">
+                <div className="relative shrink-0 w-9 h-9">
+                    <UserProfilePhoto player={ player } />
+                    { isOwnerRole && (
+                        <span className="absolute z-10 -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-[0.55rem] text-black" title="Moderator">
+                            <i className="fas fa-crown" />
+                        </span>
+                    ) }
+                </div>
+                <div className="flex flex-col min-w-0">
+                    <span className="text-sm font-medium text-zinc-200 truncate">
+                        { player.name || "Anonim" }
+                    </span>
+                    <span className="text-[0.65rem] text-zinc-500 select-none">
+                        { isOwnerRole ? "Moderator" : "Pemain" }
+                    </span>
+                </div>
+            </div>
+
+            { canKick && onKick && (
+                <button
+                    onClick={ () => onKick(player.id) }
+                    disabled={ isKicking }
+                    className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all duration-200 p-2 lg:p-1.5 rounded-md hover:bg-red-500/20 text-zinc-500 hover:text-red-400 cursor-pointer disabled:cursor-wait"
+                    title="Kick pemain"
+                >
+                    <i className={ isKicking ? 'fas fa-spinner fa-spin' : 'fas fa-user-slash' } />
+                </button>
+            ) }
+        </div>
+    );
+}
+
+function RoleConfigSummary({ config }: { config: RoomRoleConfig }) {
+    const roles = [
+        { key: 'warga', label: 'Warga', value: config.warga, isRed: false },
+        { key: 'werewolf', label: 'Werewolf', value: config.werewolf, isRed: true },
+        { key: 'peramal', label: 'Peramal', value: config.peramal, isRed: false },
+        { key: 'penyihir', label: 'Penyihir', value: config.penyihir, isRed: false },
+        { key: 'pemburu', label: 'Pemburu', value: config.pemburu, isRed: false },
+        { key: 'dukun', label: 'Dukun', value: config.dukun, isRed: false },
+        { key: 'raja', label: 'Raja', value: config.raja, isRed: false },
+        { key: 'blackwolf', label: 'Blackwolf', value: config.blackwolf, isRed: true },
+        { key: 'shapeshifter', label: 'Shapeshifter', value: config.shapeshifter, isRed: true },
+    ].filter(r => r.value && r.value > 0);
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            { roles.map(role => (
+                <span key={ role.key } className={ `inline-flex select-none items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border transition-all duration-200 cursor-default ${role.isRed
+                    ? 'bg-red-950/50 border-red-700/40 text-red-400 hover:bg-red-900/60 hover:border-red-600/60 hover:-translate-y-0.5'
+                    : 'bg-cyan-950/40 border-cyan-700/30 text-cyan-400 hover:bg-cyan-900/50 hover:border-cyan-600/50 hover:-translate-y-0.5'
+                    }` }>
+                    { role.label }
+                    <span className={ `font-bold ${role.isRed ? 'text-red-300' : 'text-cyan-300'}` }>{ role.value }</span>
+                </span>
+            )) }
+        </div>
+    );
+}
+
+function TipsAndTricksCard() {
+    const [currentTipIndex, setCurrentTipIndex] = useState(0);
+    const [tipFade, setTipFade] = useState(true);
+    const [isRandomizing, setIsRandomizing] = useState(false);
+
+    useEffect(() => {
+        setCurrentTipIndex(Math.floor(Math.random() * gameTips.length));
+        const interval = setInterval(() => {
+            setTipFade(false);
+            setTimeout(() => {
+                setCurrentTipIndex(Math.floor(Math.random() * gameTips.length));
+                setTipFade(true);
+            }, 500);
+        }, 6500);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    function randomizeTips() {
+        if (isRandomizing) return;
+        setIsRandomizing(true);
+        setTipFade(false);
+
+        setTimeout(() => {
+            let nextIndex;
+            do {
+                nextIndex = Math.floor(Math.random() * gameTips.length);
+            } while (nextIndex === currentTipIndex && gameTips.length > 1);
+
+            setCurrentTipIndex(nextIndex);
+            setTipFade(true);
+            setTimeout(() => setIsRandomizing(false), 500);
+        }, 500);
+    }
+
+
+    return (
+        <div className="flex items-start gap-3 relative w-full">
+            <div className="w-8 h-8 flex-shrink-0 mt-0.5 rounded-full bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
+                <i className="fas fa-lightbulb text-amber-500/80 text-sm" />
+            </div>
+            <div className="flex flex-col min-w-0 w-full">
+                <div className="flex items-center justify-between mb-1">
+                    <span className="text-[0.765rem] font-bold text-amber-500/70 uppercase tracking-[0.15em]">Tips & Trick</span>
+                    <button
+                        className={ `bg-amber-500/10 w-7 h-7 cursor-pointer hover:bg-amber-500/20 transition-all duration-200 rounded-full flex items-center justify-center border border-amber-500/20 ${isRandomizing ? 'animate-spin-slow' : ''}` }
+                        type="button"
+                        onClick={ randomizeTips }
+                        title="Acak Tips"
+                    >
+                        <i className="fas fa-dice text-amber-500/80 text-[0.65rem]" />
+                    </button>
+                </div>
+                <p className={ `text-xs text-zinc-300/80 transition-opacity duration-500 leading-relaxed ${tipFade ? 'opacity-100' : 'opacity-0'}` }>
+                    { gameTips[currentTipIndex] }
+                </p>
+            </div>
+        </div>
+    );
+}
+
+export default function WaitingRoom({ room, isOwner, isPlayer, currentUserId }: WaitingRoomProps) {
+    const [codeCopied, setCodeCopied] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [isPending, startTransition] = useTransition();
+    const [kickingId, setKickingId] = useState<string | null>(null);
+    const [showDisbandModal, setShowDisbandModal] = useState(false);
+    const isLeaving = useRef(false);
+    const router = useRouter();
+    const formattedCode = formatRoomCode(room.code);
+
+    const setInActiveRoom = useUIStore(state => state.setInActiveRoom);
+    const setActiveRoomCode = useUIStore(state => state.setActiveRoomCode);
+
+    //PK: State live dari SSE
+    const [livePlayers, setLivePlayers] = useState<RoomPlayer[]>(room.players);
+    const playersRef = useRef<RoomPlayer[]>(room.players);
+
+    //PK: Sync ref dengan state
+    useEffect(() => {
+        playersRef.current = livePlayers;
+    }, [livePlayers]);
+
+    const [liveOwner, setLiveOwner] = useState<RoomPlayer>(room.owner);
+    const [liveStatus, setLiveStatus] = useState(room.status);
+
+    useEffect(() => {
+        let eventSource: EventSource | null = null;
+        let reconnectTimer: ReturnType<typeof setTimeout>;
+
+        function connect() {
+            eventSource = new EventSource(`/api/room/${room.code}/events`);
+
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.status === "DISBANDED") {
+                        if (isOwner) {
+                            setInActiveRoom(false);
+                            setActiveRoomCode(null);
+                            document.cookie = "active_room_hint=; path=/; max-age=0";
+                            router.push("/");
+                        } else {
+                            //PK: redirect player lain dengan notif kalau room dibubarkan
+                            document.cookie = `kicked_from_${room.code}=disbanded; path=/; max-age=5`;
+                            setInActiveRoom(false);
+                            setActiveRoomCode(null);
+                            document.cookie = "active_room_hint=; path=/; max-age=0";
+                            router.push("/?disbanded=1");
+                        }
+                        return;
+                    }
+
+                    const currentIsStillPlayer = data.players?.some((p: any) => p.id === currentUserId) ?? false;
+                    const currentWasPlayer = playersRef.current.some(p => p.id === currentUserId);
+
+                    if (!currentIsStillPlayer && currentWasPlayer && !isLeaving.current && !isOwner) {
+                        document.cookie = `kicked_from_${room.code}=1; path=/; max-age=60`;
+                        setInActiveRoom(false);
+                        setActiveRoomCode(null);
+                        document.cookie = "active_room_hint=; path=/; max-age=0";
+                        router.push(`/?kicked=1&room=${room.code}`);
+                        return;
+                    }
+
+                    setLivePlayers(data.players);
+                    setLiveOwner(data.owner);
+                    setLiveStatus(data.status);
+
+                    //PK: Jika status berubah jadi PLAYING, refresh agar server component merender GameRoom
+                    if (data.status === "PLAYING") {
+                        router.refresh();
+                        return;
+                    }
+                } catch (error) {
+                    console.error("Error processing room event data:", error);
+                }
+            };
+
+            eventSource.onerror = () => {
+                eventSource?.close();
+                reconnectTimer = setTimeout(connect, 3000);
+            };
+        }
+
+        connect();
+
+        return () => {
+            eventSource?.close();
+            clearTimeout(reconnectTimer);
+        };
+    }, [room.code, currentUserId, isOwner, router]);
+
+    //PK: Sync props saat server component rerender (setelah join/leave sendiri)
+    useEffect(() => {
+        setLivePlayers(room.players);
+        setLiveOwner(room.owner);
+        setLiveStatus(room.status);
+    }, [room.players, room.owner, room.status]);
+
+    const liveIsPlayer = livePlayers.some(p => p.id === currentUserId);
+    const joinedCount = livePlayers.length;
+    const totalSlots = room.playerCount;
+
+    //PK: sort players: diri sendiri muncul pertama (setelah moderator)
+    const sortedPlayers = [...livePlayers].sort((a, b) => {
+        if (a.id === currentUserId) return -1;
+        if (b.id === currentUserId) return 1;
+        return 0;
+    });
+
+    //PK: Sync status aktif room ke uiStore (untuk hide/show BottomBar & Header)
+    useEffect(() => {
+        const isActive = isOwner || liveIsPlayer;
+        setInActiveRoom(isActive);
+        setActiveRoomCode(isActive ? room.code : null);
+    }, [isOwner, liveIsPlayer, room.code, setInActiveRoom, setActiveRoomCode]);
+
+    function handleCopyCode() {
+        navigator.clipboard.writeText(room.code);
+        setCodeCopied(true);
+        setTimeout(() => setCodeCopied(false), 2000);
+    }
+
+    function handleJoinRoom() {
+        setError(null);
+        startTransition(async () => {
+            const res = await joinRoomAction(room.code);
+            if (res?.error) setError(res.error);
+            else router.refresh();
+        });
+    }
+
+    function handleLeaveRoom() {
+        setError(null);
+        isLeaving.current = true;
+        startTransition(async () => {
+            const res = await leaveRoomAction(room.code);
+            if (res?.error) {
+                isLeaving.current = false;
+                setError(res.error);
+            } else {
+                router.refresh();
+            }
+        });
+    }
+
+    function handleKickPlayer(userId: string) {
+        setError(null);
+        setKickingId(userId);
+        startTransition(async () => {
+            const res = await kickPlayerAction(room.code, userId);
+            setKickingId(null);
+            if (res?.error) setError(res.error);
+        });
+    }
+
+    function handleDisbandRoom() {
+        setError(null);
+        startTransition(async () => {
+            const res = await disbandRoomAction(room.code);
+            if (res?.error) {
+                setError(res.error);
+                setShowDisbandModal(false);
+            }
+        });
+    }
+
+    function handleStartGame() {
+        setError(null);
+        startTransition(async () => {
+            const res = await startGameAction(room.code);
+            if (res?.error) setError(res.error);
+        });
+    }
+
+    //PK: fix stuck — paksa keluar dari room jika user terjebak
+    function handleFixStuck() {
+        setInActiveRoom(false);
+        setActiveRoomCode(null);
+        document.cookie = "active_room_hint=; path=/; max-age=0";
+        document.cookie = "active_room=; path=/; max-age=0";
+        window.location.href = "/";
+    }
+
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-hl-bg px-4 pt-20 pb-12 sm:pt-32 sm:pb-12">
+            <div className="pointer-events-none fixed inset-0 z-0"
+                style={ {
+                    background: `
+                        radial-gradient(ellipse 40% 50% at 0% 0%, rgba(107,21,37,0.40) 0%, transparent 70%),
+                        radial-gradient(ellipse 40% 50% at 100% 100%, rgba(139,32,48,0.30) 0%, transparent 70%),
+                        radial-gradient(ellipse 30% 40% at 100% 50%, rgba(166,52,69,0.25) 0%, transparent 70%),
+                        radial-gradient(ellipse 25% 30% at 25% 100%, rgba(107,21,37,0.30) 0%, transparent 70%)
+                    `
+                } }
+            />
+
+            <div className="relative z-10 w-full max-w-lg lg:max-w-5xl">
+                <div className="glass-card">
+                    <SimpleFormHeader />
+                    <div className="flex flex-col lg:flex-row lg:gap-10">
+
+                        {/*PK: Kolom Kiri — Info Room, Role Config, Tips */}
+                        <div className="flex flex-col flex-1 min-w-0">
+
+                            <div className="flex flex-col items-center gap-1 mb-4">
+                                <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">{ room.name }</h1>
+                                <p className="text-sm text-zinc-400">Menunggu pemain bergabung...</p>
+                            </div>
+
+                            {/*PK: Kode Room */}
+                            <div className="flex flex-col items-center gap-2 mb-4">
+                                <span className="text-xs text-zinc-500 uppercase tracking-widest">Kode Room</span>
+                                <button
+                                    onClick={ handleCopyCode }
+                                    className="group flex items-center gap-2 px-5 py-2.5 rounded-lg bg-hl-primary/60 border border-zinc-700/40 hover:border-zinc-500/60 transition-all duration-200 cursor-pointer"
+                                    title="Klik untuk menyalin kode"
+                                >
+                                    <span className="font-mono text-2xl font-extrabold tracking-[0.3em] text-white">
+                                        { formattedCode }
+                                    </span>
+                                    <i className={ `${codeCopied ? 'fas fa-check text-green-400' : 'far fa-copy text-zinc-400 group-hover:text-zinc-200'} transition-colors text-sm` } />
+                                </button>
+                                { codeCopied && (
+                                    <span className="text-xs text-green-400 animate-pulse">Kode disalin!</span>
+                                ) }
+                            </div>
+
+                            {/*PK: Progress bar */}
+                            <div className="w-full px-1 mb-6">
+                                <div className="flex items-center justify-between text-xs text-zinc-400 mb-1.5">
+                                    <span>Pemain bergabung</span>
+                                    <span className="font-mono">
+                                        <span className="text-white font-bold">{ joinedCount }</span>/{ totalSlots }
+                                    </span>
+                                </div>
+                                <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full bg-gradient-to-r from-[#8b2030] to-[#c9586a] transition-all duration-500 ease-out"
+                                        style={ { width: `${Math.min((joinedCount / totalSlots) * 100, 100)}%` } }
+                                    />
+                                </div>
+                            </div>
+
+                            {/*PK: Konfigurasi Role */}
+                            { room.roleConfig && (
+                                <div className="border-t border-zinc-700/40 pt-5 mb-5">
+                                    <div className="flex items-center mb-3">
+                                        <h2 className="text-sm font-semibold text-zinc-300">
+                                            <i className="fas fa-shield-halved mr-2 text-zinc-500" />
+                                            Konfigurasi Role
+                                        </h2>
+                                    </div>
+                                    <RoleConfigSummary config={ room.roleConfig } />
+                                </div>
+                            ) }
+
+                            {/*PK: Tips & Tricks */}
+                            { (isOwner || liveIsPlayer) && (
+                                <div className="border-t border-zinc-700/40 pt-5">
+                                    <TipsAndTricksCard />
+                                </div>
+                            ) }
+                        </div>
+
+                        {/*PK: Separator vertikal (desktop) / horizontal (mobile) */}
+                        <div className="border-b lg:border-b-0 lg:border-l border-zinc-700/40 my-6 lg:my-0" />
+
+                        {/*PK: Kolom Kanan — Daftar Pemain & Aksi */}
+                        <div className="flex flex-col flex-1 min-w-0">
+                            {/*PK: Daftar Pemain */}
+                            <div className="mb-6">
+                                <div className="flex items-center justify-between mb-3">
+                                    <h2 className="text-sm font-semibold text-zinc-300">
+                                        <i className="fas fa-users mr-2 text-zinc-500" />
+                                        Daftar Pemain
+                                    </h2>
+                                    <span className="text-xs text-zinc-500">{ joinedCount } pemain</span>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <PlayerCard player={ liveOwner } isOwnerRole />
+
+                                    { isOwner || liveIsPlayer ? (
+                                        <>
+                                            {/*PK: Players - hanya terlihat oleh owner atau pemain yang sudah join */}
+                                            { sortedPlayers.map(player => (
+                                                <PlayerCard
+                                                    key={ player.id }
+                                                    player={ player }
+                                                    canKick={ isOwner }
+                                                    onKick={ handleKickPlayer }
+                                                    isKicking={ kickingId === player.id }
+                                                />
+                                            )) }
+
+                                            {/* Empty Slots */}
+                                            { joinedCount < totalSlots && (
+                                                <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-dashed border-zinc-700/40 opacity-40">
+                                                    <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center">
+                                                        <i className="fas fa-user-plus text-xs text-zinc-600" />
+                                                    </div>
+                                                    <span className="text-sm text-zinc-600 italic">
+                                                        { totalSlots - joinedCount } slot tersisa
+                                                    </span>
+                                                </div>
+                                            ) }
+                                        </>
+                                    ) : (
+                                        /*PK: hanya tampilkan jumlah pemain untuk nonjoin*/
+                                        joinedCount > 0 && (
+                                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-hl-primary/30 border border-zinc-700/20">
+                                                <div className="w-9 h-9 rounded-full bg-zinc-700/60 flex items-center justify-center">
+                                                    <i className="fas fa-user-group text-xs text-zinc-400" />
+                                                </div>
+                                                <span className="text-sm text-zinc-400">
+                                                    { joinedCount } pemain sudah bergabung
+                                                </span>
+                                            </div>
+                                        )
+                                    ) }
+                                </div>
+                            </div>
+
+                            {/*PK: Tombol Aksi */}
+                            <div className="border-t border-zinc-700/40 pt-5 mt-auto">
+                                { isOwner ? (
+                                    <div className="flex flex-col gap-3">
+                                        <PrimaryButton
+                                            className="w-full"
+                                            onClick={handleStartGame}
+                                            disabled={ isPending || (!isDevMode && joinedCount < totalSlots) }
+                                            title={ (!isDevMode && joinedCount < totalSlots) ? "Menunggu pemain penuh" : "Mulai permainan" }
+                                        >
+                                            <i className="fas fa-play mr-2" />
+                                            { isDevMode && joinedCount < totalSlots ? "Mulai Permainan (Dev Mode)" : "Mulai Permainan" }
+                                        </PrimaryButton>
+                                        <DangerButton
+                                            className="w-full"
+                                            onClick={ () => setShowDisbandModal(true) }
+                                            disabled={ isPending }
+                                        >
+                                            <i className="fas fa-door-open mr-2" />
+                                            Bubarkan Room
+                                        </DangerButton>
+                                        <button
+                                            onClick={ handleFixStuck }
+                                            className="w-full text-center text-[0.7rem] text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer py-1"
+                                            title="Gunakan jika halaman tidak responsif atau kamu terjebak di room ini"
+                                        >
+                                            <i className="fas fa-wrench mr-1" />
+                                            Fix Stuck
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-3 items-center">
+                                        { error && (
+                                            <p className="text-sm text-red-400 text-center bg-red-950/30 border border-red-700/30 rounded-lg px-3 py-2 w-full">
+                                                <i className="fas fa-circle-exclamation mr-1.5" />
+                                                { error }
+                                            </p>
+                                        ) }
+                                        { liveIsPlayer ? (
+                                            <>
+                                                <p className="text-sm text-zinc-400 text-center">
+                                                    <i className="fas fa-clock mr-1.5 text-amber-500/70" />
+                                                    Menunggu moderator memulai permainan...
+                                                </p>
+                                                <DangerButton className="w-full" onClick={ handleLeaveRoom } disabled={ isPending }>
+                                                    <i className={ `${isPending ? 'fas fa-spinner fa-spin' : 'fas fa-right-from-bracket'} mr-2` } />
+                                                    { isPending ? 'Memproses...' : 'Keluar Room' }
+                                                </DangerButton>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-sm text-zinc-400 text-center mb-1">
+                                                    Kamu belum bergabung ke room ini.
+                                                </p>
+                                                <PrimaryButton className="w-full" onClick={ handleJoinRoom } disabled={ isPending }>
+                                                    <i className={ `${isPending ? 'fas fa-spinner fa-spin' : 'fas fa-right-to-bracket'} mr-2` } />
+                                                    { isPending ? 'Bergabung...' : 'Gabung Room' }
+                                                </PrimaryButton>
+                                            </>
+                                        ) }
+                                        <button
+                                            onClick={ handleFixStuck }
+                                            className="w-full text-center text-[0.7rem] text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer py-1"
+                                            title="Gunakan jika halaman tidak responsif atau kamu terjebak di room ini"
+                                        >
+                                            <i className="fas fa-wrench mr-1" />
+                                            Fix Stuck
+                                        </button>
+                                    </div>
+                                ) }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {/*PK: Modal Bubarkan Room */ }
+            { showDisbandModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                    <div className="glass-card w-full max-w-sm border-red-700/40">
+                        <div className="flex flex-col items-center gap-4 text-center">
+                            <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-1">
+                                <i className="fas fa-door-open text-2xl text-red-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Bubarkan Room?</h3>
+                            <p className="text-sm text-zinc-400">
+                                Apakah kamu yakin ingin membubarkan room ini? Semua pemain akan dikeluarkan. Tindakan ini tidak dapat dibatalkan.
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
+                                <OutlineButton
+                                    onClick={ () => setShowDisbandModal(false) }
+                                    className="flex-1 justify-center"
+                                    disabled={ isPending }
+                                >
+                                    Batal
+                                </OutlineButton>
+                                <DangerButton
+                                    onClick={ handleDisbandRoom }
+                                    className="flex-1"
+                                    disabled={ isPending }
+                                >
+                                    { isPending ? (
+                                        <><i className="fas fa-spinner fa-spin mr-2" /> Memproses...</>
+                                    ) : (
+                                        "Ya, Bubarkan"
+                                    ) }
+                                </DangerButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) }
+        </div>
+    );
+}

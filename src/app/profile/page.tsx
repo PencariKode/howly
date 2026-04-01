@@ -64,7 +64,8 @@ export default function ProfilePage() {
                 await update(); // refresh session
                 setMessage({ type: "success", text: "Profil berhasil diperbarui!" });
             }
-        } catch {
+        } catch (error) {
+            console.error("Error saving profile:", error);
             setMessage({ type: "error", text: "Terjadi kesalahan" });
         }
 
@@ -85,7 +86,8 @@ export default function ProfilePage() {
                 setMessage({ type: "error", text: data.error });
                 setDeleting(false);
             }
-        } catch {
+        } catch (error) {
+            console.error("Error deleting profile:", error);
             setMessage({ type: "error", text: "Gagal menghapus akun" });
             setDeleting(false);
         }
@@ -109,126 +111,144 @@ export default function ProfilePage() {
                 } }
             />
 
-            <div className="relative z-10 w-full max-w-lg flex flex-col gap-5">
-                <div className="glass-card rounded-md!">
-                    <div className="flex flex-col items-center gap-4">
-                        <div className="relative">
-                            { user.image ? (
-                                <Image
-                                    src={ user.image }
-                                    alt="Profile"
-                                    width={ 96 }
-                                    height={ 96 }
-                                    className="w-24 h-24 rounded-full object-cover border-3 border-[#A6344580]"
-                                />
-                            ) : (
-                                <div
-                                    className="w-24 h-24 rounded-full flex items-center justify-center text-zinc-400 bg-[#29293899] border-3 border-zinc-border">
-                                    <i className="fal fa-user text-3xl" />
-                                </div>
-                            ) }
-                        </div>
+            <div className="relative z-10 w-full max-w-lg lg:max-w-5xl flex flex-col lg:flex-row gap-5 lg:gap-8 items-start">
+                
+                {/* Kolom Kiri: Info Profil */}
+                <div className="flex flex-col flex-[2] w-full gap-5">
+                    <div className="glass-card rounded-md! lg:sticky lg:top-12">
+                        <div className="flex flex-col items-center gap-4">
+                            <div className="relative">
+                                { user.image ? (
+                                    <Image
+                                        src={ user.image }
+                                        alt="Profile"
+                                        width={ 96 }
+                                        height={ 96 }
+                                        className="w-24 h-24 rounded-full object-cover border-3 border-[#A6344580]"
+                                    />
+                                ) : (
+                                    <div
+                                        className="w-24 h-24 rounded-full flex items-center justify-center text-zinc-400 bg-[#29293899] border-3 border-zinc-border">
+                                        <i className="fal fa-user text-3xl" />
+                                    </div>
+                                ) }
+                            </div>
 
-                        <div className="text-center">
-                            <h1 className="text-2xl font-bold tracking-tight text-white">{ user.name || "Pengguna" }</h1>
-                            <p className="text-sm text-zinc-400 mt-0.5">{ user.email }</p>
-                        </div>
+                            <div className="text-center">
+                                <h1 className="text-2xl font-bold tracking-tight text-white">{ user.name || "Pengguna" }</h1>
+                                <p className="text-sm text-zinc-400 mt-0.5">{ user.email }</p>
+                            </div>
 
-                        <div className="flex gap-2">
-                            <span className="text-xs px-2.5 py-1 rounded-full text-zinc-300 font-medium bg-[#29293899] border border-zinc-border">
-                                { user.role || "USER" }
-                            </span>
-                            <span className="text-xs px-2.5 py-1 rounded-full text-zinc-400 bg-glass-border/40 border border-glass-border/30">
-                                Bergabung { joinDate }
-                            </span>
+                            <div className="flex gap-2">
+                                <span className="text-xs px-2.5 py-1 rounded-full text-zinc-300 font-medium bg-[#29293899] border border-zinc-border">
+                                    { user.role || "USER" }
+                                </span>
+                                <span className="text-xs px-2.5 py-1 rounded-full text-zinc-400 bg-glass-border/40 border border-glass-border/30">
+                                    Bergabung { joinDate }
+                                </span>
+                            </div>
+
+                            <hr className="w-full border-zinc-700/40 my-1" />
+
+                            <button
+                                type="button"
+                                onClick={() => signOut({ callbackUrl: "/login" })}
+                                className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2 mt-1 text-sm font-semibold cursor-pointer transition-all duration-200 text-zinc-300 hover:text-white hover:-translate-y-px bg-glass-border/20 hover:bg-glass-border/40 border border-zinc-700/40"
+                            >
+                                <i className="fal fa-arrow-right-from-bracket" />
+                                Logout
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="glass-card rounded-md!">
-                    <h2 className="text-lg font-bold text-white mb-4">Edit Profil</h2>
+                {/* Kolom Kanan: Edit Form & Danger Zone */}
+                <div className="flex flex-col flex-[3] w-full gap-5">
+                    <div className="glass-card rounded-md!">
+                        <h2 className="text-lg font-bold text-white mb-4">Edit Profil</h2>
 
-                    { message && (
-                        <div className={ `mb-4 px-3 py-2 rounded-md text-sm ${message.type === "success" ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" : "bg-red-500/15 text-red-400 border border-red-500/30"}` }>
-                            { message.text }
-                        </div>
-                    ) }
-
-                    <form onSubmit={ handleSave } className="flex flex-col gap-4">
-                        <div>
-                            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-zinc-300">
-                                Nama
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                value={ name }
-                                onChange={ (e) => setName(e.target.value) }
-                                placeholder="Nama lengkap"
-                                className="base-input"
-                                minLength={ 3 }
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="image" className="mb-1.5 block text-sm font-medium text-zinc-300">
-                                URL Foto Profil
-                            </label>
-                            <input
-                                id="image"
-                                type="url"
-                                value={ image }
-                                onChange={ (e) => setImage(e.target.value) }
-                                placeholder="https://example.com/avatar.jpg"
-                                className="base-input"
-                            />
-                            <p className="mt-1 text-xs text-zinc-600">Kosongkan untuk menghapus foto profil</p>
-                        </div>
-
-                        { image && (
-                            <div className="flex justify-center">
-                                <Image
-                                    src={ image }
-                                    alt="Preview"
-                                    width={ 64 }
-                                    height={ 64 }
-                                    className="w-16 h-16 rounded-full object-cover border-2 border-zinc-border"
-                                    onError={ (e) => { (e.target as HTMLImageElement).style.display = 'none'; } }
-                                />
+                        { message && (
+                            <div className={ `mb-4 px-3 py-2 rounded-md text-sm ${message.type === "success" ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" : "bg-red-500/15 text-red-400 border border-red-500/30"}` }>
+                                { message.text }
                             </div>
                         ) }
 
-                        <PrimaryButton
-                            type="submit"
-                            disabled={ saving }
-                            className="rounded-md! mt-1 flex items-center justify-center gap-2"
-                        >
-                            { saving ? (
-                                <Spinner size="sm" />
-                            ) : (
-                                <>
-                                    <i className="fal fa-floppy-disk text-sm" />
-                                    Simpan Perubahan
-                                </>
-                            ) }
-                        </PrimaryButton>
-                    </form>
-                </div>
+                        <form onSubmit={ handleSave } className="flex flex-col gap-4">
+                            <div>
+                                <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-zinc-300">
+                                    Nama
+                                </label>
+                                <input
+                                    id="name"
+                                    type="text"
+                                    value={ name }
+                                    onChange={ (e) => setName(e.target.value) }
+                                    placeholder="Nama lengkap"
+                                    className="base-input"
+                                    minLength={ 3 }
+                                    required
+                                />
+                            </div>
 
-                <div className="glass-card border-red-700/30  rounded-md!">
-                    <h2 className="text-lg font-bold text-red-400 mb-2">Zona Berbahaya</h2>
-                    <p className="text-sm text-zinc-500 mb-4">
-                        Menghapus akun bersifat permanen. Semua data termasuk sesi dan akun terhubung akan ikut terhapus.
-                    </p>
-                    <button
-                        type="button"
-                        onClick={ () => setShowDeleteModal(true) }
-                        className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 text-red-400 hover:text-red-300 hover:-translate-y-px bg-red-900/20 border border-red-700/40"
-                    >
-                        <i className="fal fa-trash-can" />
-                        Hapus Akun Saya
-                    </button>
+                            <div>
+                                <label htmlFor="image" className="mb-1.5 block text-sm font-medium text-zinc-300">
+                                    URL Foto Profil
+                                </label>
+                                <input
+                                    id="image"
+                                    type="url"
+                                    value={ image }
+                                    onChange={ (e) => setImage(e.target.value) }
+                                    placeholder="https://example.com/avatar.jpg"
+                                    className="base-input"
+                                />
+                                <p className="mt-1 text-xs text-zinc-600">Kosongkan untuk menghapus foto profil</p>
+                            </div>
+
+                            { image && (
+                                <div className="flex justify-center">
+                                    <Image
+                                        src={ image }
+                                        alt="Preview"
+                                        width={ 64 }
+                                        height={ 64 }
+                                        className="w-16 h-16 rounded-full object-cover border-2 border-zinc-border"
+                                        onError={ (e) => { (e.target as HTMLImageElement).style.display = 'none'; } }
+                                    />
+                                </div>
+                            ) }
+
+                            <PrimaryButton
+                                type="submit"
+                                disabled={ saving }
+                                className="rounded-md! mt-1 flex items-center justify-center gap-2"
+                            >
+                                { saving ? (
+                                    <Spinner size="sm" />
+                                ) : (
+                                    <>
+                                        <i className="fal fa-floppy-disk text-sm" />
+                                        Simpan Perubahan
+                                    </>
+                                ) }
+                            </PrimaryButton>
+                        </form>
+                    </div>
+
+                    <div className="glass-card border-red-700/30  rounded-md!">
+                        <h2 className="text-lg font-bold text-red-400 mb-2">Zona Berbahaya</h2>
+                        <p className="text-sm text-zinc-500 mb-4">
+                            Menghapus akun bersifat permanen. Semua data termasuk sesi dan akun terhubung akan ikut terhapus.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={ () => setShowDeleteModal(true) }
+                            className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold cursor-pointer transition-all duration-200 text-red-400 hover:text-red-300 hover:-translate-y-px bg-red-900/20 border border-red-700/40"
+                        >
+                            <i className="fal fa-trash-can" />
+                            Hapus Akun Saya
+                        </button>
+                    </div>
                 </div>
             </div>
 

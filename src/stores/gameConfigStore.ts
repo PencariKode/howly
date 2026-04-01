@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { RoleConfig } from '@/types/roleconfig';
 import { humanRoleWeights, werewolfRoleWeights } from '@/lib/roleConfig';
+import { RoleBalance } from '@/lib/roleConfig';
+
 
 type RoleCombi = "default" | "custom";
 
@@ -34,7 +36,15 @@ interface CheckRoomState {
     reset: () => void;
 }
 
+const DEFAULT_PLAYER_COUNT = 7;
+
+const getDefaultRoles = (count: number): RoleConfig => {
+    const rb = new RoleBalance(count, {} as RoleConfig, () => {});
+    return rb.getRoleConfiguration().recom;
+};
+
 const useGameConfigStore = create<GameConfigState>()(
+
     persist(
         (set, get) => ({
             roleCombi: "default",
@@ -43,32 +53,13 @@ const useGameConfigStore = create<GameConfigState>()(
             setRoleCombiLocked: (isLocked: boolean) => set({ isRoleCombiLocked: isLocked }),
             gameTitle: "",
             setGameTitle: (gameTitle: string) => set({ gameTitle }),
-            playerCount: 7,
-            roleConfig: {
-                warga: 4,
-                werewolf: 1,
-                peramal: 1,
-                penyihir: 1,
-                pemburu: 0,
-                dukun: 0,
-                raja: 0,
-                blackwolf: 0,
-                shapeshifter: 0,
-            },
+            playerCount: DEFAULT_PLAYER_COUNT,
+            roleConfig: getDefaultRoles(DEFAULT_PLAYER_COUNT),
             setPlayerCount: (playerCount: number) => set({
                 playerCount,
-                roleConfig: {
-                    warga: 4,
-                    werewolf: 1,
-                    peramal: 1,
-                    penyihir: 1,
-                    pemburu: 0,
-                    dukun: 0,
-                    raja: 0,
-                    blackwolf: 0,
-                    shapeshifter: 0,
-                }
+                roleConfig: getDefaultRoles(playerCount)
             }),
+
             setRoleCount: (role: keyof RoleConfig, count: number) => set((state) => ({
                 roleConfig: { ...state.roleConfig, [role]: count }
             })),
@@ -124,19 +115,10 @@ const useGameConfigStore = create<GameConfigState>()(
             reset: () => set({
                 roleCombi: "default",
                 gameTitle: "",
-                playerCount: 7,
-                roleConfig: {
-                    warga: 4,
-                    werewolf: 1,
-                    peramal: 1,
-                    penyihir: 1,
-                    pemburu: 0,
-                    dukun: 0,
-                    raja: 0,
-                    blackwolf: 0,
-                    shapeshifter: 0,
-                }
+                playerCount: DEFAULT_PLAYER_COUNT,
+                roleConfig: getDefaultRoles(DEFAULT_PLAYER_COUNT)
             }),
+
         }),
         {
             name: "game-config",

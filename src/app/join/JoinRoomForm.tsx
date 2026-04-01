@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef, RefObject } from "react";
-import checkRoom from "./checkRoom";
-import { formatRoomCode } from "@/utils";
+import { joinRoomAction } from "@/app/room/[code]/actions";
+import { formatRoomCode, serializeRoomCode } from "@/utils";
 import DangerButton from "@c/Buttons/Danger";
 import PrimaryButton from "@c/Buttons/Primary";
 import Spinner from "@c/Spinner";
+import { useRouter } from "next/navigation";
 
 const errorMessages = {
     codeLength: "Panjang kode room hanya boleh 6 karakter",
@@ -14,7 +15,8 @@ const errorMessages = {
     codeEmpty: "Kode room tidak boleh kosong",
     codeNotFound: "Kode room tidak ditemukan",
     codeError: "Terjadi kesalahan saat mencari kode room",
-    offline: "Pastikan koneksi internet Anda aktif untuk bisa masuk ke dalam room"
+    offline: "Pastikan koneksi internet Anda aktif untuk bisa masuk ke dalam room",
+    kicked: "Anda tidak dapat bergabung ke room ini karena baru saja ditendang. Silakan tunggu 1 menit."
 };
 
 export default function JoinRoomForm() {
@@ -54,6 +56,7 @@ export default function JoinRoomForm() {
                     <PrimaryButton
                         onClick={ handleJoin }
                         disabled={ !isMounted || isLoading }
+                        fullWidth
                     >
                         { isLoading ? <Spinner size="sm" /> : "Masuk Room" }
                     </PrimaryButton>
@@ -121,6 +124,7 @@ function useJoinRoom() {
     const [showErrorPopup, setShowErrorPopup] = useState(false);
     const closeBtnRef = useRef<HTMLButtonElement>(null);
     const [isMounted, setIsMounted] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         setIsMounted(true);
@@ -177,10 +181,38 @@ function useJoinRoom() {
         }, 1000);
 
         try {
-            const room = await checkRoom(roomCode);
-            if (!room) {
-                setError(errorMessages.codeNotFound);
-                setShowErrorPopup(true);
+            const serialized = serializeRoomCode(roomCode);
+            //PK: Cek cookie, dikick atau tidak
+            const kickCookie = document.cookie
+                .split("; ")
+                .find((row) => row.startsWith(`kicked_from_${serialized}=`));
+
+            if (kickCookie) {
+                setError(errorMessages.kicked);
+                setIsLoading(false);
+                setShowLongLoadingMessage(false);
+                return;
+            }
+
+            try {
+                const res = await joinRoomAction(serialized);
+                if (res?.error) {
+                    if (res.error === "Room tidak ditemukan.") {
+                        setError(errorMessages.codeNotFound);
+                        setShowErrorPopup(true);
+                    } else if (
+                        res.error === "Kamu sudah bergabung di room ini." ||
+                        res.error === "Pemilik room tidak bisa bergabung sebagai pemain."
+                    ) {
+                        router.push(`/room/${serialized}`);
+                    } else {
+                        setError(res.error || errorMessages.codeError);
+                    }
+                } else {
+                    router.push(`/room/${serialized}`);
+                }
+            } catch (actionError: any) {
+                setError(actionError.message || errorMessages.codeError);
             }
         } catch (error) {
             console.error(error);

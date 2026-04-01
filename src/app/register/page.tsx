@@ -8,6 +8,7 @@ import { isEmail, isStrongPassword } from "validator";
 import Spinner from "@c/Spinner";
 import PrimaryButton from "@c/Buttons/Primary";
 import OutlineButton from "@c/Buttons/Outline";
+import Image from "next/image";
 
 export default function RegisterPage() {
     return (
@@ -133,147 +134,179 @@ function RegisterContent() {
                 <div className="absolute -top-16 right-1/4 h-[9rem] w-[9rem] sm:h-[18rem] sm:w-[18rem] rounded-full bg-[#6b1525] opacity-30 blur-[80px] sm:blur-[120px]" />
             </div>
 
-            <div className="glass-card relative z-10 w-full max-w-md">
-                <div className="mb-6 text-center">
-                    <h1 className="text-2xl font-bold tracking-tight text-white">
-                        Buat Akun Baru
-                    </h1>
-                    <p className="mt-1 text-sm text-zinc-400">
-                        Daftar untuk memulai!
+            <div className="glass-card relative z-10 w-full max-w-md lg:max-w-4xl p-6 lg:p-10 flex flex-col lg:flex-row lg:gap-14">
+
+                {/* Kolom Kiri: Info & Social Register */ }
+                <div className="flex-[4] flex flex-col justify-center">
+                    <div className="flex justify-center lg:justify-start mb-6">
+                        <Image src="/media/logo/logo_wolfman1_nobg.png" alt="Howly Logo" width={100} height={100} className="w-20 h-20 lg:w-34 lg:h-34 drop-shadow-[0_0_15px_rgba(166,52,69,0.5)]" />
+                    </div>
+
+                    <div className="mb-6 text-center lg:text-left">
+                        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">
+                            Buat Akun Baru
+                        </h1>
+                        <p className="mt-1 text-sm text-zinc-400">
+                            Daftar untuk memulai!
+                        </p>
+                    </div>
+
+                    <p className="mb-3 text-center lg:text-left text-xs font-light text-zinc-500 select-none">
+                        Daftar dengan akun:
                     </p>
+                    <div className="flex gap-3">
+                        <OutlineButton
+                            onClick={ () => signIn("google", { callbackUrl }) }
+                            className="group flex-1"
+                            title="Daftar dengan akun Google"
+                        >
+                            <i className="fab fa-google text-xl" />
+                            <span className="font-semibold">Google</span>
+                        </OutlineButton>
+                        <OutlineButton
+                            onClick={ () => signIn("github", { callbackUrl }) }
+                            className="group flex-1"
+                            title="Daftar dengan akun GitHub"
+                        >
+                            <i className="fab fa-github text-xl" />
+                            <span className="font-semibold">GitHub</span>
+                        </OutlineButton>
+                    </div>
+
+                    <div className="hidden lg:flex flex-col items-start gap-3 mt-auto pt-8">
+                        <span className="text-sm text-zinc-400">
+                            Sudah punya akun?{ " " }
+                            <Link
+                                className="font-semibold text-[#c9586a] transition-colors hover:text-[#d87a89]"
+                                href="/login"
+                            >
+                                Masuk sekarang
+                            </Link>
+                        </span>
+                    </div>
                 </div>
 
-                <p className="mb-3 text-center text-xs font-light text-zinc-500 select-none">
-                    Daftar dengan akun:
-                </p>
-                <div className="flex gap-3">
-                    <OutlineButton
-                        onClick={ () => signIn("google", { callbackUrl }) }
-                        className="group flex-1"
-                        title="Daftar dengan akun Google"
-                    >
-                        <i className="fab fa-google text-xl" />
-                        <span className="font-semibold">Google</span>
-                    </OutlineButton>
-                    <OutlineButton
-                        onClick={ () => signIn("github", { callbackUrl }) }
-                        className="group flex-1"
-                        title="Daftar dengan akun GitHub"
-                    >
-                        <i className="fab fa-github text-xl" />
-                        <span className="font-semibold">GitHub</span>
-                    </OutlineButton>
-                </div>
-
-                <div className="my-6 flex items-center gap-3">
+                {/* Separator Panel */ }
+                <div className="my-6 lg:my-0 flex items-center lg:hidden gap-3">
                     <hr className="flex-1 border-zinc-700/60" />
                     <span className="text-xs text-zinc-500 select-none">
                         atau gunakan email
                     </span>
                     <hr className="flex-1 border-zinc-700/60" />
                 </div>
+                <div className="hidden lg:flex items-center justify-center -mx-4">
+                    <div className="w-px h-full bg-zinc-700/60 relative">
+                        <span className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-hl-primary px-3 py-1 text-[0.65rem] font-bold text-zinc-500 whitespace-nowrap rounded-md border border-zinc-700/40 rotate-[-90deg]">
+                            ATAU GUNAKAN EMAIL
+                        </span>
+                    </div>
+                </div>
 
-                <form onSubmit={ handleRegister } className="flex flex-col gap-4">
-                    <div>
-                        <label
-                            htmlFor="name"
-                            className="mb-1.5 block text-sm font-medium text-zinc-300"
+                {/* Kolom Kanan: Form Email */ }
+                <div className="flex-[5] flex flex-col justify-center">
+                    <form onSubmit={ handleRegister } className="flex flex-col gap-4">
+                        <div>
+                            <label
+                                htmlFor="name"
+                                className="mb-1.5 block text-sm font-medium text-zinc-300"
+                            >
+                                Nama Lengkap
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                value={ name }
+                                onChange={ (e) => setName(e.target.value) }
+                                placeholder="Howly Molly"
+                                className={ `base-input ${errForm.type === "name" ? "ring-red-500/60" : ""}` }
+                            />
+                            { errForm.type === "name" && (
+                                <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                            ) }
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="mb-1.5 block text-sm font-medium text-zinc-300"
+                            >
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                value={ email }
+                                onChange={ (e) => setEmail(e.target.value) }
+                                placeholder="email@example.com"
+                                className={ `base-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
+                            />
+                            { errForm.type === "email" && (
+                                <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                            ) }
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="mb-1.5 block text-sm font-medium text-zinc-300"
+                            >
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                value={ password }
+                                onChange={ (e) => setPassword(e.target.value) }
+                                placeholder="Masukkan password"
+                                className={ `base-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
+                            />
+                            { errForm.type === "password" && (
+                                <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                            ) }
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="passwordConfirm"
+                                className="mb-1.5 block text-sm font-medium text-zinc-300"
+                            >
+                                Konfirmasi Password
+                            </label>
+                            <input
+                                id="passwordConfirm"
+                                type="password"
+                                value={ passwordConfirm }
+                                onChange={ (e) => setPasswordConfirm(e.target.value) }
+                                placeholder="Ulangi password"
+                                className={ `base-input ${errForm.type === "passwordConfirm" ? "ring-red-500/60" : ""}` }
+                            />
+                            { errForm.type === "passwordConfirm" && (
+                                <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
+                            ) }
+                        </div>
+
+                        <PrimaryButton
+                            type="submit"
+                            disabled={ loading }
+                            className="mt-1"
                         >
-                            Nama Lengkap
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            value={ name }
-                            onChange={ (e) => setName(e.target.value) }
-                            placeholder="Howly Molly"
-                            className={ `base-input ${errForm.type === "name" ? "ring-red-500/60" : ""}` }
-                        />
-                        { errForm.type === "name" && (
-                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
-                        ) }
+                            { loading ? <Spinner size="sm" /> : "Daftar" }
+                        </PrimaryButton>
+                    </form>
+
+                    <div className="mt-6 flex flex-col items-center lg:items-end gap-3 lg:hidden">
+                        <span className="text-sm text-zinc-400">
+                            Sudah punya akun?{ " " }
+                            <Link
+                                className="font-semibold text-[#c9586a] transition-colors hover:text-[#d87a89]"
+                                href="/login"
+                            >
+                                Masuk sekarang
+                            </Link>
+                        </span>
                     </div>
 
-                    <div>
-                        <label
-                            htmlFor="email"
-                            className="mb-1.5 block text-sm font-medium text-zinc-300"
-                        >
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={ email }
-                            onChange={ (e) => setEmail(e.target.value) }
-                            placeholder="email@example.com"
-                            className={ `base-input ${errForm.type === "email" ? "ring-red-500/60" : ""}` }
-                        />
-                        { errForm.type === "email" && (
-                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
-                        ) }
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="password"
-                            className="mb-1.5 block text-sm font-medium text-zinc-300"
-                        >
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={ password }
-                            onChange={ (e) => setPassword(e.target.value) }
-                            placeholder="Masukkan password"
-                            className={ `base-input ${errForm.type === "password" ? "ring-red-500/60" : ""}` }
-                        />
-                        { errForm.type === "password" && (
-                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
-                        ) }
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="passwordConfirm"
-                            className="mb-1.5 block text-sm font-medium text-zinc-300"
-                        >
-                            Konfirmasi Password
-                        </label>
-                        <input
-                            id="passwordConfirm"
-                            type="password"
-                            value={ passwordConfirm }
-                            onChange={ (e) => setPasswordConfirm(e.target.value) }
-                            placeholder="Ulangi password"
-                            className={ `base-input ${errForm.type === "passwordConfirm" ? "ring-red-500/60" : ""}` }
-                        />
-                        { errForm.type === "passwordConfirm" && (
-                            <p className="mt-1 text-xs text-red-400">{ errForm.message }</p>
-                        ) }
-                    </div>
-
-                    <PrimaryButton
-                        type="submit"
-                        disabled={ loading }
-                        className="mt-1"
-                    >
-                        { loading ? <Spinner size="sm" /> : "Daftar" }
-                    </PrimaryButton>
-                </form>
-
-                <div className="mt-6 flex flex-col items-center gap-3">
-                    <span className="text-sm text-zinc-400">
-                        Sudah punya akun?{ " " }
-                        <Link
-                            className="font-semibold text-[#c9586a] transition-colors hover:text-[#d87a89]"
-                            href="/login"
-                        >
-                            Masuk sekarang
-                        </Link>
-                    </span>
-                    <span className="text-center text-[0.65rem] text-zinc-500">
+                    <div className="mt-6 lg:mt-8 text-center text-[0.65rem] text-zinc-500">
                         Dengan mengklik <em className="font-semibold">daftar</em>, Anda
                         menyetujui{ " " }
                         <Link className="underline-offset-2 hover:underline" href="/docs/tos">
@@ -287,7 +320,7 @@ function RegisterContent() {
                             Kebijakan Privasi
                         </Link>{ " " }
                         kami.
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
