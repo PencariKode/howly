@@ -5,6 +5,7 @@ import { playerPresence } from "@l/playerPresence";
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@r/auth";
+import { buildRoleCounts, shouldRevealRole } from "@l/roleVisibility";
 
 export const dynamic = 'force-dynamic';
 
@@ -123,13 +124,25 @@ async function sendGameData(
             return;
         }
 
-        //PK: filter role: hanya kirim role sendiri + role player mati
+        const roleCounts = buildRoleCounts(room.gameSession.players);
+        const currentPlayerRole =
+            room.gameSession.players.find((gp) => gp.userId === currentUserId)?.role ?? null;
+
+        //PK: filter role: aturan visibility per role
         const players = room.gameSession.players.map((gp) => ({
             id: gp.id,
             userId: gp.userId,
             name: gp.user.name,
             image: gp.user.image,
-            role: (gp.userId === currentUserId || !gp.isAlive || isOwner)
+            role: shouldRevealRole({
+                targetRole: gp.role,
+                targetUserId: gp.userId,
+                targetIsAlive: gp.isAlive,
+                viewerUserId: currentUserId,
+                viewerRole: currentPlayerRole,
+                isOwner,
+                roleCounts,
+            })
                 ? gp.role
                 : null,
             isAlive: gp.isAlive,

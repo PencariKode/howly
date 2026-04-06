@@ -70,16 +70,16 @@ function handleRoleInfoClick({ setShowRoleModal, roleInfo, setRoleModalInfo }: {
     setShowRoleModal(true);
 }
 
-function GamePlayerCard({ player, isCurrentUser, forceShowRole, onKillPlayer, setShowRoleModal, setRoleModalInfo }: {
+function GamePlayerCard({ player, isCurrentUser, showRoles, onKillPlayer, setShowRoleModal, setRoleModalInfo }: {
     player: GamePlayerData;
     isCurrentUser: boolean;
-    forceShowRole: boolean;
+    showRoles: boolean;
     onKillPlayer?: (id: string, name: string) => void;
     setShowRoleModal: (state: boolean) => void;
     setRoleModalInfo: (info: string | null) => void;
 }) {
     const roleInfo = player.role ? getRoleDisplayInfo(player.role) : null;
-    const showRole = player.role !== null && (forceShowRole || !player.isAlive || isCurrentUser);
+    const showRole = player.role !== null && (!player.isAlive || showRoles);
 
     return (
         <>
@@ -160,7 +160,7 @@ function GamePlayerCard({ player, isCurrentUser, forceShowRole, onKillPlayer, se
 
 export default function PlayerListPanel({ players, isOwner, currentUserId, owner, onKillPlayer, setShowRoleModal, setRoleModalInfo }: PlayerListPanelProps) {
     const [filter, setFilter] = useState<'all' | 'alive' | 'dead'>('all');
-    const [showRoles, setShowRoles] = useState(false);
+    const [showRoles, setShowRoles] = useState(!isOwner);
 
     const alivePlayers = players.filter(p => p.isAlive);
     const deadPlayers = players.filter(p => !p.isAlive);
@@ -182,20 +182,17 @@ export default function PlayerListPanel({ players, isOwner, currentUserId, owner
                     Pemain
                 </h2>
                 <div className="flex items-center gap-2">
-                    {/*PK: Moderator toggle show/hide roles */ }
-                    { isOwner && (
-                        <button
-                            onClick={ () => setShowRoles(!showRoles) }
-                            className={ `text-[0.6rem] px-2 py-1 rounded-md font-medium transition-all duration-200 cursor-pointer border ${showRoles
-                                ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-                                : 'bg-zinc-800/50 border-zinc-700/30 text-zinc-500 hover:text-zinc-300'
-                                }` }
-                            title={ showRoles ? "Sembunyikan role" : "Tampilkan role" }
-                        >
-                            <i className={ `fas ${showRoles ? 'fa-eye' : 'fa-eye-slash'} mr-1` } />
-                            Role
-                        </button>
-                    ) }
+                    <button
+                        onClick={ () => setShowRoles(!showRoles) }
+                        className={ `text-[0.6rem] px-2 py-1 rounded-md font-medium transition-all duration-200 cursor-pointer border ${showRoles
+                            ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
+                            : 'bg-zinc-800/50 border-zinc-700/30 text-zinc-500 hover:text-zinc-300'
+                            }` }
+                        title={ showRoles ? "Sembunyikan role" : "Tampilkan role" }
+                    >
+                        <i className={ `fas ${showRoles ? 'fa-eye' : 'fa-eye-slash'} mr-1` } />
+                        Role
+                    </button>
                     <div className="flex items-center gap-1.5">
                         <span className="text-[0.65rem] text-green-400 font-mono">{ alivePlayers.length }</span>
                         <span className="text-[0.65rem] text-zinc-600">/</span>
@@ -253,7 +250,7 @@ export default function PlayerListPanel({ players, isOwner, currentUserId, owner
                             key={ player.id }
                             player={ player }
                             isCurrentUser={ player.userId === currentUserId }
-                            forceShowRole={ isOwner && showRoles }
+                            showRoles={ showRoles }
                             onKillPlayer={ isOwner ? onKillPlayer : undefined }
                             setShowRoleModal={setShowRoleModal}
                             setRoleModalInfo={setRoleModalInfo}

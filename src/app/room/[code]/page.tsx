@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import WaitingRoom from "./WaitingRoom";
 import GameRoom from "./GameRoom";
+import { buildRoleCounts, shouldRevealRole } from "@l/roleVisibility";
 
 const ACTIVE_ROOM_COOKIE = process.env.NEXT_PUBLIC_ACTIVE_ROOM_COOKIE || "active_room";
 
@@ -102,12 +103,23 @@ export default async function RoomPage({ params }: RoomPageProps) {
             (gp) => gp.userId === session.user.id
         );
 
+        const roleCounts = buildRoleCounts(room.gameSession.players);
+        const currentPlayerRole = currentGamePlayer?.role ?? null;
+
         const gamePlayers = room.gameSession.players.map((gp) => ({
             id: gp.id,
             userId: gp.userId,
             name: gp.user.name,
             image: gp.user.image,
-            role: (gp.userId === session.user.id || !gp.isAlive || isOwner)
+            role: shouldRevealRole({
+                targetRole: gp.role,
+                targetUserId: gp.userId,
+                targetIsAlive: gp.isAlive,
+                viewerUserId: session.user.id,
+                viewerRole: currentPlayerRole,
+                isOwner,
+                roleCounts,
+            })
                 ? gp.role
                 : null,
             isAlive: gp.isAlive,
@@ -137,7 +149,7 @@ export default async function RoomPage({ params }: RoomPageProps) {
                     players: gamePlayers,
                 }}
                 currentUserId={session.user.id as string}
-                currentPlayerRole={currentGamePlayer?.role ?? null}
+                currentPlayerRole={currentPlayerRole}
                 isOwner={isOwner}
             />
         );
