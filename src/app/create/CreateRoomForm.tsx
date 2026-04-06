@@ -97,6 +97,7 @@ function ErrorModal({ message, onClose }: { message: string | null, onClose: () 
 function CreateRoomForm() {
     const [errorMess, setErrorMess] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         gameTitle, setGameTitle,
@@ -140,6 +141,7 @@ function CreateRoomForm() {
     }
 
     const handleCreateRoom = async () => {
+        if (isSubmitting) return;
         if (totalAmount !== playerCount) {
             setErrorMess(roomErrors.roleCountNotMatch);
             setShowErrorModal(true);
@@ -160,11 +162,16 @@ function CreateRoomForm() {
             setShowErrorModal(true);
             return;
         }
-        await createRoomAction({
-            roomName: gameTitle,
-            playerCount,
-            roleConfig,
-        });
+        try {
+            setIsSubmitting(true);
+            await createRoomAction({
+                roomName: gameTitle,
+                playerCount,
+                roleConfig,
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -257,7 +264,15 @@ function CreateRoomForm() {
                         >
                             Reset
                         </OutlineButton>
-                        <PrimaryButton className="flex-[2] !py-3 text-base" type="submit" fullWidth>Buat Room</PrimaryButton>
+                        <PrimaryButton
+                            className="flex-[2] !py-3 text-base"
+                            type="submit"
+                            fullWidth
+                            disabled={ isSubmitting }
+                            title={ isSubmitting ? "Sedang membuat room..." : "" }
+                        >
+                            { isSubmitting ? "Membuat..." : "Buat Room" }
+                        </PrimaryButton>
                     </section>
                 </div>
             </form>

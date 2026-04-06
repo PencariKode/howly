@@ -28,6 +28,7 @@ export default function GameRoom({
     const [liveSession, setLiveSession] = useState<GameSessionData>(initialSession);
     const [liveOwner, setLiveOwner] = useState<RoomPlayer>(room.owner);
     const [showRoleModal, setShowRoleModal] = useState(!!currentPlayerRole);
+    const [roleModalInfo, setRoleModalInfo] = useState(currentPlayerRole);
     const [showPlayerList, setShowPlayerList] = useState(false);
     const [showEndModal, setShowEndModal] = useState(false);
     const [playerToKill, setPlayerToKill] = useState<{ id: string; name: string } | null>(null);
@@ -157,7 +158,7 @@ export default function GameRoom({
             />
 
             {/*PK: main */}
-            <div className="relative z-10 flex flex-col lg:flex-row w-full h-screen pt-14 sm:pt-24">
+            <div className="relative z-[51] flex flex-col lg:flex-row w-full h-screen pt-14 sm:pt-24">
 
                 {/*PK: chat */}
                 <div className="flex flex-col flex-1 min-w-0 h-full">
@@ -181,7 +182,7 @@ export default function GameRoom({
                         <GameChat />
                     </div>
                     {/*PK: btn player list */}
-                    <div className="lg:hidden fixed bottom-4 right-4 z-30">
+                    <div className="lg:hidden fixed bottom-4 right-4 z-56">
                         <button
                             onClick={() => setShowPlayerList(!showPlayerList)}
                             className="w-12 h-12 rounded-full bg-gradient-to-br from-[#6B1525] to-[#A63445] border border-rose-accent/40 shadow-lg flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105"
@@ -196,10 +197,10 @@ export default function GameRoom({
 
                 {/*PK: player list */}
                 <div className={`
-                    fixed lg:relative inset-y-0 right-0 z-20
+                    fixed lg:relative inset-y-0 right-0 z-55!
                     w-80 lg:w-72 xl:w-80
                     bg-glass/95 lg:bg-glass/60
-                    border-l border-zinc-700/30
+                    border-l lg:border-t border-zinc-700/30 lg:rounded-ss-xl
                     transform transition-transform duration-300 ease-in-out
                     ${showPlayerList ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
                 `}>
@@ -217,6 +218,8 @@ export default function GameRoom({
                                 currentUserId={currentUserId}
                                 owner={liveOwner}
                                 onKillPlayer={(id, name) => setPlayerToKill({ id, name })}
+                                setRoleModalInfo={setRoleModalInfo}
+                                setShowRoleModal={setShowRoleModal}
                             />
                         </div>
                         <button
@@ -232,16 +235,16 @@ export default function GameRoom({
             </div>
 
             {/*PK: modal role */}
-            {showRoleModal && currentPlayerRole && (
+            {showRoleModal && roleModalInfo && (
                 <RoleRevealModal
-                    roleName={currentPlayerRole}
+                    roleName={roleModalInfo}
                     onDismiss={() => setShowRoleModal(false)}
                 />
             )}
 
             {/*PK: modal end game */}
             {showEndModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 px-4">
                     <div className="glass-card w-full max-w-sm border-red-700/40">
                         <div className="flex flex-col items-center gap-4 text-center">
                             <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-1">
