@@ -28,6 +28,7 @@ export default function GameRoom({
     const [liveSession, setLiveSession] = useState<GameSessionData>(initialSession);
     const [liveOwner, setLiveOwner] = useState<RoomPlayer>(room.owner);
     const [showRoleModal, setShowRoleModal] = useState(!!currentPlayerRole);
+    const [roleModalInfo, setRoleModalInfo] = useState(currentPlayerRole);
     const [showPlayerList, setShowPlayerList] = useState(false);
     const [showEndModal, setShowEndModal] = useState(false);
     const [playerToKill, setPlayerToKill] = useState<{ id: string; name: string } | null>(null);
@@ -199,7 +200,7 @@ export default function GameRoom({
                     fixed lg:relative inset-y-0 right-0 z-20
                     w-80 lg:w-72 xl:w-80
                     bg-glass/95 lg:bg-glass/60
-                    border-l border-zinc-700/30
+                    border-l lg:border-t border-zinc-700/30 lg:rounded-ss-xl
                     transform transition-transform duration-300 ease-in-out
                     ${showPlayerList ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
                 `}>
@@ -217,6 +218,8 @@ export default function GameRoom({
                                 currentUserId={currentUserId}
                                 owner={liveOwner}
                                 onKillPlayer={(id, name) => setPlayerToKill({ id, name })}
+                                setRoleModalInfo={setRoleModalInfo}
+                                setShowRoleModal={setShowRoleModal}
                             />
                         </div>
                         <button
@@ -232,9 +235,9 @@ export default function GameRoom({
             </div>
 
             {/*PK: modal role */}
-            {showRoleModal && currentPlayerRole && (
+            {showRoleModal && roleModalInfo && (
                 <RoleRevealModal
-                    roleName={currentPlayerRole}
+                    roleName={roleModalInfo}
                     onDismiss={() => setShowRoleModal(false)}
                 />
             )}
